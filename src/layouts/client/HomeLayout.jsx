@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
 
-export default function DashboardLayout() {
+export default function HomeLayout() {
   return (
     <div>
-      asc
+      ascasas
       <Outlet />
     </div>
   );
