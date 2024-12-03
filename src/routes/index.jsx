@@ -1,5 +1,6 @@
 import { useRoutes } from "react-router-dom";
 import AdminLayout from "@/layouts/admin/AdminLayout";
+import HomeLayout from "@/layouts/client/HomeLayout";
 import DashboardPage from "@/pages/admin/dashboard/DashboardPage";
 import CustomersPage from "@/pages/admin/customers/CustomersPage";
 import ProductsPage from "@/pages/admin/products/ProductsPage";
@@ -15,9 +16,20 @@ import {
   UpdateCategoryPage,
   CategoriesPage,
 } from "@/pages/admin/categories";
+import HomePage from "@/pages/client/home/HomePage";
 
 export function Router() {
   return useRoutes([
+    {
+      path: "/",
+      element: <HomeLayout />,
+      children: [
+        {
+          path: "",
+          element: <HomePage />,
+        },
+      ],
+    },
     {
       path: "/admin",
       element: <AdminLayout />,
