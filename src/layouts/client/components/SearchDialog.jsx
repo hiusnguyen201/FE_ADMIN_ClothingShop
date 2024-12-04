@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, SearchIcon, XIcon } from "lucide-react";
+import { useRef, useState } from "react";
 
 const data = [
   {
@@ -33,31 +34,48 @@ const data = [
 ];
 
 export default function SearchDialog({ open, onOpenChange }) {
+  const [searchValue, setSearchValue] = useState("");
+  const inputRef = useRef();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
         <DialogOverlay className="opacity-60" />
         <Content
           className={
-            "right-0 fixed left-0 top-0 z-50 h-[107px] bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1/2 data-[state=open]:slide-in-from-top-1/2"
+            "right-0 fixed left-0 top-0 z-50 h-[80px] bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1/2 data-[state=open]:slide-in-from-top-1/2"
           }
         >
           <DialogTitle className="sr-only">Search</DialogTitle>
           <DialogDescription className="sr-only">Search</DialogDescription>
-          <div className="flex px-4 gap-1 items-center h-full relative max-w-[500px] mx-auto">
-            <Close className="p-2">
-              <ChevronLeftIcon className="h-6 w-6" />
-              <span className="sr-only">Close</span>
+          <div className="px-4 flex gap-1 items-center h-full relative max-w-[500px] mx-auto">
+            <Close>
+              <Button variant="ghost" size="icon">
+                <ChevronLeftIcon className="h-6 w-6" />
+                <span className="sr-only">Close</span>
+              </Button>
             </Close>
             <div className="flex-1 relative flex items-center gap-1">
               <Input
+                ref={inputRef}
                 type="name"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
                 className="pr-8"
                 placeholder="Tìm kiếm sản phẩm..."
+                autoFocus
               />
-              <div className="absolute right-2 rounded-full bg-[#c4c4c4] text-[#fff] cursor-pointer">
-                <XIcon className="w-4 h-4 p-0.5" />
-              </div>
+              {searchValue && (
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setSearchValue("");
+                    inputRef.current.focus();
+                  }}
+                  className="absolute right-1.5 p-1 h-auto rounded-full"
+                >
+                  <XIcon className="w-4 h-4" />
+                </Button>
+              )}
             </div>
             <Button className="px-3">
               <SearchIcon />
