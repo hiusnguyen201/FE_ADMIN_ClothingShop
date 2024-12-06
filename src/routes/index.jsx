@@ -2,6 +2,7 @@ import { useRoutes } from "react-router-dom";
 import HomeLayout from "@/layouts/client/home.layout";
 import DashboardLayout from "@/layouts/server/dashboard.layout";
 import RolesPage from "@/pages/roles/RolesPage";
+import CreateRolePage from "@/pages/roles/CreateRolePage";
 
 export function Router() {
   return useRoutes([
@@ -16,6 +17,10 @@ export function Router() {
         {
           path: "manageroles",
           element: <RolesPage />,
+        },
+        {
+          path: "/manageroles/create",
+          element: <CreateRolePage/>,
         },
       ],
     },
