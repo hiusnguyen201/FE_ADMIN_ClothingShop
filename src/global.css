@@ -3,6 +3,9 @@
 @tailwind utilities;
 @layer base {
   :root {
+    --header-height: 80px;
+    --header-height-md: 100px;
+
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -92,4 +95,9 @@ body {
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
   background: #aaa;
+}
+
+.\[\&_svg\]\:size-4 svg {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
 }

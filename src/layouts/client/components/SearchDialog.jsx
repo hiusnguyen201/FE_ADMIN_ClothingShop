@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Content, Close } from "@radix-ui/react-dialog";
 import {
   Dialog,
@@ -6,123 +7,66 @@ import {
   DialogPortal,
   DialogOverlay,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ChevronLeftIcon, SearchIcon, XIcon } from "lucide-react";
-import { useRef, useState } from "react";
+import { ChevronLeftIcon, XIcon } from "lucide-react";
+import SearchForm from "./SearchForm";
+import ProductCard from "@/components/product-card";
+import { Fragment } from "react";
 
-const data = [
-  {
-    title: "Áo Thun Nam C&S Cat Mama 1",
-    category: "Cat & Dog",
-  },
-  {
-    title: "Áo Thun Nam C&S Cat Mama 2",
-    category: "Cat & Dog",
-  },
-  {
-    title: "Áo Thun Nam C&S Cat Mama 3",
-    category: "Cat & Dog",
-  },
-  {
-    title: "Áo Thun Nam C&S Cat Mama 4",
-    category: "Cat & Dog",
-  },
-];
+const data = [1, 23, 4, 4];
 
 export default function SearchDialog({ open, onOpenChange }) {
-  const [searchValue, setSearchValue] = useState("");
-  const inputRef = useRef();
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
         <DialogOverlay className="opacity-60" />
         <Content
           className={
-            "right-0 fixed left-0 top-0 z-50 h-[80px] bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1/2 data-[state=open]:slide-in-from-top-1/2"
+            "right-0 fixed left-0 top-0 z-50 h-[var(--header-height-md)] h-[var(--header-height)] bg-background shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1/2 data-[state=open]:slide-in-from-top-1/2"
           }
         >
           <DialogTitle className="sr-only">Search</DialogTitle>
           <DialogDescription className="sr-only">Search</DialogDescription>
-          <div className="px-4 flex gap-1 items-center h-full relative max-w-[500px] mx-auto">
-            <Close>
-              <Button variant="ghost" size="icon">
-                <ChevronLeftIcon className="h-6 w-6" />
-                <span className="sr-only">Close</span>
-              </Button>
+          {/* Search form */}
+          <div className="px-4 flex items-center h-full relative max-w-[500px] mx-auto">
+            <Close className="md:hidden flex">
+              <ChevronLeftIcon />
+              <span className="sr-only">Close</span>
             </Close>
-            <div className="flex-1 relative flex items-center gap-1">
-              <Input
-                ref={inputRef}
-                type="name"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                className="pr-8"
-                placeholder="Tìm kiếm sản phẩm..."
-                autoFocus
-              />
-              {searchValue && (
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    setSearchValue("");
-                    inputRef.current.focus();
-                  }}
-                  className="absolute right-1.5 p-1 h-auto rounded-full"
-                >
-                  <XIcon className="w-4 h-4" />
-                </Button>
-              )}
+            <div className="flex-1 relative flex items-center">
+              <SearchForm />
+              <Close className="hidden md:block absolute -right-[100px] h-full">
+                <XIcon />
+                <span className="sr-only">Close</span>
+              </Close>
             </div>
-            <Button className="px-3">
-              <SearchIcon />
-            </Button>
           </div>
+          {/* Products */}
           <div className="hidden lg:block mt-2 bg-[#fff] max-w-[1000px] mx-auto rounded p-12 px-20">
-            <Label>Sản phẩm</Label>
-            <div className="flex items-center -mx-2">
-              {data.map((item) => (
-                <div
-                  key={item.title}
-                  className="w-1/4 p-2 text-sm space-y-1"
-                >
-                  <Link className="relative block" to="#">
-                    <Badge className="absolute right-2 top-2 bg-[#F95D03]">
-                      SALE
-                    </Badge>
-
-                    <img
-                      className="object-cover rounded-lg h-[260px] mb-2"
-                      src="https://images.unsplash.com/photo-1719937050640-71cfd3d851be?q=80&w=2072&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            {data.length > 0 ? (
+              <Fragment>
+                <Label className="font-bold block">Sản phẩm</Label>
+                <div className="flex items-center -mx-2">
+                  {data.map((item, index) => (
+                    <ProductCard
+                      className="w-1/4"
+                      key={index}
+                      product={item}
                     />
-                  </Link>
-                  <div className="min-h-24">
-                    <Link to="#">{item.title}</Link>
-                    <p
-                      style={{
-                        fontSize: 13,
-                      }}
-                      className="text-[#00000099]"
-                    >
-                      {item.category}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold">199.000đ</span>
-                      <span className="text-[#c4c4c4] line-through">
-                        229.000đ
-                      </span>
-                      <Badge>-13%</Badge>
-                    </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <Link to="#" className="text-center block">
-              <Button>Xem tất cả</Button>
-            </Link>
+                <Link to="#" className="text-center block">
+                  <Button className="bg-[#273bcd] rounded-full px-6">
+                    Xem tất cả
+                  </Button>
+                </Link>
+              </Fragment>
+            ) : (
+              <p className="text-center">
+                Không tìm thấy kết quả phù hợp!
+              </p>
+            )}
           </div>
         </Content>
       </DialogPortal>
