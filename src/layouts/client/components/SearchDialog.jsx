@@ -23,7 +23,7 @@ export default function SearchDialog({ open, onOpenChange }) {
         <DialogOverlay className="opacity-60" />
         <Content
           className={
-            "right-0 fixed left-0 top-0 z-50 h-[var(--header-height-md)] h-[var(--header-height)] bg-background shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1/2 data-[state=open]:slide-in-from-top-1/2"
+            "right-0 fixed left-0 top-0 z-50 md:h-[var(--header-height-md)] h-[var(--header-height)] bg-background shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:slide-out-to-top-1/2 data-[state=open]:slide-in-from-top-1/2"
           }
         >
           <DialogTitle className="sr-only">Search</DialogTitle>
