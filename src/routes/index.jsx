@@ -25,7 +25,7 @@ export function Router() {
       element: <HomeLayout />,
       children: [
         {
-          path: "",
+          path: "/",
           element: <HomePage />,
         },
       ],
