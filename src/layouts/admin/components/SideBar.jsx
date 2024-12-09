@@ -12,19 +12,21 @@ import { navData } from "./nav-data";
 
 export default function SideBar() {
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader>
-        <TeamSwitcher team={navData.team} />
-      </SidebarHeader>
-      <SidebarContent>
-        <NavMain label="Application" items={navData.navMainGroupApp} />
-        <NavMain label="System" items={navData.navMainGroupSystem} />
-        {/* <NavProjects projects={navData.projects} /> */}
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={navData.user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+    <nav>
+      <Sidebar collapsible="icon">
+        <SidebarHeader>
+          <TeamSwitcher team={navData.team} />
+        </SidebarHeader>
+        <SidebarContent>
+          <NavMain label="Application" items={navData.navMainGroupApp} />
+          <NavMain label="System" items={navData.navMainGroupSystem} />
+          {/* <NavProjects projects={navData.projects} /> */}
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={navData.user} />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    </nav>
   );
 }

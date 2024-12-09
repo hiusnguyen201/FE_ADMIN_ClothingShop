@@ -1,3 +1,3 @@
 export { CategoriesPage } from "./CategoriesPage";
-export { CreateCategoryPage } from "./CreateCategoryPage";
-export { UpdateCategoryPage } from "./UpdateCategoryPage";
+export { CreateCategoryPage } from "./create/CreateCategoryPage";
+export { UpdateCategoryPage } from "./update/UpdateCategoryPage";

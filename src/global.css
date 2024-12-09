@@ -3,6 +3,9 @@
 @tailwind utilities;
 @layer base {
   :root {
+    --header-height: 80px;
+    --header-height-md: 100px;
+
     --background: 0 0% 100%;
     --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
@@ -81,11 +84,34 @@
   }
 }
 
-::-webkit-scrollbar {
+body {
+  color: #231f20;
+}
+
+nav ::-webkit-scrollbar {
   width: 4px;
 }
 
-::-webkit-scrollbar-thumb {
-  border-radius: 4px;
+nav ::-webkit-scrollbar-thumb {
   background: #aaa;
+}
+
+.\[\&_svg\]\:size-4 svg {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+.footer-menu {
+  width: 100%;
+  font-size: 13px;
+  display: flex;
+  background-color: #000;
+  color: #d9d9d9;
+}
+
+.footer-menu_title {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 16px;
 }
