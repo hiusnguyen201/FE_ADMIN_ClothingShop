@@ -59,15 +59,24 @@ export const columns = [
     accessorKey: "icon",
     header: "icon",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("icon")}</div>
+      <div className="capitalize">
+        <img
+          src={row.getValue("icon")}
+          alt="Preview"
+          className="w-8 h-8"
+        />
+      </div>
     ),
   },
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("name")}</div>
-    ),
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+    cell: ({ row }) => <div className="capitalize">{row.getValue("description")}</div>,
   },
   {
     id: "actions",
@@ -88,14 +97,9 @@ export const columns = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
-              <Link to={`/managerole/edit/${payment.id}`}>
-                Edit
-              </Link>
+              <Link to={`/managerole/edit/${payment.id}`}>Edit</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-                Delete
-            </DropdownMenuItem>
-
+            <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       );

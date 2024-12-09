@@ -28,8 +28,11 @@ import {
 } from "@/components/ui/select";
 
 
-export default function DataTableCustom({ columns, filter }) {
-
+export default function DataTableCustom({ columns, filter, meta }) {
+  const [itemPerPage, setItemPerPage] = React.useState("10")
+  console.log(itemPerPage);
+  
+  
   return (
     <div className="w-full">
       <div className="rounded-md border">
@@ -85,12 +88,12 @@ export default function DataTableCustom({ columns, filter }) {
       <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
         <div className="flex w-full items-center justify-between">
           <div className="flex-1 text-sm font-small ">
-            Showing 1 to 10 of 20 entries
+            Showing {meta.offSet} to 20 of {meta.totalItems} entries
           </div>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
               <p className="whitespace-nowrap text-sm font-small ">Rows per page</p>
-              <Select>
+              <Select onValueChange={(value)=>{setItemPerPage(value)}}>
                 <SelectTrigger className="w-[70px] h-[35px]">
                   <SelectValue placeholder="10" />
                 </SelectTrigger>
@@ -105,7 +108,7 @@ export default function DataTableCustom({ columns, filter }) {
         </div>
         <div className="flex w-full items-center justify-between gap-2 sm:justify-end">
           <div className="flex w-[150px] items-center justify-center text-sm font-small">
-            Page 1 of 2
+            Page {meta.currentPage} of {meta.totalPages}
           </div>
           <div className="flex items-center space-x-2">
             <Button

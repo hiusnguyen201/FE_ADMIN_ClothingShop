@@ -2,8 +2,7 @@ import * as React from "react";
 import DataTableCustom from "../../components/DataTableCustom";
 import { columns } from "./columns";
 import { ROLE_STATUS, USER_STATUS } from "./columns";
-import { ChevronDown, Plus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -13,9 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import {
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -27,35 +23,28 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import Heading from "@/./components/heading";
+import axios from "axios";
 
-const data = [
-  {
-    id: "dasd",
-    icon: "1",
-    name: "admin",
-    description: "abcxyz",
-    status: "Activity"
-  },
-  {
-    id: "ads",
-    icon: "2",
-    name: "user",
-    description: "abcxyz",
-    status: "Activity"
-  },
-  {
-    id: "dvax",
-    icon: "3",
-    name: "tester",
-    description: "abcxyz",
-    status: "Activity"
-  },
- 
-];
+
+
 
 export default function RolesPage() {
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [data, setData] = React.useState([]);
+  const [meta, setMeta] = React.useState([]);
+  const [page, setPage] = React.useState("1");
+  const [itemPerPage, setItemPerPage] = React.useState("10");
+
+  React.useEffect(() => {
+    async function getAllUsers() {
+      const data = await axios.get(`http://localhost:3000/api/v1/roles/get-roles?page=${page}&itemPerPage=${itemPerPage}`);
+      setData(data.data.data ?? []);
+      setMeta(data.data.meta ?? []);
+    }
+
+    getAllUsers();
+  }, []);
 
   const table = useReactTable({
     data,
@@ -130,7 +119,7 @@ export default function RolesPage() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <DataTableCustom columns={columns} filter={table} />
+        <DataTableCustom columns={columns} filter={table} meta={meta} />
       </div>
     </>
   );
