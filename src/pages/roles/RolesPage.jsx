@@ -30,35 +30,27 @@ import Heading from "@/./components/heading";
 
 const data = [
   {
-    id: "m5gr84i9",
-    amount: 316,
-    status: "success",
-    email: "ken99@yahoo.com",
+    id: "dasd",
+    icon: "1",
+    name: "admin",
+    description: "abcxyz",
+    status: "Activity"
   },
   {
-    id: "3u1reuv4",
-    amount: 242,
-    status: "success",
-    email: "Abe45@gmail.com",
+    id: "ads",
+    icon: "2",
+    name: "user",
+    description: "abcxyz",
+    status: "Activity"
   },
   {
-    id: "derv1ws0",
-    amount: 837,
-    status: "processing",
-    email: "Monserrat44@gmail.com",
+    id: "dvax",
+    icon: "3",
+    name: "tester",
+    description: "abcxyz",
+    status: "Activity"
   },
-  {
-    id: "5kma53ae",
-    amount: 874,
-    status: "success",
-    email: "Silas22@gmail.com",
-  },
-  {
-    id: "bhqecj4p",
-    amount: 721,
-    status: "failed",
-    email: "carmella@hotmail.com",
-  },
+ 
 ];
 
 export default function RolesPage() {

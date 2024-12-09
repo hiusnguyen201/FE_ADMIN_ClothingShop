@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export const USER_STATUS = {
   ACTIVE: "Active",
@@ -55,37 +56,22 @@ export const columns = [
     ),
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Email
-          <ArrowUpDown />
-        </Button>
-      );
-    },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    accessorKey: "icon",
+    header: "icon",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("icon")}</div>
+    ),
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"));
-
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("name")}</div>
+    ),
   },
   {
     id: "actions",
+    header: "Action",
     enableHiding: false,
     cell: ({ row }) => {
       const payment = row.original;
@@ -100,14 +86,16 @@ export const columns = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to={`/managerole/edit/${payment.id}`}>
+                Edit
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+                Delete
+            </DropdownMenuItem>
+
           </DropdownMenuContent>
         </DropdownMenu>
       );

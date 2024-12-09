@@ -3,6 +3,7 @@ import HomeLayout from "@/layouts/client/home.layout";
 import DashboardLayout from "@/layouts/server/dashboard.layout";
 import RolesPage from "@/pages/roles/RolesPage";
 import CreateRolePage from "@/pages/roles/CreateRolePage";
+import EditRolePage from "@/pages/roles/EditRolePage";
 
 export function Router() {
   return useRoutes([
@@ -21,6 +22,10 @@ export function Router() {
         {
           path: "/manageroles/create",
           element: <CreateRolePage/>,
+        },
+        {
+          path: "/managerole/edit/:id",
+          element: <EditRolePage/>,
         },
       ],
     },
