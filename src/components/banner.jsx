@@ -5,10 +5,12 @@ import {
   CarouselContent,
   CarouselNext,
   CarouselPrevious,
+  CarouselItem,
 } from "@/components/ui/carousel";
 import { LazyImage } from "./lazy-image";
 import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 const data = [
   "https://media3.coolmate.me/cdn-cgi/image/width=1920,quality=90,format=auto/uploads/December2024/Hero_Banner_-_Desktop_LDDD.jpg",
@@ -16,8 +18,10 @@ const data = [
   "https://media3.coolmate.me/cdn-cgi/image/width=1920,quality=90,format=auto/uploads/November2024/Hero_Banner_-_Desktop_2_KW.jpg",
 ];
 
-export function Banner() {
-  const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
+export function Banner({ className }) {
+  const plugin = useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  );
 
   return (
     <Carousel
@@ -25,17 +29,22 @@ export function Banner() {
         loop: true,
       }}
       plugins={[plugin.current]}
-      className="w-full relative"
+      className={cn("w-full relative", className)}
     >
-      <Link to="/collections">
-        <CarouselContent>
-          {data.map((item) => (
-            <LazyImage className="w-[100vw]" src={item} />
+      <Link to="/collections" className="block h-full">
+        <CarouselContent className="h-full w-full m-0">
+          {data.map((item, index) => (
+            <CarouselItem key={index} className="p-0 relative">
+              <LazyImage
+                className="h-full w-full object-cover"
+                src={item}
+              />
+            </CarouselItem>
           ))}
         </CarouselContent>
       </Link>
-      <CarouselPrevious className="absolute left-0 px-12 h-full bg-[transparent] hover:bg-[transparent] hover:text-[#fff] hover:opacity-60 text-[#fff] border-none rounded-none" />
-      <CarouselNext className="absolute right-0 px-12 h-full bg-[transparent] hover:bg-[transparent] hover:text-[#fff] hover:opacity-60 text-[#fff] border-none rounded-none" />
+      <CarouselPrevious className="absolute z-10 left-0 px-12 py-24 bg-[transparent] hover:bg-[transparent] hover:text-[#fff] hover:opacity-60 text-[#fff] border-none rounded-none" />
+      <CarouselNext className="absolute z-10 right-0 px-12 py-24 bg-[transparent] hover:bg-[transparent] hover:text-[#fff] hover:opacity-60 text-[#fff] border-none rounded-none" />
     </Carousel>
   );
 }

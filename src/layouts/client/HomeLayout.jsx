@@ -6,11 +6,7 @@ export default function HomeLayout() {
   return (
     <div className="relative">
       <Header />
-      <main
-        style={{
-          marginTop: "calc(var(--header-height) - 1px)",
-        }}
-      >
+      <main className="mt-[var(--header-height)]">
         <Outlet />
       </main>
       <Footer />

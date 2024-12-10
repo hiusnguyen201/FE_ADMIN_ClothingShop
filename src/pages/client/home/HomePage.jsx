@@ -1,9 +1,11 @@
 import { Banner } from "@/components/banner";
+import { ProductSlides } from "@/components/product-slides";
 
 export default function HomePage() {
   return (
-    <div>
+    <section>
       <Banner />
-    </div>
+      <ProductSlides title="Sản phẩm thu đông" />
+    </section>
   );
 }
