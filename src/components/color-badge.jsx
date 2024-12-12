@@ -6,8 +6,6 @@ export function ColorBadge({
   color = "#000",
   disabled = false,
 }) {
-  console.log(color);
-
   return (
     <Badge
       variant="outline"

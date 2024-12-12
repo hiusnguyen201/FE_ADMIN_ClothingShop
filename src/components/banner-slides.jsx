@@ -18,7 +18,7 @@ const data = [
   "https://media3.coolmate.me/cdn-cgi/image/width=1920,quality=90,format=auto/uploads/November2024/Hero_Banner_-_Desktop_2_KW.jpg",
 ];
 
-export function Banner({ className }) {
+export function BannerSlides({ className }) {
   const plugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );

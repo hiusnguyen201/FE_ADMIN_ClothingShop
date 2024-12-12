@@ -14,7 +14,9 @@ export function ProductCard({ product, className }) {
     controls.start({
       y: 0,
       opacity: 1,
-      transition: { duration: 0.3 },
+      transition: {
+        duration: 0.3,
+      },
     });
   };
 
@@ -22,7 +24,9 @@ export function ProductCard({ product, className }) {
     controls.start({
       y: 12,
       opacity: 0,
-      transition: { duration: 0.3 },
+      transition: {
+        duration: 0.3,
+      },
     });
   };
 
@@ -50,7 +54,10 @@ export function ProductCard({ product, className }) {
         </Link>
         <motion.div
           animate={controls}
-          initial={{ y: 12, opacity: 0 }}
+          initial={{
+            y: 12,
+            opacity: 0,
+          }}
           style={{
             background:
               "linear-gradient(0deg, rgba(0, 0, 0, .1), rgba(0, 0, 0, .1)), hsla(0, 0%, 100%, .4)",
