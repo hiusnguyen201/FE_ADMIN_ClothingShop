@@ -24,6 +24,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import UploadImage from "@/components/UploadImage";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts } from "@/lib/slices/product.slice";
 
 const CreateRoleSchema = Yup.object().shape({
   icon: Yup.string().required("Icon is required"),
@@ -35,8 +37,10 @@ const CreateRoleSchema = Yup.object().shape({
   status: Yup.string().required("Status is required"),
 });
 
-export default function CreateRolePage() {
+export default function AddRolePage() {
   const { toast } = useToast();
+  const dispatch = useDispatch();
+  const {isLoading} = useSelector((item) => item.product);
 
   const formik = useFormik({
     initialValues: {
@@ -49,7 +53,7 @@ export default function CreateRolePage() {
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: (values) => {
-      console.log(values);
+      dispatch(getAllRoles());
     },
   });
 

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import * as productApi from "@/api/product.api";
+import * as roleApi from "@/api/role.api";
 
 const initialState = {
   isLoading: false,
@@ -10,8 +10,8 @@ const initialState = {
   meta: {},
 };
 
-const productSlice = createSlice({
-  name: "product",
+const roleSlice = createSlice({
+  name: "role",
   initialState,
   reducers: {
     startLoading: (state) => {
@@ -45,16 +45,12 @@ const productSlice = createSlice({
       state.error = null;
     },
     remove: (state, action) => {
-      state.deletedIds.push(action.payload._id);
       state.list = state.list.filter((item) => item._id !== action.payload._id);
-      state.isLoading = false;
-      state.error = null;
     },
   },
 });
 
-
-export default productSlice.reducer;
+export default roleSlice.reducer;
 
 export const {
   startLoading,
@@ -64,15 +60,42 @@ export const {
   create,
   update,
   remove,
-} = productSlice.actions;
+} = roleSlice.actions;
 
-export const getAllProducts =
+//get all
+export const getAllRoles =
   (filters = {}) =>
   async (dispatch) => {
     try {
       dispatch(startLoading());
-      const {data} = await productApi.getAllProducts(filters);
+      const { data } = await roleApi.getAllRoles(filters);
+
       dispatch(getAll(data || []));
+    } catch (err) {
+      dispatch(hasError(err?.response?.data || err));
+    }
+  };
+
+//edit
+export const getOneRoles =
+  (id) =>
+  async (dispatch) => {
+    try {
+      dispatch(startLoading());
+      const { data } = await roleApi.getOneRoles(id);
+      dispatch(getOne(data));
+    } catch (err) {
+      dispatch(hasError(err?.response?.data || err));
+    }
+  };
+
+export const postUpdateRoles =
+  (filters = {}) =>
+  async (dispatch) => {
+    try {
+      dispatch(startLoading());
+      const { data } = await roleApi.updateRole(filters);
+      dispatch(update(data));
     } catch (err) {
       dispatch(hasError(err?.response?.data || err));
     }

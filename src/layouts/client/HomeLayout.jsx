@@ -8,12 +8,6 @@ export default function HomeLayout() {
       <Header />
       <main className="mt-[var(--header-height)]">
         <p>asccsacsa</p>
-        <p>asccsacsa</p>
-        <p>asccsacsa</p>
-        <p>asccsacsa</p>
-        <p>asccsacsa</p>
-        <p>asccsacsa</p>
-        <p>asccsacsa</p>
         <Outlet />
       </main>
       <Footer />

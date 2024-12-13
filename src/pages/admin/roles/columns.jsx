@@ -9,20 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
-export const USER_STATUS = {
-  ACTIVE: "Active",
-  INACTIVE: "Inactive",
-  BANNED: "Banned",
-  DELETED: "Deleted",
-};
 
 export const ROLE_STATUS = {
   ACTIVE: "Active",
   INACTIVE: "Inactive",
-  DELETED: "Deleted",
 };
 
 export const columns = [
@@ -60,11 +52,7 @@ export const columns = [
     header: "icon",
     cell: ({ row }) => (
       <div className="capitalize">
-        <img
-          src={row.getValue("icon")}
-          alt="Preview"
-          className="w-8 h-8"
-        />
+        <img src={row.getValue("icon")} alt="Preview" className="w-8 h-8" />
       </div>
     ),
   },
@@ -76,14 +64,16 @@ export const columns = [
   {
     accessorKey: "description",
     header: "Description",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("description")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("description")}</div>
+    ),
   },
   {
     id: "actions",
     header: "Action",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original;
+      const role = row.original;
 
       return (
         <DropdownMenu>
@@ -96,9 +86,9 @@ export const columns = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Link to={`/managerole/edit/${payment.id}`}>Edit</Link>
-            </DropdownMenuItem>
+            <Link to={`/admin/roles/edit/${role.name}`}>
+              <DropdownMenuItem>Edit</DropdownMenuItem>
+            </Link>
             <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
