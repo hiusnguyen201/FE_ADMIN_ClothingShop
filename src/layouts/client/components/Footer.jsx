@@ -1,126 +1,95 @@
 import { Separator } from "@/components/ui/separator";
-import { Link } from "react-router-dom";
+import { FooterItem } from "./FooterItem";
 
 export default function Footer() {
   return (
     <footer className="footer-menu px-4 py-9">
-      <div className="w-1/5">
-        <p className="footer-menu_title">COOLCLUB</p>
-        <ul className="space-y-2">
-          <li>
-            <Link to="#">Đăng kí thành viên</Link>
-          </li>
-          <li>
-            <Link to="#">Ưu đãi & Đặc quyền</Link>
-          </li>
-        </ul>
-        <Separator className="my-4 bg-[transparent]" />
-        <p className="footer-menu_title">Tài liệu - Tuyển dụng</p>
-        <ul className="space-y-2">
-          <li>
-            <Link to="#">Tuyển dụng</Link>
-          </li>
-          <li>
-            <Link to="#">Đăng ký bản quyền</Link>
-          </li>
-        </ul>
-      </div>
-      <div className="w-1/5">
-        <p className="footer-menu_title">Chính sách</p>
-        <ul className="space-y-2">
-          <li>
-            <Link to="#">Chính sách đổi trả 60 ngày</Link>
-          </li>
-          <li>
-            <Link to="#">Chính sách khuyến mãi</Link>
-          </li>
-          <li>
-            <Link to="#">Chính sách bảo mật</Link>
-          </li>
-          <li>
-            <Link to="#">Chính sách giao hàng</Link>
-          </li>
-        </ul>
-        <Separator className="my-4 bg-[transparent]" />
-        <p className="footer-menu_title">Coolmate.me</p>
-        <ul className="space-y-2">
-          <li>
-            <Link to="#">Lịch sử thay đổi website</Link>
-          </li>
-        </ul>
-      </div>
-      <div className="w-1/5">
-        <p className="footer-menu_title">Chăm sóc khách hàng</p>
-        <ul className="space-y-2">
-          <li>
-            <Link to="#">Trải nghiệm mua sắm 100% hài lòng</Link>
-          </li>
-          <li>
-            <Link to="#">Hỏi đáp - FAQs</Link>
-          </li>
-        </ul>
-        <Separator className="my-4 bg-[transparent]" />
-        <p className="footer-menu_title">Kiến thức mặc đẹp</p>
-        <ul className="space-y-2">
-          <li>
-            <Link to="#">Hướng dẫn chọn size</Link>
-          </li>
-          <li>
-            <Link to="#">Blog</Link>
-          </li>
-        </ul>
-      </div>
-      <div className="w-1/5">
-        <p className="footer-menu_title">Về COOLMATE</p>
-        <ul className="space-y-2">
-          <li>
-            <Link to="#">Quy tắc ứng xử của Coolmate</Link>
-          </li>
-          <li>
-            <Link to="#">Coolmate 101</Link>
-          </li>
-          <li>
-            <Link to="#">DVKH xuất sắc</Link>
-          </li>
-          <li>
-            <Link to="#">Câu chuyện về Coolmate</Link>
-          </li>
-          <li>
-            <Link to="#">Nhà máy</Link>
-          </li>
-          <li>
-            <Link to="#">Care & Share</Link>
-          </li>
-          <li>
-            <Link to="#">Cam kết bền vững</Link>
-          </li>
-        </ul>
-      </div>
-      <div className="w-1/5">
-        <p className="footer-menu_title">Địa chỉ liên hệ</p>
-        <ul className="space-y-2">
-          <li>
-            <span className="underline">Văn phòng Hà Nội:</span> Tầng 3 Tòa
-            nhà BMM, KM2, Đường Phùng Hưng, Phường Phúc La, Quận Hà Đông,
-            TP Hà Nội
-          </li>
-          <li>
-            <span className="underline">Trung tâm vận hành Hà Nội:</span>{" "}
-            Lô C8, KCN Lại Yên, Xã Lại Yên, Huyện Hoài Đức, Thành phố Hà
-            Nội
-          </li>
-          <li>
-            <span className="underline">
-              Văn phòng và Trung tâm vận hành TP. HCM:
-            </span>{" "}
-            Lô C3, đường D2, KCN Cát Lái, Thạnh Mỹ Lợi, TP. Thủ Đức, TP. Hồ
-            Chí Minh.
-          </li>
-          <li>
-            <span className="underline">Trung tâm R&D:</span> T6-01, The
-            Manhattan Vinhomes Grand Park, Long Bình, TP. Thủ Đức
-          </li>
-        </ul>
+      <div className="max-w-screen-2xl w-full mx-auto">
+        <Separator className="lg:hidden my-5" />
+        <div className=" lg:flex space-y-3 lg:space-y-0">
+          <div className="lg:w-1/5 space-y-3">
+            <FooterItem
+              title="COOLCLUB"
+              items={[
+                { title: "Đăng kí thành viên" },
+                { title: "Ưu đãi & Đặc quyền" },
+              ]}
+            />
+            <FooterItem
+              title="Tài liệu - Tuyển dụng"
+              items={[
+                { title: "Tuyển dụng" },
+                { title: "Đăng ký bản quyền" },
+              ]}
+            />
+          </div>
+          <div className="lg:w-1/5 space-y-3">
+            <FooterItem
+              title="Chính sách"
+              items={[
+                { title: "Chính sách đổi trả 60 ngày" },
+                { title: "Chính sách khuyến mãi" },
+                { title: "Chính sách bảo mật" },
+                { title: "Chính sách giao hàng" },
+              ]}
+            />
+            <FooterItem
+              title="Coolmate.me"
+              items={[{ title: "Lịch sử thay đổi website" }]}
+            />
+          </div>
+          <div className="lg:w-1/5 space-y-3">
+            <FooterItem
+              title="Chăm sóc khách hàng"
+              items={[
+                { title: "Trải nghiệm mua sắm 100% hài lòng" },
+                { title: "Hỏi đáp - FAQs" },
+              ]}
+            />
+            <FooterItem
+              title="Kiến thức mặc đẹp"
+              items={[{ title: "Hướng dẫn chọn size" }, { title: "Blog" }]}
+            />
+          </div>
+          <div className="lg:w-1/5 space-y-3">
+            <FooterItem
+              title="Về COOLMATE"
+              items={[
+                { title: "Quy tắc ứng xử của Coolmate" },
+                { title: "Coolmate 101" },
+                { title: "DVKH xuất sắc" },
+                { title: "Câu chuyện về Coolmate" },
+                { title: "Nhà máy" },
+                { title: "Care & Share" },
+                { title: "Cam kết bền vững" },
+              ]}
+            />
+          </div>
+          <div className="lg:w-1/5 space-y-3">
+            <FooterItem
+              title="Địa chỉ liên hệ"
+              items={[
+                {
+                  title:
+                    "Văn phòng Hà Nội: Tầng 3 Tòa nhà BMM, KM2, Đường Phùng Hưng, Phường Phúc La, Quận Hà Đông, TP Hà Nội",
+                },
+                {
+                  title:
+                    "Trung tâm vận hành Hà Nội: Lô C8, KCN Lại Yên, Xã Lại Yên, Huyện Hoài Đức, Thành phố Hà Nội",
+                },
+                {
+                  title:
+                    "Văn phòng và Trung tâm vận hành TP. HCM: Lô C3, đường D2, KCN Cát Lái, Thạnh Mỹ Lợi, TP. Thủ Đức, TP. Hồ Chí Minh.",
+                },
+                {
+                  title:
+                    "Trung tâm R&D: T6-01, The Manhattan Vinhomes Grand Park, Long Bình, TP. Thủ Đức",
+                },
+              ]}
+            />
+          </div>
+        </div>
+        <Separator className="lg:hidden my-5" />
       </div>
     </footer>
   );
