@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import * as roleApi from "@/api/role.api";
 
 const initialState = {
-  isLoading: false,
+  isLoading: true,
   error: null,
   item: null,
   list: [],
@@ -77,26 +77,40 @@ export const getAllRoles =
   };
 
 //edit
-export const getOneRoles =
+export const getOneRoleById =
   (id) =>
   async (dispatch) => {
     try {
       dispatch(startLoading());
-      const { data } = await roleApi.getOneRoles(id);
+      const { data } = await roleApi.getOneRoleById(id);
       dispatch(getOne(data));
     } catch (err) {
       dispatch(hasError(err?.response?.data || err));
     }
   };
 
-export const postUpdateRoles =
-  (filters = {}) =>
+  export const updateRoleById =
+  (id, updatedData) =>
   async (dispatch) => {
     try {
       dispatch(startLoading());
-      const { data } = await roleApi.updateRole(filters);
+      const { data } = await roleApi.updateRoleById(id, updatedData);
       dispatch(update(data));
     } catch (err) {
       dispatch(hasError(err?.response?.data || err));
     }
   };
+
+  //create
+  export const createRole = (createData)=> async(dispatch)=>{
+    try {
+      dispatch(startLoading());
+      const { data } = await roleApi.createRole(createData);
+      console.log("create",createData);
+      
+      dispatch(create(data));
+    } catch (err) {
+      dispatch(hasError(err?.response?.data || err));
+
+    }
+  }

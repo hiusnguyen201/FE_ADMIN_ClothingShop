@@ -19,6 +19,7 @@ import HomePage from "@/pages/client/home/HomePage";
 import RolesPage from "@/pages/admin/roles/RolesPage";
 import HomeLayout from "@/layouts/client/HomeLayout";
 import AddRolePage from "@/pages/admin/roles/AddRolePage";
+import CheckRole from "@/middlewares/CheckRole";
 
 export function Router() {
   return useRoutes([
@@ -86,8 +87,8 @@ export function Router() {
           element: <AddRolePage />,
         },
         {
-          path: "roles/edit/:id",
-          element: <EditRolePage />,
+          path: "roles/edit/:name",
+          element: <CheckRole />,
         },
         {
           path: "permissions",

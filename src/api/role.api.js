@@ -6,11 +6,14 @@ export const getAllRoles = (filters) => {
   return apiInstance.get(PREFIX + `/get-roles?${new URLSearchParams(filters)}`);
 };
 
-export const getOneRoles = (id) => {
-  return apiInstance.get(PREFIX + `get-role-by-id/${id}`)
+export const getOneRoleById = (id) => {
+  return apiInstance.get(PREFIX + `/get-role-by-id/${id}`)
 };
 
-export const updateRole = (filters) => {
-  return apiInstance.patch(PREFIX + `update-role-by-id/${filters._id}`, role);
+export const updateRoleById = (id, updatedData) => {
+  return apiInstance.patch(PREFIX + `/update-role-by-id/${id}`, updatedData);
 };
 
+export const createRole = (data)=>{
+  return apiInstance.post(PREFIX + `/create-role`, data,{headers:{'Content-Type':'multipart/form-data'}})
+}

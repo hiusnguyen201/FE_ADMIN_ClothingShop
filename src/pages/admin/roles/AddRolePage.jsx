@@ -26,13 +26,14 @@ import {
 import UploadImage from "@/components/UploadImage";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllProducts } from "@/lib/slices/product.slice";
+import { createRole } from "@/lib/slices/role.slice";
 
 const CreateRoleSchema = Yup.object().shape({
   icon: Yup.string().required("Icon is required"),
   name: Yup.string()
     .required("Name is required")
     .min(2, "too short!")
-    .max(3, "too long!"),
+    .max(255, "too long!"),
   description: Yup.string().required("Description required"),
   status: Yup.string().required("Status is required"),
 });
@@ -42,41 +43,28 @@ export default function AddRolePage() {
   const dispatch = useDispatch();
   const {isLoading} = useSelector((item) => item.product);
 
+
   const formik = useFormik({
     initialValues: {
       icon: "",
       name: "",
       description: "",
       status: "",
+      permissions: ["6751aead482b468e0a350118"],
     },
     validationSchema: CreateRoleSchema,
     validateOnChange: true,
     validateOnBlur: true,
     onSubmit: (values) => {
-      dispatch(getAllRoles());
+      console.log(values);
+      
+      dispatch(createRole(values))
     },
   });
 
   const { setFieldValue, handleSubmit, touched, errors, getFieldProps } =
     formik;
 
-  async function CreateRole(username, email) {
-    console.log(username);
-
-    if (username && email) {
-      toast({
-        title: "Success!",
-        description: `Role created for ${username} with email ${email}.`,
-        variant: "success",
-      });
-    } else {
-      toast({
-        title: "Uh oh! Something went wrong.",
-        description: "Username and email are required.",
-        variant: "error",
-      });
-    }
-  }
 
   return (
     <>

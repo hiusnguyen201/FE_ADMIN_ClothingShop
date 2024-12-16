@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button";
 import Heading from "@/./components/heading";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllRoles } from "@/lib/slices/role.slice";
+import debounce from "debounce";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function RolesPage() {
   const dispatch = useDispatch();
@@ -31,11 +33,19 @@ export default function RolesPage() {
   const [page, setPage] = React.useState(1);
   const [itemPerPage, setItemPerPage] = React.useState("10");
   const [statusFilter, setStatusFilter] = React.useState(undefined);
+  const [keyword, setKeyWord] = React.useState("");
+
+  const getAllRolesDebounced = useDebouncedCallback(() => {
+    dispatch(getAllRoles({ page, itemPerPage, keyword:keyword.trim().replace(/\s\s+/g, ' ')  }));
+  }, 700);
 
   React.useEffect(() => {
-    // Gọi action để lấy danh sách roles
     dispatch(getAllRoles({ page, itemPerPage }));
   }, [dispatch, page, itemPerPage]);
+
+  React.useEffect(() => {
+    getAllRolesDebounced();
+  }, [keyword]);
 
   const table = useReactTable({
     data,
@@ -48,7 +58,6 @@ export default function RolesPage() {
       rowSelection,
     },
   });
-  console.log(statusFilter);
 
   return (
     <>
@@ -61,7 +70,14 @@ export default function RolesPage() {
           total={meta.totalItems}
         />
         <div className="sm:flex items-center py-4 space-y-2 gap-2">
-          <Input placeholder="Filter name..." className="max-w-sm mt-2" />
+          <Input
+            placeholder="Filter name..."
+            className="max-w-sm mt-2"
+            value={keyword}
+            onChange={(e) => {
+              setKeyWord(e.target.value);
+            }}
+          />
           <div className="flex gap-2">
             <Select
               value={statusFilter}

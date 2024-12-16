@@ -86,8 +86,8 @@ export const columns = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Link to={`/admin/roles/edit/${role.name}`}>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+            <Link to={`/admin/roles/edit/${role.name}`} state={{id:role._id}}>
+              <DropdownMenuItem>Edit: {role.name}</DropdownMenuItem>
             </Link>
             <DropdownMenuItem>Delete</DropdownMenuItem>
           </DropdownMenuContent>
