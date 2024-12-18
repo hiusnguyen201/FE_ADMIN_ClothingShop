@@ -101,13 +101,21 @@ export const getOneRoleById =
     }
   };
 
+  export const checkRoleName = (name) => async(dispatch)=>{
+    try {
+      dispatch(startLoading());
+      const { data } = await roleApi.updateRoleById(id, name);
+      dispatch(update(data));
+    } catch (err) {
+      dispatch(hasError(err?.response?.data || err));
+    }
+  };
+
   //create
   export const createRole = (createData)=> async(dispatch)=>{
     try {
       dispatch(startLoading());
       const { data } = await roleApi.createRole(createData);
-      console.log("create",createData);
-      
       dispatch(create(data));
     } catch (err) {
       dispatch(hasError(err?.response?.data || err));

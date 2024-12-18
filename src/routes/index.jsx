@@ -1,5 +1,4 @@
 import { useRoutes } from "react-router-dom";
-import EditRolePage from "@/pages/admin/roles/EditRolePage";
 import AdminLayout from "@/layouts/admin/AdminLayout";
 import DashboardPage from "@/pages/admin/dashboard/DashboardPage";
 import CustomersPage from "@/pages/admin/customers/CustomersPage";
