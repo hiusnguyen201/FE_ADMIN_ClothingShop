@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, XIcon } from "lucide-react";
 import SearchForm from "./SearchForm";
-import { ProductCard } from "@/components/product-card";
+import { ProductCard } from "@/components/product-slides/product-card";
 import { Fragment } from "react";
 
 const data = [1, 23, 4, 4];

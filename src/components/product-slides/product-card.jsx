@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 import { motion, useAnimation } from "motion/react";
 import { cn } from "@/lib/utils";
 import { LazyImage } from "@/components/lazy-image";
-import { ProductBadge } from "@/components/product-badge";
-import { ColorBadge } from "@/components/color-badge";
+import { ProductBadge } from "@/components/product-slides/product-badge";
+import { ColorBadge } from "@/components/product-slides/color-badge";
 import { Button } from "@/components/ui/button";
-import { SizeBadge } from "@/components/size-badge";
+import { SizeBadge } from "@/components/product-slides/size-badge";
 
 export function ProductCard({ product, className }) {
   const controls = useAnimation();

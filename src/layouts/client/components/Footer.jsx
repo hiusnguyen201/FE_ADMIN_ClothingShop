@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="max-w-screen-2xl w-full mx-auto">
         <Separator className="lg:hidden my-5" />
         <div className=" lg:flex space-y-3 lg:space-y-0">
-          <div className="lg:w-1/5 space-y-3">
+          <div className="lg:w-1/5 space-y-3 lg:space-y-8">
             <FooterItem
               title="COOLCLUB"
               items={[
@@ -23,7 +23,7 @@ export default function Footer() {
               ]}
             />
           </div>
-          <div className="lg:w-1/5 space-y-3">
+          <div className="lg:w-1/5 space-y-3 lg:space-y-8">
             <FooterItem
               title="Chính sách"
               items={[
@@ -38,7 +38,7 @@ export default function Footer() {
               items={[{ title: "Lịch sử thay đổi website" }]}
             />
           </div>
-          <div className="lg:w-1/5 space-y-3">
+          <div className="lg:w-1/5 space-y-3 lg:space-y-8">
             <FooterItem
               title="Chăm sóc khách hàng"
               items={[
@@ -51,7 +51,7 @@ export default function Footer() {
               items={[{ title: "Hướng dẫn chọn size" }, { title: "Blog" }]}
             />
           </div>
-          <div className="lg:w-1/5 space-y-3">
+          <div className="lg:w-1/5 space-y-3 lg:space-y-8">
             <FooterItem
               title="Về COOLMATE"
               items={[
@@ -65,7 +65,7 @@ export default function Footer() {
               ]}
             />
           </div>
-          <div className="lg:w-1/5 space-y-3">
+          <div className="lg:w-1/5 space-y-3 lg:space-y-8">
             <FooterItem
               title="Địa chỉ liên hệ"
               items={[

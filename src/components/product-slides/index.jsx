@@ -8,8 +8,8 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
-import { ProductCard } from "@/components/product-card";
-import { Button } from "./ui/button";
+import { ProductCard } from "@/components/product-slides/product-card";
+import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 export function ProductSlides({
@@ -22,7 +22,7 @@ export function ProductSlides({
   );
 
   return (
-    <section className="mt-16 px-4 2xl:px-16 flex flex-col items-center">
+    <section className="md:my-16 my-10 px-4 2xl:px-16 flex flex-col items-center">
       <div className="w-full">
         {/* Header Slide */}
         <div className="mb-2 flex items-center justify-between">
@@ -65,7 +65,7 @@ export function ProductSlides({
           </Carousel>
         </div>
         {/* More Btn */}
-        <div className="md:hidden block text-center mt-4 mb-8">
+        <div className="md:hidden block text-center mt-4 md:mb-8 mb-0">
           <Link to="#">
             <Button
               className="min-w-[100px] rounded-full"

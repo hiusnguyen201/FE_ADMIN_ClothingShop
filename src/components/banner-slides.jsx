@@ -12,13 +12,7 @@ import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-const data = [
-  "https://media3.coolmate.me/cdn-cgi/image/width=1920,quality=90,format=auto/uploads/December2024/Hero_Banner_-_Desktop_LDDD.jpg",
-  "https://media3.coolmate.me/cdn-cgi/image/width=1920,quality=90,format=auto/uploads/October2024/1920_x_788_hero_banner2.jpg",
-  "https://media3.coolmate.me/cdn-cgi/image/width=1920,quality=90,format=auto/uploads/November2024/Hero_Banner_-_Desktop_2_KW.jpg",
-];
-
-export function BannerSlides({ className }) {
+export function BannerSlides({ className, data }) {
   const plugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   );
