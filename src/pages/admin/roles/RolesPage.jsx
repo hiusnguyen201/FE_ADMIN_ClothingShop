@@ -36,7 +36,13 @@ export default function RolesPage() {
   const [keyword, setKeyWord] = React.useState("");
 
   const getAllRolesDebounced = useDebouncedCallback(() => {
-    dispatch(getAllRoles({ page, itemPerPage, keyword:keyword.trim().replace(/\s\s+/g, ' ')  }));
+    dispatch(
+      getAllRoles({
+        page,
+        itemPerPage,
+        keyword: keyword.trim().replace(/\s\s+/g, " "),
+      })
+    );
   }, 700);
 
   React.useEffect(() => {
@@ -67,7 +73,7 @@ export default function RolesPage() {
           link={"/admin/roles/add"}
           title={"Role"}
           titleBtnAdd={"Add Role"}
-          total={meta.totalItems}
+          total={meta.totalCount}
         />
         <div className="sm:flex items-center py-4 space-y-2 gap-2">
           <Input

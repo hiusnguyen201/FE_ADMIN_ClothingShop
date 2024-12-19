@@ -24,23 +24,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import UploadImage from "@/components/UploadImage";
-import { useDispatch, useSelector } from "react-redux";
-import { createRole } from "@/lib/slices/role.slice";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "@/lib/hooks";
+import { checkRoleName, createRole } from "@/lib/slices/role.slice";
 import { MultiSelect } from "@/components/MultiSelect";
 import { useNavigate } from "react-router-dom";
 
+const validateRoleName = async (name, dispatch) => {
+  const result = await dispatch(checkRoleName(name));
+  return result.payload;
+};
+
 const CreateRoleSchema = Yup.object().shape({
-  icon: Yup.string().required("Icon is required"),
   name: Yup.string()
     .required("Name is required")
     .min(3, "too short!")
-    .max(50, "too long!"),
-  description: Yup.string()
-    .min(3, "too short!")
-    .max(255, "too long!")
-    .required("Description is required"),
+    .max(50, "too long!")
+    .test("name", "Role name is exist", async function (value) {
+      if (!value) return true;
+      const isValid = await validateRoleName(
+        value,
+        this.options.context
+      );
+      console.log(this.options.context);
+      
+      return !isValid; 
+    }),
   status: Yup.string().required("Status is required"),
-  permissions: Yup.array().required("Permissions is required"),
+  description: Yup.string().required("Description is required"),
 });
 
 const ROLE_PERMISSIONS = [
@@ -52,9 +63,10 @@ const ROLE_PERMISSIONS = [
 
 export default function AddRolePage() {
   const { toast } = useToast();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { item: data, error, isLoading } = useSelector((state) => state.role);
+  const [isSubmitted, setIsSubmitted] = React.useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -66,36 +78,48 @@ export default function AddRolePage() {
     },
     validationSchema: CreateRoleSchema,
     validateOnChange: true,
-    validateOnBlur: true,
-    onSubmit: (values) => {
-      dispatch(createRole(values));
-      handleError(error);
+    validateOnBlur: false,
+    onSubmit: async (values) => {
+      const result = dispatch(checkRoleName(values.name)) === true;
+
+      // await dispatch(createRole(values));
+      setIsSubmitted(true);
     },
+    context: { dispatch },
   });
 
-  const handleError = (error) => {
-    if (error) {
-      // Nếu có lỗi (ví dụ: tên đã tồn tại), hiển thị thông báo lỗi
+  const {
+    setFieldValue,
+    handleSubmit,
+    touched,
+    errors,
+    getFieldProps,
+    resetForm,
+    setErrors,
+  } = formik;
+
+  React.useEffect(() => {
+    if (!isSubmitted) return;
+    if (isLoading) return;
+
+    if (error !== null) {
       toast({
         title: "Error!",
-        description: error.message || "An unexpected error occurred.",
+        description: "An unexpected error occurred.",
         variant: "destructive",
       });
-
-      // Cập nhật lỗi từ server vào các lỗi trường cụ thể nếu có
       formik.setErrors(error.fieldErrors || {});
     } else {
-      // Nếu không có lỗi, hiển thị thông báo thành công
       toast({
         title: "Success!",
         description: "Role created successfully.",
         variant: "success",
       });
+      resetForm();
+      navigate(-1);
     }
-  };
-
-  const { setFieldValue, handleSubmit, touched, errors, getFieldProps } =
-    formik;
+    console.log("isloading", isLoading, "err", error);
+  }, [isLoading]);
 
   return (
     <>

@@ -88,7 +88,8 @@ export default function DataTableCustom({
         <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
           <div className="flex w-full items-center justify-between">
             <div className="flex-1 text-sm font-small ">
-              Showing {meta.offSet+1} to {meta.offSet+10} of {meta.totalItems} entries
+              Showing {meta.offSet + 1} to {meta.offSet + 10} of{" "}
+              {meta.totalCount} entries
             </div>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
               <div className="flex items-center space-x-2">
@@ -122,7 +123,7 @@ export default function DataTableCustom({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                    onPageChange(1);
+                  onPageChange(1);
                 }}
                 disabled={!meta.isFirst}
               >
@@ -133,7 +134,7 @@ export default function DataTableCustom({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                    onPageChange(+meta.currentPage-1);
+                  onPageChange(+meta.currentPage - 1);
                 }}
                 disabled={!meta.isPrevious}
               >
@@ -144,7 +145,7 @@ export default function DataTableCustom({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                    onPageChange(+meta.currentPage+1);
+                  onPageChange(+meta.currentPage + 1);
                 }}
                 disabled={!meta.isNext}
               >
@@ -155,7 +156,7 @@ export default function DataTableCustom({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                    onPageChange(meta.totalPages);
+                  onPageChange(meta.totalPages);
                 }}
                 disabled={!meta.isLast}
               >
@@ -164,7 +165,6 @@ export default function DataTableCustom({
             </div>
           </div>
         </div>
-        
       </div>
     )
   );

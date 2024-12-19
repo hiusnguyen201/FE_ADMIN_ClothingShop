@@ -17,3 +17,7 @@ export const updateRoleById = (id, updatedData) => {
 export const createRole = (data)=>{
   return apiInstance.post(PREFIX + `/create-role`, data,{headers:{'Content-Type':'multipart/form-data'}})
 }
+
+export const checkRoleName = (name) =>{
+  return apiInstance.post(PREFIX + `/is-exist-role-name`,{name: name})
+}

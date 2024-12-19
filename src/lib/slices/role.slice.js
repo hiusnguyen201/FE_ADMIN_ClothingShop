@@ -22,7 +22,7 @@ const roleSlice = createSlice({
       state.isLoading = false;
     },
     getAll: (state, action) => {
-      state.list = action.payload.data;
+      state.list = action.payload.list;
       state.meta = action.payload.meta;
       state.isLoading = false;
       state.error = null;
@@ -69,56 +69,50 @@ export const getAllRoles =
     try {
       dispatch(startLoading());
       const { data } = await roleApi.getAllRoles(filters);
-
-      dispatch(getAll(data || []));
+      dispatch(getAll(data.data));
     } catch (err) {
       dispatch(hasError(err?.response?.data || err));
     }
   };
 
 //edit
-export const getOneRoleById =
-  (id) =>
-  async (dispatch) => {
-    try {
-      dispatch(startLoading());
-      const { data } = await roleApi.getOneRoleById(id);
-      dispatch(getOne(data));
-    } catch (err) {
-      dispatch(hasError(err?.response?.data || err));
-    }
-  };
-
-  export const updateRoleById =
-  (id, updatedData) =>
-  async (dispatch) => {
-    try {
-      dispatch(startLoading());
-      const { data } = await roleApi.updateRoleById(id, updatedData);
-      dispatch(update(data));
-    } catch (err) {
-      dispatch(hasError(err?.response?.data || err));
-    }
-  };
-
-  export const checkRoleName = (name) => async(dispatch)=>{
-    try {
-      dispatch(startLoading());
-      const { data } = await roleApi.updateRoleById(id, name);
-      dispatch(update(data));
-    } catch (err) {
-      dispatch(hasError(err?.response?.data || err));
-    }
-  };
-
-  //create
-  export const createRole = (createData)=> async(dispatch)=>{
-    try {
-      dispatch(startLoading());
-      const { data } = await roleApi.createRole(createData);
-      dispatch(create(data));
-    } catch (err) {
-      dispatch(hasError(err?.response?.data || err));
-
-    }
+export const getOneRoleById = (id) => async (dispatch) => {
+  try {
+    dispatch(startLoading());
+    const { data } = await roleApi.getOneRoleById(id);
+    dispatch(getOne(data));
+  } catch (err) {
+    dispatch(hasError(err?.response?.data || err));
   }
+};
+
+export const updateRoleById = (id, updatedData) => async (dispatch) => {
+  try {
+    dispatch(startLoading());
+    const { data } = await roleApi.updateRoleById(id, updatedData);
+    dispatch(update(data));
+  } catch (err) {
+    dispatch(hasError(err?.response?.data || err));
+  }
+};
+
+export const checkRoleName = (name) => async (dispatch) => {
+  try {
+    const { data } = await roleApi.checkRoleName(name);
+    return data; 
+  } catch (err) {
+    dispatch(hasError(err?.response?.data || err));
+  }
+};
+
+
+//create
+export const createRole = (createData) => async (dispatch) => {
+  try {
+    dispatch(startLoading());
+    const { data } = await roleApi.createRole(createData);
+    dispatch(create(data));
+  } catch (err) {
+    dispatch(hasError(err?.response?.data || err));
+  }
+};
