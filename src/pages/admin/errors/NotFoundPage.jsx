@@ -20,7 +20,7 @@ export default function NotFoundPage() {
         </p>
         <div className="mt-8 flex justify-center gap-2">
           <button
-            onClick={navigate(-1)}
+            onClick={()=>{navigate(-1)}}
             className="inline-flex items-center justify-center text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-10 rounded-md px-8"
           >
             Go back

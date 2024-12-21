@@ -20,13 +20,14 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import Heading from "@/./components/heading";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { getAllRoles } from "@/lib/slices/role.slice";
-import debounce from "debounce";
 import { useDebouncedCallback } from "use-debounce";
+import { useAppDispatch } from "@/lib/hooks";
+
 
 export default function RolesPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const { list: data, meta } = useSelector((state) => state.role);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
@@ -44,6 +45,7 @@ export default function RolesPage() {
       })
     );
   }, 700);
+  
 
   React.useEffect(() => {
     dispatch(getAllRoles({ page, itemPerPage }));

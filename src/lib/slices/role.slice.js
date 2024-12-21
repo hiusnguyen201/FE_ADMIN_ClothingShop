@@ -45,7 +45,10 @@ const roleSlice = createSlice({
       state.error = null;
     },
     remove: (state, action) => {
-      state.list = state.list.filter((item) => item._id !== action.payload._id);
+      state.list = state.list.filter((item) => item._id !== action.payload);
+      state.deletedIds.push(action.payload);
+      state.isLoading = false;
+      state.error = null;
     },
   },
 });
@@ -96,22 +99,24 @@ export const updateRoleById = (id, updatedData) => async (dispatch) => {
   }
 };
 
-export const checkRoleName = (name) => async (dispatch) => {
-  try {
-    const { data } = await roleApi.checkRoleName(name);
-    return data; 
-  } catch (err) {
-    dispatch(hasError(err?.response?.data || err));
-  }
-};
-
-
 //create
 export const createRole = (createData) => async (dispatch) => {
   try {
     dispatch(startLoading());
     const { data } = await roleApi.createRole(createData);
     dispatch(create(data));
+    dispatch(hasError(null));
+  } catch (err) {
+    dispatch(hasError(err?.response?.data || err));
+  }
+};
+
+//delete
+export const deleteRoleById = (id) => async (dispatch) => {
+  try {
+    dispatch(startLoading());
+    await roleApi.deleteRoleById(id);
+    dispatch(remove(id)); 
   } catch (err) {
     dispatch(hasError(err?.response?.data || err));
   }

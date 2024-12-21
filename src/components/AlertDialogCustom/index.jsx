@@ -10,7 +10,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeftFromLine } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function AlertDialogCustom({alertlink, alerttrigger,alerttitle,alertdescription}) {

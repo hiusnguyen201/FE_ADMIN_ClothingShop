@@ -21,3 +21,7 @@ export const createRole = (data)=>{
 export const checkRoleName = (name) =>{
   return apiInstance.post(PREFIX + `/is-exist-role-name`,{name: name})
 }
+
+export const deleteRoleById = (id) => {
+  return apiInstance.delete(PREFIX + `/remove-role-by-id/${id}`)
+}

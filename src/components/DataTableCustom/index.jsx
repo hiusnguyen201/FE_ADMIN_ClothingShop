@@ -32,6 +32,7 @@ export default function DataTableCustom({
   onPageChange,
   onItemPerPageChange,
 }) {
+  
   return (
     filter && (
       <div className="w-full">
@@ -115,7 +116,7 @@ export default function DataTableCustom({
           </div>
           <div className="flex w-full items-center justify-between gap-2 sm:justify-end">
             <div className="flex w-[150px] items-center justify-center text-sm font-small">
-              Page {meta.currentPage} of {meta.totalPages}
+              Page {meta.page} of {meta.totalPage}
             </div>
             <div className="flex items-center space-x-2">
               <Button
@@ -134,7 +135,7 @@ export default function DataTableCustom({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  onPageChange(+meta.currentPage - 1);
+                  onPageChange(+meta.page - 1);
                 }}
                 disabled={!meta.isPrevious}
               >
@@ -145,7 +146,7 @@ export default function DataTableCustom({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  onPageChange(+meta.currentPage + 1);
+                  onPageChange(+meta.page + 1);
                 }}
                 disabled={!meta.isNext}
               >
@@ -156,7 +157,7 @@ export default function DataTableCustom({
                 variant="outline"
                 size="sm"
                 onClick={() => {
-                  onPageChange(meta.totalPages);
+                  onPageChange(meta.totalPage);
                 }}
                 disabled={!meta.isLast}
               >

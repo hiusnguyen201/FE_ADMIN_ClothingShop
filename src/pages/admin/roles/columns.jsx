@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import {
@@ -10,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-
+import DeleteRoleDialog from "@/middlewares/DeleteRole";
 
 export const ROLE_STATUS = {
   ACTIVE: "Active",
@@ -49,7 +50,7 @@ export const columns = [
   },
   {
     accessorKey: "icon",
-    header: "icon",
+    header: "Icon",
     cell: ({ row }) => (
       <div className="capitalize">
         <img src={row.getValue("icon")} alt="Preview" className="w-8 h-8" />
@@ -74,24 +75,44 @@ export const columns = [
     enableHiding: false,
     cell: ({ row }) => {
       const role = row.original;
+      const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+      const handleDeleteClick = () => {
+        setIsDialogOpen(true); 
+      };
+
+      const handleCloseDialog = () => {
+        setIsDialogOpen(false); 
+      };
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <Link to={`/admin/roles/edit/${role.name}`} state={{id:role._id}}>
-              <DropdownMenuItem>Edit: {role.name}</DropdownMenuItem>
-            </Link>
-            <DropdownMenuItem>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <Link
+                to={`/admin/roles/edit/${role.name}`}
+                state={{ id: role._id }}
+              >
+                <DropdownMenuItem>Edit: {role.name}</DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem onClick={handleDeleteClick}>
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {isDialogOpen && (
+            <DeleteRoleDialog role={role} onClose={handleCloseDialog} />
+          )}
+        </div>
       );
     },
   },

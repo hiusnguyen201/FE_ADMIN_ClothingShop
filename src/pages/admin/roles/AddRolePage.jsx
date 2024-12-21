@@ -26,32 +26,21 @@ import {
 import UploadImage from "@/components/UploadImage";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/lib/hooks";
-import { checkRoleName, createRole } from "@/lib/slices/role.slice";
+import { createRole } from "@/lib/slices/role.slice";
 import { MultiSelect } from "@/components/MultiSelect";
 import { useNavigate } from "react-router-dom";
-
-const validateRoleName = async (name, dispatch) => {
-  const result = await dispatch(checkRoleName(name));
-  return result.payload;
-};
+import { checkRoleName } from "@/api/role.api";
+import { useDebouncedCallback } from "use-debounce";
 
 const CreateRoleSchema = Yup.object().shape({
+  icon: Yup.string(),
   name: Yup.string()
     .required("Name is required")
     .min(3, "too short!")
-    .max(50, "too long!")
-    .test("name", "Role name is exist", async function (value) {
-      if (!value) return true;
-      const isValid = await validateRoleName(
-        value,
-        this.options.context
-      );
-      console.log(this.options.context);
-      
-      return !isValid; 
-    }),
+    .max(50, "too long!"),
+  description: Yup.string(),
   status: Yup.string().required("Status is required"),
-  description: Yup.string().required("Description is required"),
+  permissions: Yup.array(),
 });
 
 const ROLE_PERMISSIONS = [
@@ -65,8 +54,7 @@ export default function AddRolePage() {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { item: data, error, isLoading } = useSelector((state) => state.role);
-  const [isSubmitted, setIsSubmitted] = React.useState(false);
+  const { error, isLoading } = useSelector((state) => state.role);
 
   const formik = useFormik({
     initialValues: {
@@ -80,14 +68,19 @@ export default function AddRolePage() {
     validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      const result = dispatch(checkRoleName(values.name)) === true;
-
-      // await dispatch(createRole(values));
-      setIsSubmitted(true);
+      const filteredValues = Object.fromEntries(
+        Object.entries(values).filter(
+          ([_, value]) =>
+            value !== "" &&
+            value !== null &&
+            value !== undefined &&
+            !(Array.isArray(value) && value.length === 0)
+        )
+      );
+        await dispatch(createRole(filteredValues));   
     },
-    context: { dispatch },
   });
-
+  
   const {
     setFieldValue,
     handleSubmit,
@@ -95,21 +88,23 @@ export default function AddRolePage() {
     errors,
     getFieldProps,
     resetForm,
-    setErrors,
+    setFieldTouched,
+    isSubmitting,
+    setFieldError,
   } = formik;
 
   React.useEffect(() => {
-    if (!isSubmitted) return;
-    if (isLoading) return;
+    if (isLoading || !isSubmitting) return;
 
     if (error !== null) {
       toast({
         title: "Error!",
-        description: "An unexpected error occurred.",
+        description: "Created role unsuccessfully",
         variant: "destructive",
       });
-      formik.setErrors(error.fieldErrors || {});
-    } else {
+      setFieldError("name", error.message);
+    }
+    if (error === null) {
       toast({
         title: "Success!",
         description: "Role created successfully.",
@@ -118,16 +113,26 @@ export default function AddRolePage() {
       resetForm();
       navigate(-1);
     }
-    console.log("isloading", isLoading, "err", error);
   }, [isLoading]);
+
+  const checkRoleNameDebounce = useDebouncedCallback(async () => {
+    const response = await checkRoleName(formik.values.name);
+    if (response.data.data === true) {
+      setFieldError("name", "Name already exist!");
+    }
+  }, 400);
+
+  React.useEffect(() => {
+    checkRoleNameDebounce();
+  }, [formik.values.name]);
 
   return (
     <>
       <div className="flex justify-center h-full p-4 md:px-6">
         <Card className="w-full max-w-5xl">
           <CardHeader>
-            <CardTitle>Update Roles</CardTitle>
-            <CardDescription>Update role for user</CardDescription>
+            <CardTitle>Add Roles</CardTitle>
+            <CardDescription>Add role for user</CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent>
@@ -153,6 +158,10 @@ export default function AddRolePage() {
                       name="name"
                       type="text"
                       {...getFieldProps("name")}
+                      onChange={(e) => {
+                        setFieldTouched("name", true);
+                        setFieldValue("name", e.target.value);
+                      }}
                     />
                     {touched.name && errors.name && (
                       <p className="text-red-500 text-sm">{errors.name}</p>
@@ -218,7 +227,7 @@ export default function AddRolePage() {
             </CardContent>
             <CardFooter className="flex justify-between">
               <AlertDialogCustom
-                alertlink="/manageroles"
+                alertlink="/admin/roles"
                 alerttrigger="Back"
                 alerttitle="Back to previous page"
                 alertdescription="All you do will be lost"
