@@ -8,6 +8,8 @@ import VouchersPage from "@/pages/admin/vouchers/VouchersPage";
 import OrdersPage from "@/pages/admin/orders/OrdersPage";
 import ReviewsPage from "@/pages/admin/reviews/ReviewsPage";
 import UsersPage from "@/pages/admin/users/UsersPage";
+import AddUser from "@/pages/admin/users/AddUser";
+import UpdateUser from "@/pages/admin/users/UpdateUser";
 import RolesPage from "@/pages/admin/roles/RolesPage";
 import PermissionsPage from "@/pages/admin/permissions/PermissionsPage";
 import SettingsPage from "@/pages/admin/settings/SettingsPage";
@@ -73,6 +75,14 @@ export function Router() {
         {
           path: "users",
           element: <UsersPage />,
+        },
+        {
+          path: "users/add-user", 
+          element: <AddUser />, 
+        },
+        {
+          path: "users/update-user/", 
+          element: <UpdateUser />, 
         },
         {
           path: "roles",
