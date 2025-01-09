@@ -43,9 +43,7 @@ const productSlice = createSlice({
       state.error = null;
     },
     remove: (state, action) => {
-      state.list = state.list.filter(
-        (item) => item._id !== action.payload._id
-      );
+      state.list = state.list.filter((item) => item._id !== action.payload._id);
     },
   },
 });

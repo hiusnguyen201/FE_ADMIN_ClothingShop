@@ -1,4 +1,4 @@
-import apiInstance from "@/lib/api";
+import apiInstance from "@/api";
 
 const PREFIX = "/products";
 

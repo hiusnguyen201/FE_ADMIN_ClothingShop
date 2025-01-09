@@ -1,3 +1,3 @@
 export function CreateCategoryPage() {
-  return <>Create page</>;
+  return <>Create category page</>;
 }

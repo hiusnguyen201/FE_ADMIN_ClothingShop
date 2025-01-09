@@ -1,6 +1,5 @@
 import {
   Collapsible,
-  CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { ChevronRight } from "lucide-react";
@@ -32,12 +31,12 @@ export function FooterItem({ className, title, items }) {
     >
       <div className="group/menu-item relative">
         <div
-          className="flex items-center justify-between text-[#fff] footer-menu_title"
+          className="flex items-center justify-between text-[#fff] footer-menu_title cursor-pointer lg:cursor-auto"
           onClick={handleOpenContent}
         >
           <p className="uppercase font-bold">{title}</p>
           {!isLaptop && (
-            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+            <ChevronRight className="transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
           )}
         </div>
         <CollapsibleContent>
@@ -47,7 +46,10 @@ export function FooterItem({ className, title, items }) {
               items.map((item) => {
                 return (
                   <li className="footer-menu_item" key={item.title}>
-                    <Link className="block" to={item.to}>
+                    <Link
+                      className="hover:text-[yellow] duration-200"
+                      to={item.to}
+                    >
                       {item.title}
                     </Link>
                   </li>

@@ -17,6 +17,10 @@ import {
   CategoriesPage,
 } from "@/pages/admin/categories";
 import HomePage from "@/pages/client/home/HomePage";
+import AuthLayout from "@/layouts/auth/AuthLayot";
+import LoginPage from "@/pages/auth/LoginPage";
+import RegisterPage from "@/pages/auth/RegisterPage";
+import VerifyOtpPage from "@/pages/auth/VerifyOtpPage";
 
 export function Router() {
   return useRoutes([
@@ -85,6 +89,24 @@ export function Router() {
         {
           path: "settings",
           element: <SettingsPage />,
+        },
+      ],
+    },
+    {
+      path: "/auth",
+      element: <AuthLayout />,
+      children: [
+        {
+          path: "register",
+          element: <RegisterPage />,
+        },
+        {
+          path: "login",
+          element: <LoginPage />,
+        },
+        {
+          path: "verify-otp",
+          element: <VerifyOtpPage />,
         },
       ],
     },

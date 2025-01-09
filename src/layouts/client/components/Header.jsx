@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SearchDialog from "./SearchDialog";
+import { LazyImage } from "@/components/lazy-image";
 
 const data = {
   nav: [
@@ -36,10 +37,10 @@ export default function Header() {
             to="/"
             className="flex w-full items-center justify-center md:w-auto lg:mr-6"
           >
-            <SquareIcon />
+            <LazyImage src="https://www.coolmate.me/images/logo-coolmate-new.svg?v=1" />
           </Link>
         </div>
-        <div className="md:w-3/3 order-1 md:order-2">
+        <div className="md:w-3/3 order-1 md:order-2 h-full">
           {/* Mobile */}
           <div className="md:hidden flex gap-1">
             <Button variant="ghost" size="icon">
@@ -52,15 +53,18 @@ export default function Header() {
           {/* Navbar */}
           <div className="hidden justify-center md:flex h-full">
             {data.nav.map((item) => (
-              <Link
-                key={item.name}
-                href="#"
-                className="text-xs lg:text-sm font-[500]"
+              <Button
+                variant="ghost"
+                className="rounded-none h-full cursor-default"
               >
-                <Button variant="ghost" className="rounded-none">
+                <Link
+                  key={item.name}
+                  href="#"
+                  className="text-xs lg:text-sm font-[500]"
+                >
                   {item.name}
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             ))}
           </div>
         </div>
