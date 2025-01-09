@@ -24,36 +24,53 @@ import { useSelector } from "react-redux";
 import { getAllRoles } from "@/lib/slices/role.slice";
 import { useDebouncedCallback } from "use-debounce";
 import { useAppDispatch } from "@/lib/hooks";
-
+import { useToast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 
 export default function RolesPage() {
   const dispatch = useAppDispatch();
-  const { list: data, meta } = useSelector((state) => state.role);
+  const {
+    list: data,
+    meta,
+    isLoading,
+    error,
+  } = useSelector((state) => state.role);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [page, setPage] = React.useState(1);
-  const [itemPerPage, setItemPerPage] = React.useState("10");
   const [statusFilter, setStatusFilter] = React.useState(undefined);
-  const [keyword, setKeyWord] = React.useState("");
+  const { toast } = useToast();
+  const [filter, setFilter] = React.useState({
+    page: 1,
+    limit: 10,
+    keyword: "",
+  });
+  const [searchParams, setSearchParams] = useSearchParams(filter);
+  const prevKeyword = React.useRef(filter.keyword);
 
   const getAllRolesDebounced = useDebouncedCallback(() => {
-    dispatch(
-      getAllRoles({
-        page,
-        itemPerPage,
-        keyword: keyword.trim().replace(/\s\s+/g, " "),
-      })
-    );
+    dispatch(getAllRoles(filter));
   }, 700);
-  
 
   React.useEffect(() => {
-    dispatch(getAllRoles({ page, itemPerPage }));
-  }, [dispatch, page, itemPerPage]);
+    if (error === null) return;
+    if (error.status === 429) {
+      toast({
+        title: "Error!",
+        description: "Too many requests please try again later",
+        variant: "destructive",
+      });
+    }
+  }, [error]);
 
   React.useEffect(() => {
-    getAllRolesDebounced();
-  }, [keyword]);
+    setSearchParams(filter);
+    if (prevKeyword.current !== filter.keyword) {
+      getAllRolesDebounced(filter);
+      prevKeyword.current = filter.keyword;
+      return;
+    }
+    dispatch(getAllRoles(filter));
+  }, [dispatch, filter]);
 
   const table = useReactTable({
     data,
@@ -81,9 +98,10 @@ export default function RolesPage() {
           <Input
             placeholder="Filter name..."
             className="max-w-sm mt-2"
-            value={keyword}
+            value={filter.keyword}
             onChange={(e) => {
-              setKeyWord(e.target.value);
+              prevKeyword.current = filter.keyword;
+              setFilter((prev) => ({ ...prev, keyword: e.target.value }));
             }}
           />
           <div className="flex gap-2">
@@ -136,10 +154,11 @@ export default function RolesPage() {
         </div>
         <DataTableCustom
           columns={columns}
-          filter={table}
+          table={table}
           meta={meta}
-          onPageChange={(page) => setPage(page)}
-          onItemPerPageChange={(itemPerPage) => setItemPerPage(itemPerPage)}
+          isLoading={isLoading}
+          onLimitChange={(limit) => setFilter((prev) => ({ ...prev, limit }))}
+          onPageChange={(page) => setFilter((prev) => ({ ...prev, page }))}
         />
       </div>
     </>

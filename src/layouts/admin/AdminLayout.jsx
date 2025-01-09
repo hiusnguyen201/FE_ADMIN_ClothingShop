@@ -19,7 +19,7 @@ export default function AdminLayout() {
       <SideBar />
       <SidebarInset>
         <Header />
-        <main className="flex flex-col h-full">
+        <main className="flex flex-col h-full w-full">
           <Outlet />
         </main>
       </SidebarInset>

@@ -19,19 +19,19 @@ export default function DeleteRoleDialog({ role, onClose }) {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
 
-
+  
   const handleDelete = async () => {
     try {
         await dispatch(deleteRoleById(role._id)); 
         onClose(); 
         toast({
             title: "Success!",
-            description: "Role created successfully.",
+            description: "Role deleted successfully.",
           });
     } catch (error) {
         toast({
             title: "Error!",
-            description: "Created role unsuccessfully",
+            description: "Delete role unsuccessfully",
             variant: "destructive",
           });
       
@@ -46,7 +46,8 @@ export default function DeleteRoleDialog({ role, onClose }) {
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Role</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to delete the role "{role.name}"?
+            {role.isActive ? ("This role is currently active and cannot be deleted."):(`Are you sure you want to delete the role: ${role.name}`)}
+            
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -54,6 +55,7 @@ export default function DeleteRoleDialog({ role, onClose }) {
           <AlertDialogAction
             onClick={handleDelete}
             className="bg-red-500 text-white border border-red-500 hover:bg-white hover:text-red-500 transition-colors"
+            disabled={role.isActive}
           >
             Confirm Delete
           </AlertDialogAction>

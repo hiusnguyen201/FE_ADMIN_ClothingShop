@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function Heading({title, total, description, titleBtnAdd, link}){
     return(
         <>
-        <div className="items-start justify-between sm:flex">
+        <div className="sm:flex  items-start justify-between ">
           <div>
             <h2 className="text-3xl font-bold tracking-tight">{title} ({total})</h2>
             <p className="text-sm text-muted-foreground">

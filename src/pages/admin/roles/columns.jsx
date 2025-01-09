@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import DeleteRoleDialog from "@/middlewares/DeleteRole";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const ROLE_STATUS = {
   ACTIVE: "Active",
@@ -42,11 +49,24 @@ export const columns = [
     enableHiding: false,
   },
   {
-    accessorKey: "status",
+    accessorKey: "isActive",
     header: "Status",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
-    ),
+    cell: ({ row }) => {
+      const isactive = row.getValue("isActive");
+      if (isactive === true) {
+        return (
+          <Badge variant="outline" className="bg-green-500 text-white">
+            Active
+          </Badge>
+        );
+      }
+      return (
+        <Badge variant="outline" className="bg-red-500 text-white">
+          Inactive
+        </Badge>
+      );
+    },
+    enableHiding: false,
   },
   {
     accessorKey: "icon",
@@ -60,13 +80,33 @@ export const columns = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    cell: ({ row }) => (
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger className="max-w-[100px] truncate overflow-hidden">
+            {row.getValue("name")}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.getValue("name")}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
   },
   {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("description")}</div>
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger className="max-w-[200px] truncate overflow-hidden">
+            {row.getValue("name")}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.getValue("name")}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     ),
   },
   {
@@ -78,16 +118,16 @@ export const columns = [
       const [isDialogOpen, setIsDialogOpen] = useState(false);
 
       const handleDeleteClick = () => {
-        setIsDialogOpen(true); 
+        setIsDialogOpen(true);
       };
 
       const handleCloseDialog = () => {
-        setIsDialogOpen(false); 
+        setIsDialogOpen(false);
       };
 
       return (
         <div>
-          <DropdownMenu>
+          <DropdownMenu >
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
@@ -101,9 +141,9 @@ export const columns = [
                 to={`/admin/roles/edit/${role.name}`}
                 state={{ id: role._id }}
               >
-                <DropdownMenuItem>Edit: {role.name}</DropdownMenuItem>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
               </Link>
-              <DropdownMenuItem onClick={handleDeleteClick}>
+              <DropdownMenuItem onClick={handleDeleteClick} >
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
