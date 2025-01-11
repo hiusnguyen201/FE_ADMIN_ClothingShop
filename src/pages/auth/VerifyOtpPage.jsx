@@ -1,87 +1,138 @@
 import { BasicButton } from "@/components/basic-button";
-import { useFormik } from "formik";
+import { Loader } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
+import { verifyOtpSchema } from "@/pages/auth/authShemas/verifyOtpSchema";
+import { verifyOtp } from "@/lib/slices/auth.slice";
+import { useToast } from "@/hooks/use-toast";
 
 export default function VerifyOtpPage() {
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { error, isLoading, isVerified } = useSelector((state) => state.auth);
+  const { toast } = useToast();
+  const [errorMessage, setErrorMessage] = useState("");
+  const {
+    user,
+    error,
+    isLoading,
+    isAuthenticated,
+    is2FactorRequired,
+    accessToken,
+  } = useSelector((state) => state.auth);
+
+  const emailUser = user?.email || "";
+  const typeUser = user?.type || "";
+  console.log(typeUser);
+  const formik = useFormik({
+    initialValues: {
+      otp: "",
+      email: emailUser,
+      type: typeUser,
+    },
+    validationSchema: verifyOtpSchema,
+    onSubmit: (values) => {
+      dispatch(
+        verifyOtp({
+          otp: values.otp,
+          email: values.email,
+        })
+      );
+    },
+  });
   const handleChange = (value, index) => {
-    const newOtp = [...otp];
-
-    if (value.length > 1) {
-      const pastedOtp = value.slice(0, 6).split("");
-      for (let i = 0; i < 6; i++) {
-        newOtp[i] = pastedOtp[i] || "";
-      }
-      setOtp(newOtp);
-
-      const lastFilledIndex = newOtp.findLastIndex((digit) => digit !== "");
-      const focusIndex = lastFilledIndex < 5 ? lastFilledIndex + 1 : 5;
-      inputRefs.current[focusIndex].focus();
-    } else {
-      newOtp[index] = value;
-      setOtp(newOtp);
-
-      if (value && index < 5) {
-        inputRefs.current[index + 1].focus();
-      }
+    const currentOtp = formik.values.otp.split("");
+    currentOtp[index] = value;
+    formik.setFieldValue("otp", currentOtp.join(""));
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
+
+  // Handle backspace navigation
   const handleKeyDown = (e, index) => {
-    if (e.key === "Backspace" && !otp[index] && index > 0) {
-      inputRefs.current[index - 1].focus();
+    if (e.key === "Backspace" && !formik.values.otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
     }
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const verifyOtp = otp.join("");
   };
   useEffect(() => {
-    if (otp.every((digit) => digit !== "")) {
-      handleSubmit(new Event("submit"));
+    if (!error) {
+      setErrorMessage(null);
+    } else {
+      switch (error.status) {
+        case 401:
+          setErrorMessage("otp does not fail or has expired");
+          break;
+        case 404:
+          setErrorMessage("User not found");
+          break;
+        default:
+          setErrorMessage("");
+          toast({
+            title: "Internal Server Error",
+            variant: "destructive",
+          });
+      }
     }
-  }, [otp]);
+  }, [error]);
+  useEffect(() => {
+    if (!user) return;
+    if (isAuthenticated && !is2FactorRequired && accessToken) {
+      if (formik.values.type === "Customer") {
+        navigate("/");
+      } else {
+        navigate("/admin/dashboard");
+      }
+    }
+  }, [user]);
   return (
     <div className="flex h-full items-center p-4 lg:p-8">
-      <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+      <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
         <div className="flex flex-col space-y-2 text-center">
           <h1 className="text-2xl font-semibold tracking-tight">
-            Verify Your Email
+            Welcome back
           </h1>
           <p className="text-sm text-muted-foreground">
-            Enter the 6-digit otp sent to your email address
+            Enter your email below to login your account
           </p>
         </div>
-        <form onSubmit={handleSubmit}>
-          <div className="flex space-x-2">
-            {otp.map((digit, index) => (
+        {errorMessage && (
+          <p className="text-white p-3 text-sm text-muted-foreground bg-red-500 rounded">
+            {errorMessage}
+          </p>
+        )}
+        <form onSubmit={formik.handleSubmit}>
+          <div className="flex space-x-2 px-2 pb-3">
+            {[...Array(6)].map((_, index) => (
               <input
                 key={index}
                 ref={(el) => (inputRefs.current[index] = el)}
                 type="text"
-                maxLength="6"
+                maxLength="1"
                 className="w-12 h-12 text-center text-lg border rounded focus:outline-none"
-                value={digit}
+                value={formik.values.otp[index] || ""}
                 onChange={(e) => handleChange(e.target.value, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
               />
             ))}
           </div>
+          {formik.errors.otp && (
+            <p className="text-red-500 text-sm text-muted-foreground">
+              {formik.errors.otp}
+            </p>
+          )}
+
+          <BasicButton
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 ml-auto w-full disabled:opacity-75"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? <Loader className="w-6 h-6 animate-spin" /> : "Login"}
+          </BasicButton>
         </form>
-        {error && (
-          <p className="text-red-500 text-sm text-muted-foreground">
-            {error?.message}
-          </p>
-        )}
-        <BasicButton
-          className="inline-flex items-center justify-center rounded-md text-sm font-medium bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 ml-auto w-full"
-          children="Verify Email"
-        />
+
         <span className="px-8 text-center text-sm text-muted-foreground">
           Don't have an account?&nbsp;
           <Link

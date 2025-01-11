@@ -7,20 +7,20 @@ import { Loader } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useFormik } from "formik";
 import { registerSchema } from "@/pages/auth/authShemas/registerSchema";
-import { register } from "@/lib/slices/auth.slice";
-import { useState } from "react";
+import { register, sendOtpVerifyEmail } from "@/lib/slices/auth.slice";
+import { useEffect, useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function RegisterPage() {
-  const { error, isLoading } = useSelector((state) => state.auth);
+  const { error, isLoading, isAuthenticated, is2FactorRequired, user } =
+    useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const onSubmit = async (values, actions) => {
-    dispatch(register(values));
-    navigate("/auth/login");
-    actions.resetForm();
-  };
+  const { toast } = useToast();
+
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -36,8 +36,41 @@ export default function RegisterPage() {
       phone: "",
     },
     validationSchema: registerSchema,
-    onSubmit,
+    validateOnChange: true,
+    validateOnBlur: false,
+    onSubmit: async (values) => {
+      dispatch(register(values));
+    },
   });
+  useEffect(() => {
+    if (!error) {
+      setErrorMessage(null);
+    } else {
+      switch (error.status) {
+        case 400:
+          setErrorMessage(
+            "Invalid registration information. Please check again and try again."
+          );
+          break;
+        case 409:
+          setErrorMessage("User already exist");
+          break;
+        default:
+          setErrorMessage("");
+          toast({
+            title: "Internal Server Error",
+            variant: "destructive",
+          });
+      }
+    }
+  }, [error]);
+  useEffect(() => {
+    if (!user) return;
+    if (!isAuthenticated && is2FactorRequired) {
+      dispatch(sendOtpVerifyEmail(user.email));
+      navigate("/auth/verify-otp");
+    }
+  }, [user]);
   return (
     <div className="flex h-full items-center p-4 lg:p-8">
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
@@ -49,13 +82,21 @@ export default function RegisterPage() {
             Enter your email below to create your account
           </p>
         </div>
+        {errorMessage && (
+          <p className="text-white p-3 text-sm text-muted-foreground bg-red-500 rounded">
+            {errorMessage}
+          </p>
+        )}
         <form onSubmit={formik.handleSubmit}>
           <InputAndLabel
             label="Name"
             id="name"
             type="text"
             placeholder="Enter your name"
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              formik.handleChange(e);
+              formik.setFieldTouched("name", true);
+            }}
             onBlur={formik.handleBlur}
             value={formik.values.name}
             className={
@@ -74,7 +115,10 @@ export default function RegisterPage() {
             id="email"
             type="email"
             placeholder="Enter your email"
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              formik.handleChange(e);
+              formik.setFieldTouched("email", true);
+            }}
             onBlur={formik.handleBlur}
             value={formik.values.email}
             className={
@@ -88,13 +132,17 @@ export default function RegisterPage() {
               {formik.errors.email}
             </p>
           )}
+
           <div className="relative">
             <InputAndLabel
               label="Password"
               id="password"
               type={showPassword ? "text" : "password"}
               placeholder="Enter your password"
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                formik.handleChange(e);
+                formik.setFieldTouched("password", true);
+              }}
               onBlur={formik.handleBlur}
               value={formik.values.password}
               className={
@@ -103,12 +151,17 @@ export default function RegisterPage() {
                   : "focus-visible:ring-1"
               }
             />
-            <button type="button" onClick={toggleShowPassword}>
-              {showPassword ? (
-                <FaEyeSlash className="absolute right-3 top-10 cursor-pointer text-xl " />
-              ) : (
-                <FaEye className="absolute right-3 top-10 cursor-pointer text-xl " />
-              )}
+            {formik.errors.password && formik.touched.password && (
+              <p className="text-red-500 text-sm text-muted-foreground">
+                {formik.errors.password}
+              </p>
+            )}
+            <button
+              className="absolute right-3 top-10 cursor-pointer text-xl "
+              type="button"
+              onClick={toggleShowPassword}
+            >
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
           <div className="relative">
@@ -117,12 +170,14 @@ export default function RegisterPage() {
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
               placeholder="Enter your confirm password"
-              onChange={formik.handleChange}
+              onChange={(e) => {
+                formik.handleChange(e);
+                formik.setFieldTouched("confirmPassword", true);
+              }}
               onBlur={formik.handleBlur}
               value={formik.values.confirmPassword}
               className={
-                formik.errors.confirmPassword &&
-                formik.touched.confirmPassword
+                formik.errors.confirmPassword && formik.touched.confirmPassword
                   ? "border-red-500 border-2"
                   : "focus-visible:ring-1"
               }
@@ -133,12 +188,12 @@ export default function RegisterPage() {
                   {formik.errors.confirmPassword}
                 </p>
               )}
-            <button type="button" onClick={toggleShowConfirmPassword}>
-              {showConfirmPassword ? (
-                <FaEyeSlash className="absolute right-3 top-10 cursor-pointer text-xl " />
-              ) : (
-                <FaEye className="absolute right-3 top-10 cursor-pointer text-xl " />
-              )}
+            <button
+              type="button"
+              className="absolute right-3 top-10 cursor-pointer text-xl "
+              onClick={toggleShowConfirmPassword}
+            >
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
             </button>
           </div>
 
@@ -147,7 +202,10 @@ export default function RegisterPage() {
             id="phone"
             type="text"
             placeholder="Enter your phone number"
-            onChange={formik.handleChange}
+            onChange={(e) => {
+              formik.handleChange(e);
+              formik.setFieldTouched("phone", true);
+            }}
             onBlur={formik.handleBlur}
             value={formik.values.phone}
             className={

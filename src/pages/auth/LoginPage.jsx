@@ -5,7 +5,7 @@ import { FaFacebook, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Loader } from "lucide-react";
-import { login } from "@/lib/slices/auth.slice";
+import { login, sendOtpVerifyEmail } from "@/lib/slices/auth.slice";
 import { useFormik } from "formik";
 import { loginSchema } from "@/pages/auth/authShemas/loginSchema";
 import { useEffect, useState } from "react";
@@ -23,7 +23,6 @@ export default function LoginPage() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -36,7 +35,6 @@ export default function LoginPage() {
       dispatch(login(values));
     },
   });
-
   useEffect(() => {
     if (!error) {
       setErrorMessage(null);
@@ -54,13 +52,18 @@ export default function LoginPage() {
       }
     }
   }, [error]);
-
   useEffect(() => {
     if (!user) return;
+    console.log(user.email);
     if (!isAuthenticated && is2FactorRequired) {
+      dispatch(sendOtpVerifyEmail(user.email));
       navigate("/auth/verify-otp");
     } else if (isAuthenticated && !is2FactorRequired) {
-      navigate("/admin/dashboard");
+      if (user.type === "Customer") {
+        navigate("/");
+      } else {
+        navigate("/admin/dashboard");
+      }
     }
   }, [user]);
 
@@ -147,11 +150,7 @@ export default function LoginPage() {
             type="submit"
             disabled={isLoading}
           >
-            {isLoading ? (
-              <Loader className="w-6 h-6 animate-spin" />
-            ) : (
-              "Login"
-            )}
+            {isLoading ? <Loader className="w-6 h-6 animate-spin" /> : "Login"}
           </BasicButton>
         </form>
         <span className="px-8 text-center text-sm text-muted-foreground">
