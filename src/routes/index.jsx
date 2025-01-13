@@ -21,6 +21,9 @@ import AuthLayout from "@/layouts/auth/AuthLayot";
 import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import VerifyOtpPage from "@/pages/auth/VerifyOtpPage";
+import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
+import SendForgotPasswordPage from "@/pages/auth/SendForgotPasswordPage";
+import ResetPasswordPage from "@/pages/auth/ResetPasswordPage";
 
 export function Router() {
   return useRoutes([
@@ -107,6 +110,18 @@ export function Router() {
         {
           path: "verify-otp",
           element: <VerifyOtpPage />,
+        },
+        {
+          path: "forgot-password",
+          element: <ForgotPasswordPage />,
+        },
+        {
+          path: "reset-password",
+          element: <ResetPasswordPage />,
+        },
+        {
+          path: "send-forgot-password-success",
+          element: <SendForgotPasswordPage />,
         },
       ],
     },

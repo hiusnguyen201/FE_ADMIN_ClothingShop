@@ -54,7 +54,6 @@ export default function LoginPage() {
   }, [error]);
   useEffect(() => {
     if (!user) return;
-    console.log(user.email);
     if (!isAuthenticated && is2FactorRequired) {
       dispatch(sendOtpVerifyEmail(user.email));
       navigate("/auth/verify-otp");

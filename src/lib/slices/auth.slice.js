@@ -13,43 +13,6 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  // reducers: {
-  //   startLoadingAction: (state) => {
-  //     state.isLoading = true;
-  //   },
-  //   hasErrorAction: (state, action) => {
-  //     state.error = action.payload;
-  //     state.isLoading = false;
-  //     state.user = null;
-  //     state.accessToken = null;
-  //     state.isAuthenticated = false;
-  //     state.is2FactorRequired = false;
-  //   },
-  //   registerAction: (state, action) => {
-  //     state.isLoading = false;
-  //     state.user = action.payload;
-  //     state.error = null;
-  //   },
-  //   loginAction: (state, action) => {
-  //     state.isLoading = false;
-  //     state.user = action.payload.user;
-  //     state.error = null;
-  //     state.accessToken = action.payload.accessToken;
-  //     state.isAuthenticated = action.payload.isAuthenticated;
-  //     state.is2FactorRequired = action.payload.is2FactorRequired;
-  //   },
-  //   verifyOtpAction: (state, action) => {
-  //     state.isLoading = false;
-  //     state.user = action.payload.user;
-  //     state.error = null;
-  //     state.accessToken = action.payload.accessToken;
-  //   },
-  //   logoutAction: (state) => {
-  //     state.user = null;
-  //     state.isAuthenticated = false;
-  //     state.error = null;
-  //   },
-  // },
   reducers: {
     logoutAction: (state) => {
       state.user = null;
@@ -112,7 +75,6 @@ const authSlice = createSlice({
       })
       .addCase(verifyOtp.fulfilled, (state, action) => {
         state.isLoading = false;
-        console.log(action.payload.data.user);
         state.user = action.payload.data.user;
         state.accessToken = action.payload.data.accessToken;
         state.isAuthenticated = action.payload.data.isAuthenticated;
@@ -126,6 +88,38 @@ const authSlice = createSlice({
         state.accessToken = null;
         state.isAuthenticated = false;
         state.is2FactorRequired = false;
+      })
+      //forgot-password
+      .addCase(forgotPassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(forgotPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.user = action.payload.data.user;
+        state.error = null;
+      })
+      .addCase(forgotPassword.rejected, (state, action) => {
+        state.error = action.payload;
+        state.isLoading = false;
+        state.user = null;
+      })
+
+      //verify-otp
+      .addCase(resetPassword.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(resetPassword.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.accessToken = action.payload.data.accessToken;
+        state.user = action.payload.data.user;
+        state.error = null;
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.error = action.payload;
+        state.isLoading = false;
+        state.user = null;
       });
   },
 });
@@ -177,6 +171,32 @@ export const verifyOtp = createAsyncThunk(
   async (payload, { rejectWithValue }) => {
     try {
       const { data } = await authApi.verifyOtpEmail(payload);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data || error);
+    }
+  }
+);
+
+export const forgotPassword = createAsyncThunk(
+  "auth/forgot-password",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await authApi.forgotPassword(payload);
+      localStorage.setItem("user", JSON.stringify(data.data.user));
+      return data;
+    } catch (error) {
+      return rejectWithValue(error?.response?.data || error);
+    }
+  }
+);
+
+export const resetPassword = createAsyncThunk(
+  "auth/reset-password",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const { data } = await authApi.forgotPassword(payload);
       localStorage.setItem("user", JSON.stringify(data.data.user));
       return data;
     } catch (error) {

@@ -29,3 +29,17 @@ export const verifyOtpEmail = ({ email, otp }) => {
     otp,
   });
 };
+
+export const forgotPassword = ({ email, callbackUrl }) => {
+  return apiInstance.post("/auth/forgot-password", {
+    email,
+    callbackUrl,
+  });
+};
+
+export const resetPassword = ({ password, confirmPassword }) => {
+  return apiInstance.post("/auth/reset-password", {
+    password,
+    confirmPassword,
+  });
+};
