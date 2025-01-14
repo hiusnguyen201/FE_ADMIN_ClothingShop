@@ -25,7 +25,6 @@ export default function VerifyOtpPage() {
 
   const emailUser = user?.email || "";
   const typeUser = user?.type || "";
-  console.log(typeUser);
   const formik = useFormik({
     initialValues: {
       otp: "",
@@ -39,7 +38,26 @@ export default function VerifyOtpPage() {
           otp: values.otp,
           email: values.email,
         })
-      );
+      ).then((resultAction) => {
+        if (verifyOtp.fulfilled.match(resultAction)) {
+          setErrorMessage(null);
+        } else {
+          switch (resultAction.payload.status) {
+            case 401:
+              setErrorMessage("otp does not fail or has expired");
+              break;
+            case 404:
+              setErrorMessage("User not found");
+              break;
+            default:
+              setErrorMessage("");
+              toast({
+                title: "Internal Server Error",
+                variant: "destructive",
+              });
+          }
+        }
+      });
     },
   });
   const handleChange = (value, index) => {
@@ -57,26 +75,7 @@ export default function VerifyOtpPage() {
       inputRefs.current[index - 1]?.focus();
     }
   };
-  useEffect(() => {
-    if (!error) {
-      setErrorMessage(null);
-    } else {
-      switch (error.status) {
-        case 401:
-          setErrorMessage("otp does not fail or has expired");
-          break;
-        case 404:
-          setErrorMessage("User not found");
-          break;
-        default:
-          setErrorMessage("");
-          toast({
-            title: "Internal Server Error",
-            variant: "destructive",
-          });
-      }
-    }
-  }, [error]);
+
   useEffect(() => {
     if (!user) return;
     if (isAuthenticated && !is2FactorRequired && accessToken) {

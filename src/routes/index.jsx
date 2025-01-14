@@ -22,7 +22,7 @@ import LoginPage from "@/pages/auth/LoginPage";
 import RegisterPage from "@/pages/auth/RegisterPage";
 import VerifyOtpPage from "@/pages/auth/VerifyOtpPage";
 import ForgotPasswordPage from "@/pages/auth/ForgotPasswordPage";
-import SendForgotPasswordPage from "@/pages/auth/SendForgotPasswordPage";
+import SendForgotPasswordSuccessPage from "@/pages/auth/SendForgotPasswordSuccessPage";
 import ResetPasswordPage from "@/pages/auth/ResetPasswordPage";
 
 export function Router() {
@@ -121,7 +121,7 @@ export function Router() {
         },
         {
           path: "send-forgot-password-success",
-          element: <SendForgotPasswordPage />,
+          element: <SendForgotPasswordSuccessPage />,
         },
       ],
     },

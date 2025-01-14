@@ -38,7 +38,9 @@ export const forgotPassword = ({ email, callbackUrl }) => {
 };
 
 export const resetPassword = ({ password, confirmPassword }) => {
-  return apiInstance.post("/auth/reset-password", {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get("token");
+  return apiInstance.post(`/auth/reset-password/${token}`, {
     password,
     confirmPassword,
   });

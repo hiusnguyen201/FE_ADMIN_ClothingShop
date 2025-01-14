@@ -16,47 +16,49 @@ export default function ForgotPasswordPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  const resetPasswordUrl = new URL(
+    `${import.meta.env.VITE_CALLBACKURL}/auth/reset-password`
+  );
   const formik = useFormik({
     initialValues: {
       email: "",
-      callbackUrl: import.meta.env.VITE_CALLBACKURL + "/auth/reset-password",
+      callbackUrl: resetPasswordUrl,
     },
     validationSchema: forgotPasswordSchema,
     validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      console.log(urlParams);
-      dispatch(
+      await dispatch(
         forgotPassword({
           email: values.email,
           callbackUrl: values.callbackUrl,
         })
-      );
+      ).then((resultAction) => {
+        if (forgotPassword.fulfilled.match(resultAction)) {
+          setErrorMessage(null);
+        } else {
+          switch (resultAction.payload.status) {
+            case 404:
+              setErrorMessage("User not found");
+              break;
+            default:
+              setErrorMessage("");
+              toast({
+                title: "Internal Server Error",
+                variant: "destructive",
+              });
+          }
+        }
+      });
     },
   });
-  useEffect(() => {
-    if (!error) {
-      setErrorMessage(null);
-    } else {
-      switch (error.status) {
-        case 404:
-          setErrorMessage("User not found");
-          break;
-        default:
-          setErrorMessage("");
-          toast({
-            title: "Internal Server Error",
-            variant: "destructive",
-          });
-      }
-    }
-  }, [error]);
   useEffect(() => {
     if (!user) return;
     if (user.email) {
       navigate("/auth/send-forgot-password-success");
     }
   }, [user]);
+
   return (
     <div className="flex h-full items-center p-4 lg:p-8">
       <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
@@ -107,7 +109,7 @@ export default function ForgotPasswordPage() {
         <span className="px-8 text-center text-sm text-muted-foreground">
           Already have an anccount?&nbsp;
           <Link
-            to="/auth/register"
+            to="/auth/login"
             className="underline underline-offset-4 hover:text-primary"
           >
             Login.

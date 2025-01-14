@@ -6,11 +6,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Loader } from "lucide-react";
 import { useFormik } from "formik";
 import { resetPasswordSchema } from "@/pages/auth/authShemas/resetPasswordSchema";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { resetPassword } from "@/lib/slices/auth.slice";
 
 export default function ResetPasswordPage() {
-  const { isLoading, error, user } = useSelector((state) => state.auth);
+  const { isLoading } = useSelector((state) => state.auth);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -33,10 +34,27 @@ export default function ResetPasswordPage() {
     validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      // dispatch(login(values));
-      console.log("Reset password");
+      dispatch(resetPassword(values)).then((resultAction) => {
+        if (resetPassword.fulfilled.match(resultAction)) {
+          setErrorMessage(null);
+          navigate("/auth/login");
+        } else {
+          switch (resultAction.payload.status) {
+            case 401:
+              setErrorMessage("Invalid or expired token");
+              break;
+            default:
+              setErrorMessage("");
+              toast({
+                title: "Internal Server Error",
+                variant: "destructive",
+              });
+          }
+        }
+      });
     },
   });
+
   return (
     <div className="flex h-full items-center p-4 lg:p-8">
       <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
@@ -89,7 +107,7 @@ export default function ResetPasswordPage() {
             <InputAndLabel
               label="Confirm Password"
               id="confirmPassword"
-              type={showPassword ? "text" : "password"}
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Enter your confirm password"
               onChange={(e) => {
                 formik.handleChange(e);
@@ -127,12 +145,12 @@ export default function ResetPasswordPage() {
           </BasicButton>
         </form>
         <span className="px-8 text-center text-sm text-muted-foreground">
-          Don't have an account?&nbsp;
+          Already have an anccount?&nbsp;
           <Link
-            to="/auth/register"
+            to="/auth/login"
             className="underline underline-offset-4 hover:text-primary"
           >
-            Sign up.
+            Login.
           </Link>
         </span>
       </div>

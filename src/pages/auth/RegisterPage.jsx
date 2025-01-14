@@ -39,31 +39,30 @@ export default function RegisterPage() {
     validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      dispatch(register(values));
+      dispatch(register(values)).then((resultAction) => {
+        if (register.fulfilled.match(resultAction)) {
+          setErrorMessage(null);
+        } else {
+          switch (resultAction.payload.status) {
+            case 400:
+              setErrorMessage(
+                "Invalid registration information. Please check again and try again."
+              );
+              break;
+            case 409:
+              setErrorMessage("User already exist");
+              break;
+            default:
+              setErrorMessage("");
+              toast({
+                title: "Internal Server Error",
+                variant: "destructive",
+              });
+          }
+        }
+      });
     },
   });
-  useEffect(() => {
-    if (!error) {
-      setErrorMessage(null);
-    } else {
-      switch (error.status) {
-        case 400:
-          setErrorMessage(
-            "Invalid registration information. Please check again and try again."
-          );
-          break;
-        case 409:
-          setErrorMessage("User already exist");
-          break;
-        default:
-          setErrorMessage("");
-          toast({
-            title: "Internal Server Error",
-            variant: "destructive",
-          });
-      }
-    }
-  }, [error]);
   useEffect(() => {
     if (!user) return;
     if (!isAuthenticated && is2FactorRequired) {

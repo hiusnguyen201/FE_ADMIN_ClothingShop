@@ -112,14 +112,11 @@ const authSlice = createSlice({
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.accessToken = action.payload.data.accessToken;
-        state.user = action.payload.data.user;
         state.error = null;
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.error = action.payload;
         state.isLoading = false;
-        state.user = null;
       });
   },
 });
@@ -154,6 +151,17 @@ export const login = createAsyncThunk(
   }
 );
 
+// export const login = createAsyncThunk(
+//   "auth/login",
+//   async (payload, { rejectWithValue }) => {
+//     try {
+//       const response = await authApi.login(payload);
+//       return response.data;
+//     } catch (error) {
+//       return rejectWithValue(error.response.data);
+//     }
+//   }
+// );
 export const sendOtpVerifyEmail = createAsyncThunk(
   "auth/send-otp-via-email",
   async (payload, { rejectWithValue }) => {
@@ -196,8 +204,7 @@ export const resetPassword = createAsyncThunk(
   "auth/reset-password",
   async (payload, { rejectWithValue }) => {
     try {
-      const { data } = await authApi.forgotPassword(payload);
-      localStorage.setItem("user", JSON.stringify(data.data.user));
+      const { data } = await authApi.resetPassword(payload);
       return data;
     } catch (error) {
       return rejectWithValue(error?.response?.data || error);

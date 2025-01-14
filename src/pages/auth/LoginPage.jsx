@@ -32,26 +32,25 @@ export default function LoginPage() {
     validateOnChange: true,
     validateOnBlur: false,
     onSubmit: async (values) => {
-      dispatch(login(values));
+      await dispatch(login(values)).then((resultAction) => {
+        if (login.fulfilled.match(resultAction)) {
+          setErrorMessage(null);
+        } else {
+          switch (resultAction.payload.status) {
+            case 401:
+              setErrorMessage("Incorrect email or password");
+              break;
+            default:
+              setErrorMessage("");
+              toast({
+                title: "Internal Server Error",
+                variant: "destructive",
+              });
+          }
+        }
+      });
     },
   });
-  useEffect(() => {
-    if (!error) {
-      setErrorMessage(null);
-    } else {
-      switch (error.status) {
-        case 401:
-          setErrorMessage("Incorrect email or password");
-          break;
-        default:
-          setErrorMessage("");
-          toast({
-            title: "Internal Server Error",
-            variant: "destructive",
-          });
-      }
-    }
-  }, [error]);
   useEffect(() => {
     if (!user) return;
     if (!isAuthenticated && is2FactorRequired) {
@@ -65,7 +64,6 @@ export default function LoginPage() {
       }
     }
   }, [user]);
-
   return (
     <div className="flex h-full items-center p-4 lg:p-8">
       <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">

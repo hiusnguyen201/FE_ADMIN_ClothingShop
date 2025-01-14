@@ -1,30 +1,40 @@
 import { BasicButton } from "@/components/basic-button";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Loader } from "lucide-react";
 import { useFormik } from "formik";
-import { useEffect } from "react";
 import { MdOutlineMailLock } from "react-icons/md";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect, useState } from "react";
 
-export default function SendForgotPasswordPage() {
-  const { isLoading, user } = useSelector((state) => state.auth);
+export default function SendForgotPasswordSuccessPage() {
+  const { isLoading } = useSelector((state) => state.auth);
+  const [email, setEmail] = useState("");
   const navigate = useNavigate();
-
-  const emailUser = user.email || "";
+  const { toast } = useToast();
   const formik = useFormik({
     initialValues: {
-      email: emailUser,
+      email: email,
     },
     onSubmit: async () => {
       navigate("/auth/login");
     },
   });
-  // useEffect(() => {
-  //   if (!formik.values.email) {
-  //     navigate("auth/login");
-  //     return;
-  //   }
-  // }, [formik.values.email]);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const parsedUser = JSON.parse(storedUser);
+    if (parsedUser.email) {
+      setEmail(parsedUser.email);
+      toast({
+        title: "Send email succress",
+        variant: "success",
+        style: {
+          background: "#4CAF50",
+          color: "#fff",
+        },
+      });
+    }
+  }, [email]);
   return (
     <div className="flex h-full items-center p-4 lg:p-8">
       <div className="mx-auto flex w-full flex-col justify-center space-y-4 sm:w-[350px]">
@@ -36,9 +46,7 @@ export default function SendForgotPasswordPage() {
           <p className="text-ml text-muted-foreground">
             Verification code has been sent to email
           </p>
-          <p className="text-ml text-muted-foreground text-red-500">
-            {formik.values.email}
-          </p>
+          <p className="text-ml text-muted-foreground text-red-500">{email}</p>
           <p className="text-ml text-muted-foreground">Please veirfy</p>
         </div>
         <form onSubmit={formik.handleSubmit}>
