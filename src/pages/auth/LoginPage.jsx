@@ -12,8 +12,9 @@ import { useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
-  const { isLoading, error, isAuthenticated, is2FactorRequired, user } =
-    useSelector((state) => state.auth);
+  const { isLoading, isAuthenticated, is2FactorRequired, user } = useSelector(
+    (state) => state.auth
+  );
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export default function LoginPage() {
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -39,6 +41,11 @@ export default function LoginPage() {
           switch (resultAction.payload.status) {
             case 401:
               setErrorMessage("Incorrect email or password");
+              break;
+            case 403:
+              setErrorMessage(
+                "Account has been locked. Please try again in 30 minutes"
+              );
               break;
             default:
               setErrorMessage("");

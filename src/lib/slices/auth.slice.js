@@ -151,17 +151,6 @@ export const login = createAsyncThunk(
   }
 );
 
-// export const login = createAsyncThunk(
-//   "auth/login",
-//   async (payload, { rejectWithValue }) => {
-//     try {
-//       const response = await authApi.login(payload);
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response.data);
-//     }
-//   }
-// );
 export const sendOtpVerifyEmail = createAsyncThunk(
   "auth/send-otp-via-email",
   async (payload, { rejectWithValue }) => {

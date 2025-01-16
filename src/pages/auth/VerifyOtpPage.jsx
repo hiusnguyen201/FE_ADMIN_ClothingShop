@@ -23,8 +23,10 @@ export default function VerifyOtpPage() {
     accessToken,
   } = useSelector((state) => state.auth);
 
-  const emailUser = user?.email || "";
-  const typeUser = user?.type || "";
+  const storedUser = localStorage.getItem("user");
+  const parsedUser = JSON.parse(storedUser);
+  const emailUser = parsedUser?.email || "";
+  const typeUser = parsedUser?.type || "";
   const formik = useFormik({
     initialValues: {
       otp: "",
@@ -133,7 +135,7 @@ export default function VerifyOtpPage() {
         </form>
 
         <span className="px-8 text-center text-sm text-muted-foreground">
-          Don't have an account?&nbsp;
+          Come back Login Page?&nbsp;
           <Link
             to="/auth/register"
             className="underline underline-offset-4 hover:text-primary"
