@@ -89,17 +89,17 @@ export default function DataTableCustom({
       <div className="flex flex-col items-center justify-end gap-2 space-x-2 py-4 sm:flex-row">
         <div className="flex w-full items-center justify-between">
           <div className="flex-1 text-sm font-small ">
-            Showing {meta.offset + 1} to {meta.offset + 10} of {meta.totalCount}{" "}
-            entries
+            Showing {meta.offset + 1} to {meta.offset + meta.limit} of{" "}
+            {meta.totalCount} entries
           </div>
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 lg:gap-8">
             <div className="flex items-center space-x-2">
               <p className="whitespace-nowrap text-sm font-small ">
                 Rows per page
               </p>
-              <Select onValueChange={onLimitChange}>
+              <Select  onValueChange={onLimitChange}>
                 <SelectTrigger className="w-[70px] h-[35px]">
-                  <SelectValue placeholder="10" />
+                  <SelectValue placeholder={meta?.limit ?? "10"} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="10">10</SelectItem>
@@ -120,7 +120,7 @@ export default function DataTableCustom({
               variant="outline"
               size="sm"
               onClick={() => {
-                uonPageChange(1);
+                onPageChange(1);
               }}
               disabled={!meta.isFirst}
             >

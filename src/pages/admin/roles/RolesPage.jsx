@@ -1,8 +1,7 @@
 import * as React from "react";
 import DataTableCustom from "../../../components/DataTableCustom";
 import { columns } from "./columns";
-import { ROLE_STATUS } from "./columns";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LogIn } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -11,13 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import Heading from "@/./components/heading";
 import { useSelector } from "react-redux";
@@ -26,6 +18,12 @@ import { useDebouncedCallback } from "use-debounce";
 import { useAppDispatch } from "@/lib/hooks";
 import { useToast } from "@/hooks/use-toast";
 import { useSearchParams } from "react-router-dom";
+import SelectForm from "@/components/select-form";
+
+const statusCondition = [
+  { title: "Active", value: "Active" },
+  { title: "Inactive", value: "Inactive" },
+];
 
 export default function RolesPage() {
   const dispatch = useAppDispatch();
@@ -37,14 +35,17 @@ export default function RolesPage() {
   } = useSelector((state) => state.role);
   const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
-  const [statusFilter, setStatusFilter] = React.useState(undefined);
   const { toast } = useToast();
+
+  const [searchParams, setSearchParams] = useSearchParams();
   const [filter, setFilter] = React.useState({
-    page: 1,
-    limit: 10,
-    keyword: "",
+    page: searchParams.get("page") ? +searchParams.get("page") : 1,
+    limit: searchParams.get("limit") ? +searchParams.get("limit") : 10,
+    keyword: searchParams.get("keyword") ? searchParams.get("keyword") : "",
+    statusfilter: searchParams.get("statusfilter")
+      ? searchParams.get("statusfilter")
+      : "",
   });
-  const [searchParams, setSearchParams] = useSearchParams(filter);
   const prevKeyword = React.useRef(filter.keyword);
 
   const getAllRolesDebounced = useDebouncedCallback(() => {
@@ -61,16 +62,21 @@ export default function RolesPage() {
       });
     }
   }, [error]);
-
+  
   React.useEffect(() => {
     setSearchParams(filter);
+    const newfilter = { ...filter, };
+    if (newfilter.statusfilter === "Active") {
+      newfilter.isActive = true;
+    } else if (newfilter.statusfilter === "Inactive") {newfilter.isActive = false;}
+    
     if (prevKeyword.current !== filter.keyword) {
       getAllRolesDebounced(filter);
       prevKeyword.current = filter.keyword;
       return;
     }
-    dispatch(getAllRoles(filter));
-  }, [dispatch, filter]);
+    dispatch(getAllRoles(newfilter));
+  }, [filter]);
 
   const table = useReactTable({
     data,
@@ -105,24 +111,13 @@ export default function RolesPage() {
             }}
           />
           <div className="flex gap-2">
-            <Select
-              value={statusFilter}
-              onValueChange={(value) => {
-                setStatusFilter(value);
-              }}
-            >
-              <SelectTrigger className="w-[100px] ">
-                <SelectValue placeholder="" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={undefined}>Status</SelectItem>
-                {Object.values(ROLE_STATUS).map((item) => (
-                  <SelectItem key={item} value={item}>
-                    {item}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SelectForm
+              filter={filter}
+              setFilter={setFilter}
+              searchParams={searchParams}
+              data={statusCondition}
+              namebtn={"status"}
+            />
           </div>
 
           <DropdownMenu>

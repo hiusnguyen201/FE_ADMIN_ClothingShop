@@ -20,10 +20,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export const ROLE_STATUS = {
-  ACTIVE: "Active",
-  INACTIVE: "Inactive",
-};
 
 export const columns = [
   {

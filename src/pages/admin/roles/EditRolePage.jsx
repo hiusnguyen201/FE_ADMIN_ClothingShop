@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ROLE_STATUS } from "./columns";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -58,8 +57,8 @@ export default function EditRolePage({ data, fakePermissions }) {
       permissions: data.permissions || [],
     },
     validationSchema: UpdateRoleSchema,
-    validateOnChange: true,
-    validateOnBlur: false,
+    validateOnChange: false,
+    validateOnBlur: true,
     onSubmit: async (values) => {
       const changedValues = Object.fromEntries(
         Object.entries(values).filter(

@@ -1,7 +1,6 @@
 import * as React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ROLE_STATUS } from "./columns";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -27,10 +26,12 @@ import UploadImage from "@/components/UploadImage";
 import { useSelector } from "react-redux";
 import { useAppDispatch } from "@/lib/hooks";
 import { createRole } from "@/lib/slices/role.slice";
-import { MultiSelect } from "@/components/MultiSelect";
 import { useNavigate } from "react-router-dom";
 import { checkRoleName } from "@/api/role.api";
 import { useDebouncedCallback } from "use-debounce";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { getAllPermissions } from "@/lib/slices/permission.slice";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const CreateRoleSchema = Yup.object().shape({
   icon: Yup.string(),
@@ -55,6 +56,16 @@ export default function AddRolePage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { error, isLoading } = useSelector((state) => state.role);
+  const { list: permissions } = useSelector((state) => state.permission);
+  const [tab, setTab] = React.useState("roleinfo");
+
+  React.useEffect(() => {
+    dispatch(
+      getAllPermissions({
+        isActive: true,
+      })
+    );
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -65,8 +76,9 @@ export default function AddRolePage() {
       permissions: [],
     },
     validationSchema: CreateRoleSchema,
-    validateOnChange: true,
-    validateOnBlur: false,
+    validateOnChange: false,
+    validateOnBlur: true,
+    validateOnMount: true,
     onSubmit: async (values) => {
       const filteredValues = Object.fromEntries(
         Object.entries(values).filter(
@@ -77,10 +89,10 @@ export default function AddRolePage() {
             !(Array.isArray(value) && value.length === 0)
         )
       );
-        await dispatch(createRole(filteredValues));   
+      await dispatch(createRole(filteredValues));
     },
   });
-  
+
   const {
     setFieldValue,
     handleSubmit,
@@ -116,6 +128,7 @@ export default function AddRolePage() {
   }, [isLoading]);
 
   const checkRoleNameDebounce = useDebouncedCallback(async () => {
+    if (formik.errors.name || !formik.values.name) return;
     const response = await checkRoleName(formik.values.name);
     if (response.data.data === true) {
       setFieldError("name", "Name already exist!");
@@ -128,116 +141,140 @@ export default function AddRolePage() {
 
   return (
     <>
-      <div className="flex justify-center h-full p-4 md:px-6">
-        <Card className="w-full max-w-5xl">
-          <CardHeader>
-            <CardTitle>Add Roles</CardTitle>
-            <CardDescription>Add role for user</CardDescription>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent>
-              <div className="grid w-full gap-4">
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="icon">Icon</Label>
-                  <UploadImage
-                    limitFile={1}
-                    onValueChange={(value) => {
-                      setFieldValue("icon", value);
-                    }}
-                    oldPicture={formik.values.icon}
-                  />
-                  {touched.icon && errors.icon && (
-                    <p className="text-red-500 text-sm">{errors.icon}</p>
-                  )}
-                </div>
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      type="text"
-                      {...getFieldProps("name")}
-                      onChange={(e) => {
-                        setFieldTouched("name", true);
-                        setFieldValue("name", e.target.value);
-                      }}
-                    />
-                    {touched.name && errors.name && (
-                      <p className="text-red-500 text-sm">{errors.name}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="permissions">Permissions</Label>
-                    <MultiSelect
-                      options={ROLE_PERMISSIONS}
-                      onValueChange={(values) => {
-                        setFieldValue("permissions", values);
-                      }}
-                      defaultValue={formik.values.permissions}
-                      placeholder="Select permissions"
-                      variant="inverted"
-                      animation={2}
-                      maxCount={3}
-                    />
+      <form onSubmit={handleSubmit}>
+        <div className="flex justify-center h-full p-4 md:px-6">
+          <Tabs className="w-[400px]" value={tab} onValueChange={setTab}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="roleinfo">INFO</TabsTrigger>
+              <TabsTrigger value="rolepermission">PERMISSION</TabsTrigger>
+            </TabsList>
+            <TabsContent value="roleinfo">
+              <Card className="w-full max-w-5xl">
+                <CardHeader>
+                  <CardTitle>Add Roles</CardTitle>
+                  <CardDescription>Add role for user</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid w-full gap-4">
+                    <div className="flex flex-col space-y-1.5">
+                      <Label htmlFor="icon">Icon</Label>
+                      <UploadImage
+                        limitFile={1}
+                        onValueChange={(value) => {
+                          setFieldValue("icon", value);
+                        }}
+                        oldPicture={formik.values.icon}
+                      />
+                      {touched.icon && errors.icon && (
+                        <p className="text-red-500 text-sm">{errors.icon}</p>
+                      )}
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                      <Label htmlFor="name">Name</Label>
+                      <Input
+                        id="name"
+                        name="name"
+                        type="text"
+                        {...getFieldProps("name")}
+                        onChange={(e) => {
+                          setFieldTouched("name", true);
+                          setFieldValue("name", e.target.value);
+                        }}
+                      />
+                      {touched.name && errors.name && (
+                        <p className="text-red-500 text-sm">{errors.name}</p>
+                      )}
+                    </div>
 
-                    {touched.permissions && errors.permissions && (
-                      <p className="text-red-500 text-sm">
-                        {errors.permissions}
-                      </p>
-                    )}
+                    <div className="flex flex-col space-y-1.5">
+                      <Label htmlFor="description">Description</Label>
+                      <Input
+                        id="description"
+                        name="description"
+                        type="text"
+                        {...getFieldProps("description")}
+                      />
+                      {touched.description && errors.description && (
+                        <p className="text-red-500 text-sm">
+                          {errors.description}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="description">Description</Label>
-                  <Input
-                    id="description"
-                    name="description"
-                    type="text"
-                    {...getFieldProps("description")}
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <AlertDialogCustom
+                    alertlink="/admin/roles"
+                    alerttrigger="Back"
+                    alerttitle="Back to previous page"
+                    alertdescription="All you do will be lost"
                   />
-                  {touched.description && errors.description && (
-                    <p className="text-red-500 text-sm">{errors.description}</p>
-                  )}
-                </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor="status">Status</Label>
-                  <Select
-                    onValueChange={(selectOption) => {
-                      setFieldValue("status", selectOption);
-                    }}
+                  <Button
+                    type="button"
+                    onClick={() => setTab("rolepermission")}
+                    variant="outline"
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder={formik.values.status} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.values(ROLE_STATUS).map((item) => (
-                        <SelectItem key={item} value={item}>
-                          {item}
-                        </SelectItem>
+                    Next
+                  </Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+            <TabsContent value="rolepermission">
+              <Card className="w-full max-w-5xl">
+                <CardHeader>
+                  <CardTitle>Add Permissions</CardTitle>
+                  <CardDescription>Add permissions for role</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid w-full gap-4">
+                    <div className="flex flex-col space-y-1.5">
+                      <Label htmlFor="permissions">Permissions</Label>
+                      {permissions.map((item) => (
+                        <div className="flex items-center gap-2" key={item._id}>
+                          <Checkbox id={item._id} />
+                          <label
+                            htmlFor={item._id}
+                            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                          >
+                            {item.name}
+                          </label>
+                        </div>
                       ))}
-                    </SelectContent>
-                  </Select>
-                  {touched.status && errors.status && (
-                    <p className="text-red-500 text-sm">{errors.status}</p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <AlertDialogCustom
-                alertlink="/admin/roles"
-                alerttrigger="Back"
-                alerttitle="Back to previous page"
-                alertdescription="All you do will be lost"
-              />
-              <Button type="submit" variant="outline">
-                Create
-              </Button>
-            </CardFooter>
-          </form>
-        </Card>
+
+                      {touched.permissions && errors.permissions && (
+                        <p className="text-red-500 text-sm">{errors.status}</p>
+                      )}
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
+                  <Button
+                    type="button"
+                    onClick={() => setTab("roleinfo")}
+                    variant="outline"
+                  >
+                    Prev
+                  </Button>
+                </CardFooter>
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
+      </form>
+      <div className="sticky w-full bottom-0 flex justify-between p-4 bg-gray-100">
+        <div className="justify-start">
+          <Button type="button" className="bg-red-500 text-white">
+            Cancel
+          </Button>
+        </div>
+        <div className="justify-end flex gap-4">
+          <Button type="button" className="bg-green-500 text-white">
+            Create with status Active
+          </Button>
+          <Button type="button" className="bg-yellow-500 text-white">
+            Create with status Inactive
+          </Button>
+        </div>
       </div>
     </>
   );

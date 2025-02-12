@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload } from 'lucide-react';
+import { Upload } from "lucide-react";
 
 export default function UploadImage({ onValueChange, oldPicture, limitFile }) {
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,7 +32,10 @@ export default function UploadImage({ onValueChange, oldPicture, limitFile }) {
       setPreviews(updatedPreviews);
 
       // Trả về một chuỗi URL thay vì một mảng
-      onValueChange && onValueChange(updatedPreviews.map((item) => item.previewURL).join(', ')); // Join thành chuỗi
+      onValueChange &&
+        onValueChange(
+          updatedPreviews.map((item) => item.previewURL).join(", ")
+        ); // Join thành chuỗi
     },
   });
 
@@ -43,38 +46,45 @@ export default function UploadImage({ onValueChange, oldPicture, limitFile }) {
     URL.revokeObjectURL(previews[index].previewURL);
 
     setPreviews(updatedPreviews);
-    onValueChange && onValueChange(updatedPreviews.map((item) => item.previewURL).join(', ')); // Join thành chuỗi
+    onValueChange &&
+      onValueChange(updatedPreviews.map((item) => item.previewURL).join(", ")); // Join thành chuỗi
   };
 
   return (
-    <section className="container p-4 border-2 border-dashed border-gray-300 rounded-md hover:bg-muted/75">
-      <div {...getRootProps({ className: "dropzone" })}>
+    <section>
+      <div
+        {...getRootProps({ className: "dropzone" })}
+        className="cursor-pointer container p-4 border-2 border-dashed border-gray-300 rounded-md hover:bg-muted/75"
+      >
         <input {...getInputProps()} />
         <div className="flex items-center justify-center">
-            <Upload/>
+          <Upload />
         </div>
         <p className="text-center text-gray-600">
-          Drag 'n' drop images here, or click to select images (up to {limitFile})
+          Drag 'n' drop images here, or click to select images (up to{" "}
+          {limitFile})
         </p>
         {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
       </div>
 
-      <aside
-        className={`mt-4 grid ${previews.length === 1 ? "place-items-center" : "grid-cols-3"} gap-4`}
-      >
+      <aside className="mt-4 flex flex-col gap-4 overflow-auto max-h-56">
         {previews.map((item, index) => (
-          <div
-            key={index}
-            className="relative border p-2 rounded w-20 max-w-xs"
-          >
+          <div key={index} className="flex justify-between border p-2 rounded items-center">
             <img
               src={item.previewURL}
               alt={`Preview ${index + 1}`}
               className="w-20 h-auto object-cover"
             />
+            <div>
+
+            <p className="text-center text-sm mt-2">{item.file.name}</p>
+            <p className="text-center text-xs text-gray-500">
+              {(item.file.size / 1024).toFixed(2)} KB
+            </p>
+            </div>
             <button
               onClick={() => handleRemoveImage(index)}
-              className="absolute top-0 right-0 bg-black text-white rounded-full w-6 h-6 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2"
+              className=" bg-black text-white rounded-full w-6 h-6 flex items-center justify-center"
             >
               X
             </button>

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import * as roleApi from "@/api/role.api";
+import * as permissionApi from "@/api/permission.api";
 
 const initialState = {
   isLoading: false,
@@ -10,8 +10,8 @@ const initialState = {
   meta: {},
 };
 
-const roleSlice = createSlice({
-  name: "role",
+const permissionSlice = createSlice({
+  name: "permission",
   initialState,
   reducers: {
     startLoading: (state) => {
@@ -53,7 +53,7 @@ const roleSlice = createSlice({
   },
 });
 
-export default roleSlice.reducer;
+export default permissionSlice.reducer;
 
 export const {
   startLoading,
@@ -63,62 +63,17 @@ export const {
   create,
   update,
   remove,
-} = roleSlice.actions;
+} = permissionSlice.actions;
 
 //get all
-export const getAllRoles =
+export const getAllPermissions =
   (filters = {}) =>
   async (dispatch) => {
     try {
-      
       dispatch(startLoading());
-      const { data } = await roleApi.getAllRoles(filters);
+      const { data } = await permissionApi.getAllPermissions(filters);
       dispatch(getAll(data.data));
     } catch (err) {
       dispatch(hasError(err?.response?.data || err));
     }
   };
-
-//edit
-export const getOneRoleById = (id) => async (dispatch) => {
-  try {
-    dispatch(startLoading());
-    const { data } = await roleApi.getOneRoleById(id);
-    dispatch(getOne(data));
-  } catch (err) {
-    dispatch(hasError(err?.response?.data || err));
-  }
-};
-
-export const updateRoleById = (id, updatedData) => async (dispatch) => {
-  try {
-    dispatch(startLoading());
-    const { data } = await roleApi.updateRoleById(id, updatedData);
-    dispatch(update(data));
-  } catch (err) {
-    dispatch(hasError(err?.response?.data || err));
-  }
-};
-
-//create
-export const createRole = (createData) => async (dispatch) => {
-  try {
-    dispatch(startLoading());
-    const { data } = await roleApi.createRole(createData);
-    dispatch(create(data));
-    dispatch(hasError(null));
-  } catch (err) {
-    dispatch(hasError(err?.response?.data || err));
-  }
-};
-
-//delete
-export const deleteRoleById = (id) => async (dispatch) => {
-  try {
-    dispatch(startLoading());
-    await roleApi.deleteRoleById(id);
-    dispatch(remove(id));
-  } catch (err) {
-    dispatch(hasError(err?.response?.data || err));
-  }
-};
