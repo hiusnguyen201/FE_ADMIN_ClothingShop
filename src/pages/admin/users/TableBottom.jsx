@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,22 +8,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
 import { LIMIT_PAGE } from "./constant";
+import {
+  ChevronsLeft,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsRight,
+ } from "lucide-react";
 
 const TableBottom = ({
-  getCanPreviousPage,
-  getCanNextPage,
-  previousPage,
-  nextPage,
+  currentPage,
+  totalPages,
   pageSize,
+  totalCount,
+  onPageChange,
   onPageSizeChange,
-
-  tableOffSet,
-  tableLimit,
-  tableTotalCount, 
 }) => {
-  
+
+  const tableOffset = (currentPage - 1) * pageSize + 1;
+  const tableLimit = Math.min(currentPage * pageSize, totalCount);
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      onPageChange(currentPage - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      onPageChange(currentPage + 1);
+    }
+  };
 
   return (
     <div
@@ -34,12 +50,14 @@ const TableBottom = ({
         gap: "16px",
       }}
     >
+      {/* Displaying the range of entries */}
       <div style={{ flex: 1, textAlign: "left" }}>
         <p style={{ margin: 0 }}>
-          Showing {tableOffSet} to {tableLimit} of {tableTotalCount} entries
+          Showing {tableOffset} to {tableLimit} of {totalCount} entries
         </p>
       </div>
 
+      {/* Rows per page selector */}
       <div
         style={{
           flex: 1,
@@ -49,13 +67,16 @@ const TableBottom = ({
         }}
       >
         <p style={{ margin: 0 }}>Rows per page</p>
-        <Select value={pageSize} onValueChange={onPageSizeChange}>
+        <Select
+          value={String(pageSize)}
+          onValueChange={(value) => onPageSizeChange(Number(value))}
+        >
           <SelectTrigger className="w-[70px]">
             <SelectValue placeholder="Select page size" />
           </SelectTrigger>
           <SelectContent>
             {LIMIT_PAGE.map((value) => (
-              <SelectItem key={value} value={value}>
+              <SelectItem key={value} value={String(value)}>
                 {value}
               </SelectItem>
             ))}
@@ -63,6 +84,7 @@ const TableBottom = ({
         </Select>
       </div>
 
+      {/* Pagination buttons */}
       <div
         style={{
           display: "flex",
@@ -73,18 +95,18 @@ const TableBottom = ({
         <Button
           variant="outline"
           size="sm"
-          onClick={previousPage}
-          disabled={!getCanPreviousPage()}
+          onClick={handlePrevious}
+          disabled={currentPage <= 1}
         >
-          Previous
+          <ChevronLeft/>
         </Button>
         <Button
           variant="outline"
           size="sm"
-          onClick={nextPage}
-          disabled={!getCanNextPage()}
+          onClick={handleNext}
+          disabled={currentPage >= totalPages}
         >
-          Next
+          <ChevronRight/>
         </Button>
       </div>
     </div>

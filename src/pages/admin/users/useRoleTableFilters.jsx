@@ -4,7 +4,7 @@ export function useRoleTableFilters() {
   const [searchQuery, setSearchQuery] = useState("");
   const [genderFilter, setGenderFilter] = useState([]);
   const [changePageSize, setChangePageSize] = useState(10)
-  const resetFilters = async () => {
+  const resetFilters = () => {
     setSearchQuery("");
     setGenderFilter([]);
   };

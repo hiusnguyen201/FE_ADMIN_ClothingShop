@@ -77,13 +77,13 @@ export function Router() {
           element: <UsersPage />,
         },
         {
-          path: "users/add-user", 
+          path: "users/create-user", 
           element: <AddUser />, 
         },
         {
-          path: "users/update-user/", 
+          path: "users/update-user/:userId", 
           element: <UpdateUser />, 
-        },
+        },        
         {
           path: "roles",
           element: <RolesPage />,

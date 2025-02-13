@@ -1,9 +1,13 @@
+
 import React, { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -18,107 +22,90 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { updateUser } from "@/lib/slices/userSlice";
 
-const UpdateUser = ({ userId, fetchUserApi, updateUserApi }) => {
-    const [date, setDate] = useState(new Date());
-    const [avatarPreview, setAvatarPreview] = useState(null);
-  
-    useEffect(() => {
-    
-      const fetchUser = async () => {
-        try {
-          const response = await fetchUserApi(userId);
-          const userData = response.data;
-          formik.setValues({
-            name: userData.name,
-            email: userData.email,
-            dob: userData.dob,
-            gender: userData.gender,
-            avatar: null,
-          });
-          setAvatarPreview(userData.avatarUrl); 
-          setDate(new Date(userData.dob));
-        } catch (error) {
-          console.error("Failed to fetch user data", error);
+const UpdateUser = () => {
+  const { userId } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [date, setDate] = useState(new Date());
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const { currentUser, isLoading, error } = useSelector((state) => state.users);
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      birthday: "",
+      gender: "",
+      avatar: null,
+    },
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .required("Name is required!")
+        .min(2, "Name must be at least 2 characters!")
+        .max(50, "Name can't be longer than 50 characters!"),
+      email: Yup.string().email("Invalid email format").required("Email is required!"),
+      birthday: Yup.date().required("Date of birth is required!"),
+      gender: Yup.string().required("Gender is required!"),
+      avatar: Yup.mixed().test(
+        "fileFormat",
+        "Unsupported file format. Only images are allowed.",
+        (value) =>
+          !value ||
+          (value && ["image/jpeg", "image/png", "image/gif"].includes(value.type))
+      ),
+    }),
+    onSubmit: async (values) => {
+      try {
+        const formData = new FormData();
+        formData.append("name", values.name);
+        formData.append("email", values.email);
+        formData.append("birthday", values.birthday);
+        formData.append("gender", values.gender);
+        if (values.avatar) {
+          formData.append("avatar", values.avatar);
         }
-      };
-  
-      fetchUser();
-    }, [userId]);
-  
-    const formik = useFormik({
-      initialValues: {
-        name: "",
-        email: "",
-        dob: "",
-        gender: "",
-        avatar: null,
-      },
-      validationSchema: Yup.object({
-        name: Yup.string()
-          .required("Name is required!")
-          .min(2, "Name must be at least 2 characters!")
-          .max(50, "Name can't be longer than 50 characters!"),
-        // phone: Yup.string()
-        //   .required("Phone is required!")
-        //   .matches(/^[0-9]+$/, "Phone number must contain only digits!")
-        //   .min(10, "Phone number must be at least 10 digits!")
-        //   .max(15, "Phone number can't exceed 15 digits!"),
-        email: Yup.string().required("Email is required!"),
-        dob: Yup.date().required("Date of birth is required!"),
-        gender: Yup.string().required("Gender is required!"),
-        avatar: Yup.mixed()
-          .test(
-            "fileFormat",
-            "Unsupported file format. Only images are allowed.",
-            (value) =>
-              !value ||
-              (value && ["image/jpeg", "image/png", "image/gif"].includes(value.type))
-          ),
-      }),
-      onSubmit: async (values) => {
-        try {
-          const formData = new FormData();
-          formData.append("name", values.name);
-          formData.append("email", values.email);
-          formData.append("dob", values.dob);
-          formData.append("gender", values.gender);
-          if (values.avatar) {
-            formData.append("avatar", values.avatar);
-          }
-  
-          await updateUserApi(userId, formData);
-          console.log("User updated successfully");
-        } catch (error) {
-          console.error("Failed to update user", error);
-        }
-      },
-    });
-  
-    const handleAvatarChange = (event) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        setAvatarPreview(URL.createObjectURL(file));
-        formik.setFieldValue("avatar", file);
+
+        await dispatch(updateUser({ id: userId, formData })).unwrap();
+        navigate("/admin/users");
+      } catch (error) {
+        console.error("Failed to update user:", error);
       }
-    };
+    },
+  });
+
+  useEffect(() => {
+    if (currentUser?.data) {
+      const userData = currentUser.data;
+      formik.setValues({
+        name: userData.name || "",
+        email: userData.email || "",
+        birthday: userData.birthday || "",
+        gender: userData.gender || "",
+        avatar: null,
+      });
+      setAvatarPreview(userData.avatarUrl);
+      if (userData.birthday) {
+        setDate(new Date(userData.birthday));
+      }
+    }
+  }, [currentUser]);
+
+  const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setAvatarPreview(URL.createObjectURL(file));
+      formik.setFieldValue("avatar", file);
+    }
+  };
 
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
+  
   const currentYear = new Date().getFullYear();
   const years = Array.from(
     { length: currentYear - (currentYear - 100) + 1 },
@@ -138,18 +125,20 @@ const UpdateUser = ({ userId, fetchUserApi, updateUserApi }) => {
   const handleSelect = (selectedDate) => {
     if (selectedDate) {
       setDate(selectedDate);
-      const formattedDate = `${selectedDate.getFullYear()}-${(
-        "0" + (selectedDate.getMonth() + 1)
-      ).slice(-2)}-${("0" + selectedDate.getDate()).slice(-2)}`;
-      formik.setFieldValue("dob", formattedDate);
+      formik.setFieldValue("birthday", format(selectedDate, "yyyy-MM-dd"));
     }
   };
 
+  if (isLoading) {
+    return <div className="p-6">Loading...</div>;
+  }
+
   return (
     <div className="p-6 space-y-4">
+      <h2 className="text-2xl font-bold">Update User</h2>
+      {error && <div className="text-red-500">{error}</div>}
+      
       <form onSubmit={formik.handleSubmit} className="space-y-4">
-
-        {/* Avatar Field */}
         <div>
           <Label htmlFor="avatar">Avatar</Label>
           <Input
@@ -171,56 +160,49 @@ const UpdateUser = ({ userId, fetchUserApi, updateUserApi }) => {
           )}
         </div>
 
-        {/* Name Field */}
         <div>
           <Label htmlFor="name">Name</Label>
           <Input
             id="name"
             type="text"
-            name="name"
-            value={formik.values.name}
-            onChange={formik.handleChange}
+            {...formik.getFieldProps("name")}
           />
           {formik.errors.name && formik.touched.name && (
             <p className="text-red-500 text-sm">{formik.errors.name}</p>
           )}
         </div>
 
-        {/* Email Field */}
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
-            name="email"
-            value={formik.values.email}
-            onChange={formik.handleChange}
+            {...formik.getFieldProps("email")}
           />
           {formik.errors.email && formik.touched.email && (
             <p className="text-red-500 text-sm">{formik.errors.email}</p>
           )}
         </div>
 
-        {/* Date of Birth Field */}
         <div>
-          <Label htmlFor="dob">Date of Birth</Label>
+          <Label htmlFor="birthday">Date of Birth</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className={cn(
                   "w-full justify-start text-left font-normal",
-                  !formik.values.dob && "text-muted-foreground"
+                  !formik.values.birthday && "text-muted-foreground"
                 )}
               >
-                <CalendarIcon className="mr-2" />
-                {formik.values.dob
-                  ? format(new Date(formik.values.dob), "PPP")
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {formik.values.birthday
+                  ? format(new Date(formik.values.birthday), "PPP")
                   : "Pick a date"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-              <div className="flex justify-around">
+              <div className="flex justify-around p-2">
                 <Select
                   onValueChange={handleMonthChange}
                   value={months[getMonth(date)]}
@@ -252,26 +234,22 @@ const UpdateUser = ({ userId, fetchUserApi, updateUserApi }) => {
                   </SelectContent>
                 </Select>
               </div>
-
               <Calendar
                 mode="single"
                 selected={date}
                 onSelect={handleSelect}
                 initialFocus
-                month={date}
-                onMonthChange={setDate}
                 disabled={(date) =>
                   date > new Date() || date < new Date("1900-01-01")
                 }
               />
             </PopoverContent>
           </Popover>
-          {formik.errors.dob && formik.touched.dob && (
-            <p className="text-red-500 text-sm">{formik.errors.dob}</p>
+          {formik.errors.birthday && formik.touched.birthday && (
+            <p className="text-red-500 text-sm">{formik.errors.birthday}</p>
           )}
         </div>
 
-        {/* Gender Field */}
         <div>
           <Label htmlFor="gender">Gender</Label>
           <Select
@@ -282,9 +260,9 @@ const UpdateUser = ({ userId, fetchUserApi, updateUserApi }) => {
               <SelectValue placeholder="Select gender" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
+              <SelectItem value="Male">Male</SelectItem>
+              <SelectItem value="Female">Female</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>
           {formik.errors.gender && formik.touched.gender && (
@@ -292,9 +270,18 @@ const UpdateUser = ({ userId, fetchUserApi, updateUserApi }) => {
           )}
         </div>
 
-        <Button type="submit" className="w-auto px-4 py-2 text-sm">
-          Update
-        </Button>
+        <div className="flex gap-4">
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? "Updating..." : "Update User"}
+          </Button>
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={() => navigate("/admin/users")}
+          >
+            Cancel
+          </Button>
+        </div>
       </form>
     </div>
   );

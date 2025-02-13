@@ -1,6 +1,6 @@
 "use client";
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreHorizontal } from "lucide-react";
@@ -24,19 +24,24 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogPortal,
+  AlertDialogOverlay,
 } from "@/components/ui/alert-dialog";
 
+import { useDispatch } from "react-redux";
+import { deleteUser, getAllUsers } from "@/lib/slices/userSlice";
+
 export type User = {
-  id: string;
+  _id: string;
   name: string;
-  phone: string;
-  dateOfBirth: string;
+  phone?: string[];
+  birthday: Date;
   gender: string;
 };
 
 export const columns: ColumnDef<User>[] = [
   {
-    accessorKey: "id",
+    accessorKey: "_id",
     header: "ID",
   },
   {
@@ -46,10 +51,30 @@ export const columns: ColumnDef<User>[] = [
   {
     accessorKey: "phone",
     header: "PHONE",
+    cell: ({ row }) => {
+      const phones = row.getValue("phone");
+      return Array.isArray(phones) ? phones.join(", ") : phones;
+    },
   },
   {
-    accessorKey: "dateOfBirth",
+    accessorKey: "birthday",
     header: "DATE OF BIRTH",
+    cell: ({ row }) => {
+      let dateValue = row.getValue("birthday");
+      if (
+        typeof dateValue === "object" &&
+        dateValue !== null &&
+        "$date" in dateValue
+      ) {
+        dateValue = dateValue.$date;
+      }
+
+      if (typeof dateValue !== "string") {
+        return "Invalid Date";
+      }
+
+      return new Date(dateValue).toLocaleDateString();
+    },
   },
   {
     accessorKey: "gender",
@@ -59,14 +84,13 @@ export const columns: ColumnDef<User>[] = [
     id: "actions",
     cell: ({ row }) => {
       const [isDialogOpen, setIsDialogOpen] = useState(false);
+      const dispatch = useDispatch<any>();
 
       const handleDelete = () => {
-        console.log("Deleting user:", row.original.id);
+        dispatch(deleteUser(row.original._id)).then(() => {
+          dispatch(getAllUsers());
+        });
         setIsDialogOpen(false);
-      };
-
-      const handleOpenChange = (open) => {
-        setIsDialogOpen(open);
       };
 
       return (
@@ -81,36 +105,45 @@ export const columns: ColumnDef<User>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Link to={"/admin/users/update-user/"}>Update</Link>
+              <DropdownMenuItem asChild>
+                <Link to={`/admin/users/update-user/${row.original._id}`}>
+                  Update
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuItem
-                onSelect={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   setIsDialogOpen(true);
                 }}
               >
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
-            <AlertDialog open={isDialogOpen} onOpenChange={handleOpenChange}>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete}>
-                    Confirm
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
           </DropdownMenu>
+
+          {isDialogOpen && (
+            <AlertDialog open onOpenChange={setIsDialogOpen}>
+              <AlertDialogPortal>
+                <AlertDialogOverlay />
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogAction onClick={handleDelete}>
+                      Confirm
+                    </AlertDialogAction>
+                    <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
+                      Cancel
+                    </AlertDialogCancel>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogPortal>
+            </AlertDialog>
+          )}
         </>
       );
     },

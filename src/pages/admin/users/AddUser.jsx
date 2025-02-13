@@ -20,16 +20,22 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { createUser } from "@/lib/slices/userSlice";
 
 const AddUser = () => {
   const [date, setDate] = useState(new Date());
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues: {
       name: "",
       email: "",
-      dob: "",
+      phone: "",
+      birthday: "", 
       gender: "",
       avatar: null,
     },
@@ -38,13 +44,9 @@ const AddUser = () => {
         .required("Name is required!")
         .min(2, "Name must be at least 2 characters!")
         .max(50, "Name can't be longer than 50 characters!"),
-      // phone: Yup.string()
-      //   .required("Phone is required!")
-      //   .matches(/^[0-9]+$/, "Phone number must contain only digits!")
-      //   .min(10, "Phone number must be at least 10 digits!")
-      //   .max(15, "Phone number can't exceed 15 digits!"),
       email: Yup.string().required("Email is required!"),
-      dob: Yup.date().required("Date of birth is required!"),
+      phone: Yup.string().required("Phone is required!"),
+      birthday: Yup.date().required("Date of birth is required!"),
       gender: Yup.string().required("Gender is required!"),
       avatar: Yup.mixed()
         .required("Avatar is required!")
@@ -53,11 +55,30 @@ const AddUser = () => {
           "Unsupported file format. Only images are allowed.",
           (value) =>
             !value ||
-            (value && ["image/jpeg", "image/png", "image/gif"].includes(value.type))
+            (value &&
+              ["image/jpeg", "image/png", "image/gif"].includes(value.type))
         ),
     }),
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const formData = new FormData();
+        formData.append("name", values.name);
+        formData.append("email", values.email);
+        formData.append("phone", values.phone);
+        formData.append("birthday", values.birthday);
+        formData.append("gender", values.gender);
+        formData.append("avatar", values.avatar);
+
+       
+        console.log(formData)
+        await dispatch(createUser(formData));
+        alert("User created successfully!");
+        navigate("/admin/users");
+      } catch (error) {
+        console.error("Failed to create user:", error);
+      } finally {
+        setSubmitting(false);
+      }
     },
   });
 
@@ -84,10 +105,7 @@ const AddUser = () => {
     "December",
   ];
   const currentYear = new Date().getFullYear();
-  const years = Array.from(
-    { length: currentYear - (currentYear - 100) + 1 },
-    (_, i) => currentYear - 100 + i
-  );
+  const years = Array.from({ length: 101 }, (_, i) => currentYear - 100 + i);
 
   const handleMonthChange = (month) => {
     const newDate = setMonth(date, months.indexOf(month));
@@ -95,26 +113,26 @@ const AddUser = () => {
   };
 
   const handleYearChange = (year) => {
-    const newDate = setYear(date, parseInt(year));
+    const newDate = setYear(date, parseInt(year, 10));
     setDate(newDate);
   };
 
   const handleSelect = (selectedDate) => {
     if (selectedDate) {
       setDate(selectedDate);
+     
       const formattedDate = `${selectedDate.getFullYear()}-${(
         "0" + (selectedDate.getMonth() + 1)
       ).slice(-2)}-${("0" + selectedDate.getDate()).slice(-2)}`;
-      formik.setFieldValue("dob", formattedDate);
+      formik.setFieldValue("birthday", formattedDate);
     }
   };
 
   return (
     <div className="p-6 space-y-4">
       <form onSubmit={formik.handleSubmit} className="space-y-4">
-
-            {/* Avatar Field */}
-            <div>
+        {/* Avatar Field */}
+        <div>
           <Label htmlFor="avatar">Avatar</Label>
           <Input
             id="avatar"
@@ -150,7 +168,7 @@ const AddUser = () => {
           )}
         </div>
 
-        {/* Phone Field */}
+        {/* Email Field */}
         <div>
           <Label htmlFor="email">Email</Label>
           <Input
@@ -165,26 +183,41 @@ const AddUser = () => {
           )}
         </div>
 
+        {/* Phone Field */}
+        <div>
+          <Label htmlFor="phone">Phone</Label>
+          <Input
+            id="phone"
+            type="text"
+            name="phone"
+            value={formik.values.phone}
+            onChange={formik.handleChange}
+          />
+          {formik.errors.phone && formik.touched.phone && (
+            <p className="text-red-500 text-sm">{formik.errors.phone}</p>
+          )}
+        </div>
+
         {/* Date of Birth Field */}
         <div>
-          <Label htmlFor="dob">Date of Birth</Label>
+          <Label htmlFor="birthday">Date of Birth</Label>
           <Popover>
             <PopoverTrigger asChild>
               <Button
                 variant="outline"
                 className={cn(
                   "w-full justify-start text-left font-normal",
-                  !formik.values.dob && "text-muted-foreground"
+                  !formik.values.birthday && "text-muted-foreground"
                 )}
               >
                 <CalendarIcon className="mr-2" />
-                {formik.values.dob
-                  ? format(new Date(formik.values.dob), "PPP")
+                {formik.values.birthday
+                  ? format(new Date(formik.values.birthday), "PPP")
                   : "Pick a date"}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0">
-              <div className="flex justify-around">
+              <div className="flex justify-around p-2">
                 <Select
                   onValueChange={handleMonthChange}
                   value={months[getMonth(date)]}
@@ -216,7 +249,6 @@ const AddUser = () => {
                   </SelectContent>
                 </Select>
               </div>
-
               <Calendar
                 mode="single"
                 selected={date}
@@ -230,8 +262,8 @@ const AddUser = () => {
               />
             </PopoverContent>
           </Popover>
-          {formik.errors.dob && formik.touched.dob && (
-            <p className="text-red-500 text-sm">{formik.errors.dob}</p>
+          {formik.errors.birthday && formik.touched.birthday && (
+            <p className="text-red-500 text-sm">{formik.errors.birthday}</p>
           )}
         </div>
 
@@ -246,9 +278,10 @@ const AddUser = () => {
               <SelectValue placeholder="Select gender" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="male">Male</SelectItem>
-              <SelectItem value="female">Female</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
+              {/* Updated values to match backend enum */}
+              <SelectItem value="Male">Male</SelectItem>
+              <SelectItem value="Female">Female</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
           </Select>
           {formik.errors.gender && formik.touched.gender && (
