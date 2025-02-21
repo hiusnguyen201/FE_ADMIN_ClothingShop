@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,7 +13,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsRight,
- } from "lucide-react";
+} from "lucide-react";
 
 const TableBottom = ({
   currentPage,
@@ -23,50 +22,33 @@ const TableBottom = ({
   totalCount,
   onPageChange,
   onPageSizeChange,
+  isFirst,
+  isLast,
+  isNext,
+  isPrevious,
 }) => {
-
   const tableOffset = (currentPage - 1) * pageSize + 1;
   const tableLimit = Math.min(currentPage * pageSize, totalCount);
 
-  const handlePrevious = () => {
-    if (currentPage > 1) {
-      onPageChange(currentPage - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) {
-      onPageChange(currentPage + 1);
-    }
-  };
-
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginTop: "16px",
-        gap: "16px",
-      }}
-    >
-      {/* Displaying the range of entries */}
-      <div style={{ flex: 1, textAlign: "left" }}>
-        <p style={{ margin: 0 }}>
+    <div className="flex justify-between items-center mt-4 gap-4">
+     
+      <div className="flex-1 text-left">
+        <p className="text-sm">
           Showing {tableOffset} to {tableLimit} of {totalCount} entries
         </p>
       </div>
 
-      {/* Rows per page selector */}
+     
       <div
-        style={{
-          flex: 1,
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-        }}
+      style={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+      }} 
       >
-        <p style={{ margin: 0 }}>Rows per page</p>
+        <p className="text-sm">Rows per page</p>
         <Select
           value={String(pageSize)}
           onValueChange={(value) => onPageSizeChange(Number(value))}
@@ -84,29 +66,39 @@ const TableBottom = ({
         </Select>
       </div>
 
-      {/* Pagination buttons */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "16px",
-        }}
-      >
+     
+      <div className="flex items-center gap-2">
         <Button
           variant="outline"
           size="sm"
-          onClick={handlePrevious}
-          disabled={currentPage <= 1}
+          onClick={() => onPageChange(1)}
+          disabled={isFirst}
         >
-          <ChevronLeft/>
+          <ChevronsLeft />
         </Button>
         <Button
           variant="outline"
           size="sm"
-          onClick={handleNext}
-          disabled={currentPage >= totalPages}
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={!isPrevious}
         >
-          <ChevronRight/>
+          <ChevronLeft />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={!isNext}
+        >
+          <ChevronRight />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => onPageChange(totalPages)}
+          disabled={isLast}
+        >
+          <ChevronsRight />
         </Button>
       </div>
     </div>

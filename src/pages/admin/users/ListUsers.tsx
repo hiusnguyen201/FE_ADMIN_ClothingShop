@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { GENDER } from "./constant";
 import { useRoleTableFilters } from "./useRoleTableFilters";
 import { User, columns } from "./columns";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -67,19 +67,32 @@ export default function ListUsers() {
     changePageSize,
   } = useRoleTableFilters();
 
-  const toggleGender = (gender: string) => {
-    setGenderFilter((prev) => {
-      const newFilter = prev.includes(gender)
-        ? prev.filter((item) => item !== gender)
-        : [...prev, gender];
-      return newFilter;
-    });
-  };
+  const toggleGender = useCallback(
+    (gender: string) => {
+      setGenderFilter((prev) =>
+        prev.includes(gender)
+          ? prev.filter((item) => item !== gender)
+          : [...prev, gender]
+      );
+    },
+    [setGenderFilter]
+  );
 
-  const handlePageSizeChange = (newSize: number) => {
-    setChangePageSize(newSize);
-    setMeta((prev) => ({ ...prev, page: 1, limit: newSize }));
-  };
+  const handlePageSizeChange = useCallback(
+    (newSize: number) => {
+      setChangePageSize(newSize);
+      setMeta((prev) => ({
+        ...prev,
+        page: 1,
+        limit: newSize,
+      }));
+    },
+    [setChangePageSize]
+  );
+
+  const handlePageChange = useCallback((newPage: number) => {
+    setMeta((prev) => ({ ...prev, page: newPage }));
+  }, []);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -94,9 +107,7 @@ export default function ListUsers() {
         const resultAction = await dispatch(getAllUsers(filters));
         if (getAllUsers.fulfilled.match(resultAction)) {
           const responseData = resultAction.payload;
-          if (responseData && responseData.data) {
-            // setData(responseData.data.list);
-            // setMeta(responseData.data.meta);
+          if (responseData?.data) {
             let userList = responseData.data.list;
 
             if (genderFilter.length > 0) {
@@ -110,12 +121,20 @@ export default function ListUsers() {
             }
 
             setData(userList);
-            setMeta((prev) => ({
+
+            setMeta({
               ...responseData.data.meta,
               totalPage: Math.ceil(
                 responseData.data.meta.totalCount / changePageSize
               ),
-            }));
+              isFirst: responseData.data.meta.page === 1,
+              isLast:
+                responseData.data.meta.page ===
+                responseData.data.meta.totalPage,
+              isNext:
+                responseData.data.meta.page < responseData.data.meta.totalPage,
+              isPrevious: responseData.data.meta.page > 1,
+            });
           } else {
             setData([]);
           }
@@ -137,7 +156,6 @@ export default function ListUsers() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  // (Optional) Show a loading state when no data is present.
   if (data === null) {
     return <div>Loading...</div>;
   }
@@ -178,7 +196,6 @@ export default function ListUsers() {
               <DropdownMenuItem
                 key={String(gender)}
                 onClick={(e) => {
-                  // Prevent the default behavior so the menu doesn't close automatically
                   e.preventDefault();
                   toggleGender(gender);
                 }}
@@ -203,10 +220,12 @@ export default function ListUsers() {
         totalPages={meta.totalPage}
         pageSize={changePageSize}
         totalCount={meta.totalCount}
-        onPageChange={(newPage: number) =>
-          setMeta((prev) => ({ ...prev, page: newPage }))
-        }
+        onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
+        isFirst={meta.isFirst}
+        isLast={meta.isLast}
+        isNext={meta.isNext}
+        isPrevious={meta.isPrevious}
       />
     </div>
   );

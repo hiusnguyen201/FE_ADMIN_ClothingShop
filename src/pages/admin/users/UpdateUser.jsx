@@ -23,7 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { updateUser } from "@/lib/slices/userSlice";
+import { updateUser, getUserById } from "@/lib/slices/userSlice";
 
 const UpdateUser = () => {
   const { userId } = useParams();
@@ -33,6 +33,10 @@ const UpdateUser = () => {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const { currentUser, isLoading, error } = useSelector((state) => state.users);
 
+  useEffect(() => {
+    dispatch(getUserById(userId));
+  }, [dispatch, userId]);
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -41,6 +45,7 @@ const UpdateUser = () => {
       gender: "",
       avatar: null,
     },
+    
     validationSchema: Yup.object({
       name: Yup.string()
         .required("Name is required!")

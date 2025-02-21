@@ -4,7 +4,7 @@ const PREFIX = "/users";
 export const getAllUsers = (filters = {}) => {
   const params = new URLSearchParams({
     ...filters,
-    _: Date.now().toString(),
+    // _: Date.now().toString(),
   });
   return apiInstance.get(`${PREFIX}/get-users?${params}`);
 };

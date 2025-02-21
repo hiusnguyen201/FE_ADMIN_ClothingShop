@@ -65,15 +65,25 @@ const AddUser = () => {
         formData.append("name", values.name);
         formData.append("email", values.email);
         formData.append("phone", values.phone);
-        formData.append("birthday", values.birthday);
+        
+        // Convert date object to string format
+        if (values.birthday) {
+          formData.append("birthday", new Date(values.birthday).toISOString());
+        }
+        
         formData.append("gender", values.gender);
-        formData.append("avatar", values.avatar);
+        
+        if (values.avatar) {
+          formData.append("avatar", values.avatar);
+        }
 
-       
-        console.log(formData)
+        // console.log("Form Data Entries:");
+        // for (let pair of formData.entries()) {
+        //   console.log(pair[0] + ": " + pair[1]);
+        // }
         await dispatch(createUser(formData));
         alert("User created successfully!");
-        navigate("/admin/users");
+        // navigate("/admin/users");
       } catch (error) {
         console.error("Failed to create user:", error);
       } finally {

@@ -40,13 +40,17 @@ export type User = {
 };
 
 export const columns: ColumnDef<User>[] = [
-  {
-    accessorKey: "_id",
-    header: "ID",
-  },
+  // {
+  //   accessorKey: "_id",
+  //   header: "ID",
+  // },
   {
     accessorKey: "name",
     header: "NAME",
+  },
+  {
+    accessorKey: "email",
+    header: "EMAIL",
   },
   {
     accessorKey: "phone",
@@ -86,11 +90,15 @@ export const columns: ColumnDef<User>[] = [
       const [isDialogOpen, setIsDialogOpen] = useState(false);
       const dispatch = useDispatch<any>();
 
-      const handleDelete = () => {
-        dispatch(deleteUser(row.original._id)).then(() => {
-          dispatch(getAllUsers());
-        });
-        setIsDialogOpen(false);
+      const handleDelete = async () => {
+        try {
+          await dispatch(deleteUser(row.original._id)).unwrap();
+          window.location.reload();
+        } catch (error) {
+          console.error("Failed to delete user:", error);
+        } finally {
+          setIsDialogOpen(false);
+        }
       };
 
       return (
@@ -110,39 +118,37 @@ export const columns: ColumnDef<User>[] = [
                   Update
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsDialogOpen(true);
-                }}
-              >
+              <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           {isDialogOpen && (
-            <AlertDialog open onOpenChange={setIsDialogOpen}>
-              <AlertDialogPortal>
-                <AlertDialogOverlay />
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogAction onClick={handleDelete}>
-                      Confirm
-                    </AlertDialogAction>
-                    <AlertDialogCancel onClick={() => setIsDialogOpen(false)}>
-                      Cancel
-                    </AlertDialogCancel>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialogPortal>
-            </AlertDialog>
+            <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+              <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+              {/* Modal content */}
+              <div className="z-50 w-full max-w-lg rounded-lg border bg-white p-6 shadow-lg">
+                <h3 className="text-lg font-semibold">Are you sure?</h3>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  This action cannot be undone.
+                </p>
+                <div className="mt-4 flex justify-end gap-2">
+                  <button
+                    onClick={() => setIsDialogOpen(false)}
+                    className="inline-flex items-center justify-center rounded-md border border-transparent bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 focus:outline-none"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDelete}
+                    className="inline-flex items-center justify-center rounded-md border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 focus:outline-none"
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </>
       );

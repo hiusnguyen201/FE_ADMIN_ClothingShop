@@ -32,7 +32,6 @@ export const getAllUsers = createAsyncThunk(
   async (filters = {}) => {
     try {
       const { data } = await userApi.getAllUsers(filters);
-      console.log("getAllUsers API response:", data);
       return data || [];
     } catch (error) {
       throw error?.response?.data || error.message;
