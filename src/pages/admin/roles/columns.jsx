@@ -19,7 +19,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
+import { useAppDispatch } from "@/lib/hooks";
+import { activeRoleById, deactiveRoleById } from "@/lib/slices/role.slice";
 
 export const columns = [
   {
@@ -57,7 +58,7 @@ export const columns = [
         );
       }
       return (
-        <Badge variant="outline" className="bg-red-500 text-white">
+        <Badge variant="outline" className="bg-yellow-500 text-white">
           Inactive
         </Badge>
       );
@@ -96,10 +97,10 @@ export const columns = [
       <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger className="max-w-[200px] truncate overflow-hidden">
-            {row.getValue("name")}
+            {row.getValue("description")}
           </TooltipTrigger>
           <TooltipContent>
-            <p>{row.getValue("name")}</p>
+            <p>{row.getValue("description")}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -120,10 +121,11 @@ export const columns = [
       const handleCloseDialog = () => {
         setIsDialogOpen(false);
       };
+      const dispatch = useAppDispatch();
 
       return (
         <div>
-          <DropdownMenu >
+          <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">Open menu</span>
@@ -133,13 +135,27 @@ export const columns = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <Link
-                to={`/admin/roles/edit/${role.name}`}
-                state={{ id: role._id }}
-              >
-                <DropdownMenuItem>Edit</DropdownMenuItem>
+              <Link to={`/admin/roles/${role.name}`} state={{ id: role._id }}>
+                <DropdownMenuItem className="focus:bg-[#27A4F2] focus:text-white">Edit</DropdownMenuItem>
               </Link>
-              <DropdownMenuItem onClick={handleDeleteClick} >
+              {role.isActive ? (
+                <DropdownMenuItem className="focus:bg-yellow-400 focus:text-white"
+                  onClick={async () => {
+                    await dispatch(deactiveRoleById(role._id));
+                  }}
+                >
+                  Deactivate
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem className="focus:bg-green-400 focus:text-white"
+                  onClick={async () => {
+                    await dispatch(activeRoleById(role._id));
+                  }}
+                >
+                  Activate
+                </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={handleDeleteClick} className="focus:bg-red-500 focus:text-white">
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>

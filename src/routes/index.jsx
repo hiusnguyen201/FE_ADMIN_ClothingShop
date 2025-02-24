@@ -86,7 +86,7 @@ export function Router() {
           element: <AddRolePage />,
         },
         {
-          path: "roles/edit/:name",
+          path: "roles/:name",
           element: <CheckRole />,
         },
         {

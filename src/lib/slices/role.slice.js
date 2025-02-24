@@ -50,6 +50,20 @@ const roleSlice = createSlice({
       state.isLoading = false;
       state.error = null;
     },
+    activate: (state, action) => {
+      state.list = state.list.map((item) =>
+        item._id === action.payload ? { ...item, isActive: true } : item
+      );
+      state.isLoading = false;
+      state.error = null;
+    },
+    deactivate: (state, action) => {
+      state.list = state.list.map((item) =>
+        item._id === action.payload ? { ...item, isActive: false } : item
+      );
+      state.isLoading = false;
+      state.error = null;
+    },
   },
 });
 
@@ -63,6 +77,8 @@ export const {
   create,
   update,
   remove,
+  activate,
+  deactivate,
 } = roleSlice.actions;
 
 //get all
@@ -118,6 +134,30 @@ export const deleteRoleById = (id) => async (dispatch) => {
     dispatch(startLoading());
     await roleApi.deleteRoleById(id);
     dispatch(remove(id));
+  } catch (err) {
+    dispatch(hasError(err?.response?.data || err));
+  }
+};
+
+//active
+export const activeRoleById = (id) => async (dispatch) => {
+  try {
+    dispatch(startLoading());
+    await roleApi.activeRoleById(id);
+    dispatch(activate(id));
+    dispatch(hasError(null));
+  } catch (err) {
+    dispatch(hasError(err?.response?.data || err));
+  }
+};
+
+//deactive
+export const deactiveRoleById = (id) => async (dispatch) => {
+  try {
+    dispatch(startLoading());
+    await roleApi.deactiveRoleById(id);
+    dispatch(deactivate(id));
+    dispatch(hasError(null));
   } catch (err) {
     dispatch(hasError(err?.response?.data || err));
   }

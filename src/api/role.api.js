@@ -25,3 +25,11 @@ export const checkRoleName = (name) =>{
 export const deleteRoleById = (id) => {
   return apiInstance.delete(PREFIX + `/remove-role-by-id/${id}`)
 }
+
+export const activeRoleById = (id) => {
+  return apiInstance.patch(PREFIX + `/activate-role-by-id/${id}`)
+}
+
+export const deactiveRoleById = (id) => {
+  return apiInstance.patch(PREFIX + `/deactivate-role-by-id/${id}`)
+}

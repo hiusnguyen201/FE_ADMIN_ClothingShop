@@ -48,7 +48,7 @@ export default function AddRolePage() {
   const navigate = useNavigate();
   const { error, isLoading } = useSelector((state) => state.role);
   const { list: permissions } = useSelector((state) => state.permission);
-  const [tab, setTab] = React.useState("roleinfo");
+  const [tab, setTab] = React.useState("roleInfo");
 
   React.useEffect(() => {
     dispatch(
@@ -57,7 +57,7 @@ export default function AddRolePage() {
       })
     );
   }, []);
-
+  
   const formik = useFormik({
     initialValues: {
       icon: "",
@@ -85,7 +85,6 @@ export default function AddRolePage() {
       await dispatch(createRole(filteredValues));
     },
   });
-  console.log(formik.values);
 
   const {
     setFieldValue,
@@ -108,7 +107,7 @@ export default function AddRolePage() {
         description: "Created role unsuccessfully",
         variant: "destructive",
       });
-      setFieldError("name", error.message);
+      setFieldError("icon", error.message);
     }
     if (error === null) {
       toast({
@@ -138,10 +137,10 @@ export default function AddRolePage() {
       <div className="flex justify-center h-full p-4 md:px-6">
         <Tabs className="w-[400px]" value={tab} onValueChange={setTab}>
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="roleinfo">INFO</TabsTrigger>
-            <TabsTrigger value="rolepermission">PERMISSION</TabsTrigger>
+            <TabsTrigger value="roleInfo">INFO</TabsTrigger>
+            <TabsTrigger value="rolePermission">PERMISSION</TabsTrigger>
           </TabsList>
-          <TabsContent value="roleinfo">
+          <TabsContent value="roleInfo">
             <Card className="w-full max-w-5xl">
               <CardHeader>
                 <CardTitle>Add Roles</CardTitle>
@@ -152,7 +151,7 @@ export default function AddRolePage() {
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="icon">Icon</Label>
                     <UploadImage
-                      limitFile={4}
+                      limitFile={1}
                       files={formik.values.icon}
                       onValueChange={(files) => {
                         setFieldValue("icon", files);
@@ -205,7 +204,7 @@ export default function AddRolePage() {
                 />
                 <Button
                   type="button"
-                  onClick={() => setTab("rolepermission")}
+                  onClick={() => setTab("rolePermission")}
                   variant="outline"
                 >
                   Next
@@ -213,7 +212,7 @@ export default function AddRolePage() {
               </CardFooter>
             </Card>
           </TabsContent>
-          <TabsContent value="rolepermission">
+          <TabsContent value="rolePermission">
             <Card className="w-full max-w-5xl">
               <CardHeader>
                 <CardTitle>Add Permissions</CardTitle>
@@ -275,7 +274,7 @@ export default function AddRolePage() {
               <CardFooter className="flex justify-between">
                 <Button
                   type="button"
-                  onClick={() => setTab("roleinfo")}
+                  onClick={() => setTab("roleInfo")}
                   variant="outline"
                 >
                   Prev
@@ -298,7 +297,7 @@ export default function AddRolePage() {
               setFieldValue("isActive", true);
               console.log(formik.values);
             }}
-            className="bg-green-500 text-white"
+            className="bg-green-400 text-white"
           >
             Create with status Active
           </Button>
@@ -307,7 +306,7 @@ export default function AddRolePage() {
             onClick={() => {
               setFieldValue("isActive", false);
             }}
-            className="bg-yellow-500 text-white"
+            className="bg-yellow-400 text-white"
           >
             Create with status Inactive
           </Button>

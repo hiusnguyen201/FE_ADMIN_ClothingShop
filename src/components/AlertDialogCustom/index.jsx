@@ -11,8 +11,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 
 export default function AlertDialogCustom({alertlink, alerttrigger,alerttitle,alertdescription}) {
+  const navigate = useNavigate();
   return (
     <>
       <AlertDialog>
@@ -28,10 +31,8 @@ export default function AlertDialogCustom({alertlink, alerttrigger,alerttitle,al
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>
-              <div>
-                <Link to={alertlink}>Continue</Link>
-              </div>
+            <AlertDialogAction onClick={() => {navigate(alertlink)}}>
+              Continue
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
