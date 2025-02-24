@@ -31,6 +31,11 @@ import { useAppDispatch } from "@/lib/hooks";
 import { checkRoleName } from "@/api/role.api";
 import { useDebouncedCallback } from "use-debounce";
 
+const statusCondition = [
+  { title: "Active", value: "Active" },
+  { title: "Inactive", value: "Inactive" },
+];
+
 const UpdateRoleSchema = Yup.object().shape({
   icon: Yup.string(),
   name: Yup.string()
@@ -203,9 +208,9 @@ export default function EditRolePage({ data, fakePermissions }) {
                       <SelectValue placeholder={formik.values.status} />
                     </SelectTrigger>
                     <SelectContent>
-                      {Object.values(ROLE_STATUS).map((item) => (
-                        <SelectItem key={item} value={item}>
-                          {item}
+                      {statusCondition.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.title}
                         </SelectItem>
                       ))}
                     </SelectContent>

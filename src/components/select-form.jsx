@@ -20,7 +20,7 @@ export default function SelectForm({ filter, setFilter, searchParams ,data, name
       {data.map((status) => {
           return (
             <DropdownMenuCheckboxItem
-              key={status.value}
+              key={status.title}
               className="capitalize"
               value={status.value}
               checked={filter.statusfilter === status.value}
