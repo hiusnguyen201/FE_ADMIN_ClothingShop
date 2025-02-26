@@ -115,3 +115,14 @@ nav ::-webkit-scrollbar-thumb {
   font-weight: bold;
   margin-bottom: 16px;
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

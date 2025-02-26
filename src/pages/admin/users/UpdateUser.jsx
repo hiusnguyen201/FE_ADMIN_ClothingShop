@@ -13,6 +13,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { format, getMonth, getYear, setMonth, setYear } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import {
@@ -30,6 +31,7 @@ const UpdateUser = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [date, setDate] = useState(new Date());
+  const [showAlert, setShowAlert] = useState(false)
   const [avatarPreview, setAvatarPreview] = useState(null);
   const { currentUser, isLoading, error } = useSelector((state) => state.users);
 
@@ -74,7 +76,7 @@ const UpdateUser = () => {
         }
 
         await dispatch(updateUser({ id: userId, formData })).unwrap();
-        navigate("/admin/users");
+        setShowAlert(true)
       } catch (error) {
         console.error("Failed to update user:", error);
       }
@@ -140,6 +142,14 @@ const UpdateUser = () => {
 
   return (
     <div className="p-6 space-y-4">
+      {showAlert && (
+        <Alert className="bg-green-100 border-green-500 text-green-800">
+          <AlertTitle>Success!</AlertTitle>
+          <AlertDescription>
+            User updated successfully.
+          </AlertDescription>
+        </Alert>
+      )}
       <h2 className="text-2xl font-bold">Update User</h2>
       {error && <div className="text-red-500">{error}</div>}
       

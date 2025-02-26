@@ -93,7 +93,6 @@ export default function ListUsers() {
   const handlePageChange = useCallback((newPage: number) => {
     setMeta((prev) => ({ ...prev, page: newPage }));
   }, []);
-
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -101,32 +100,17 @@ export default function ListUsers() {
           keyword: searchQuery,
           limit: changePageSize,
           page: meta.page,
-          gender: genderFilter.join(","),
+          gender: genderFilter.length > 0 ? genderFilter.join(",") : "", // Send to API
         };
 
         const resultAction = await dispatch(getAllUsers(filters));
+
         if (getAllUsers.fulfilled.match(resultAction)) {
           const responseData = resultAction.payload;
           if (responseData?.data) {
-            let userList = responseData.data.list;
-
-            if (genderFilter.length > 0) {
-              userList = userList.filter((user: User) =>
-                genderFilter.some(
-                  (filterValue) =>
-                    String(user.gender).toLowerCase() ===
-                    filterValue.toLowerCase()
-                )
-              );
-            }
-
-            setData(userList);
-
+            setData(responseData.data.list);
             setMeta({
               ...responseData.data.meta,
-              totalPage: Math.ceil(
-                responseData.data.meta.totalCount / changePageSize
-              ),
               isFirst: responseData.data.meta.page === 1,
               isLast:
                 responseData.data.meta.page ===
@@ -135,8 +119,6 @@ export default function ListUsers() {
                 responseData.data.meta.page < responseData.data.meta.totalPage,
               isPrevious: responseData.data.meta.page > 1,
             });
-          } else {
-            setData([]);
           }
         }
       } catch (error) {
@@ -144,10 +126,8 @@ export default function ListUsers() {
         setData([]);
       }
     };
-
     fetchUsers();
   }, [dispatch, searchQuery, genderFilter, changePageSize, meta.page]);
-
   const table = useReactTable({
     data: data || [],
     columns,

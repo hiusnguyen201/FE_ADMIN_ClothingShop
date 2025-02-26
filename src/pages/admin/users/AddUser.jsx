@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import {
   Popover,
   PopoverContent,
@@ -27,6 +28,7 @@ import { createUser } from "@/lib/slices/userSlice";
 const AddUser = () => {
   const [date, setDate] = useState(new Date());
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [showAlert, setShowAlert] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -82,8 +84,7 @@ const AddUser = () => {
         //   console.log(pair[0] + ": " + pair[1]);
         // }
         await dispatch(createUser(formData));
-        alert("User created successfully!");
-        // navigate("/admin/users");
+        setShowAlert(true)
       } catch (error) {
         console.error("Failed to create user:", error);
       } finally {
@@ -140,6 +141,14 @@ const AddUser = () => {
 
   return (
     <div className="p-6 space-y-4">
+       {showAlert && (
+          <Alert className="bg-green-100 border-green-500 text-green-800">
+            <AlertTitle>Success!</AlertTitle>
+            <AlertDescription>
+              User created successfully.
+            </AlertDescription>
+          </Alert>
+        )}
       <form onSubmit={formik.handleSubmit} className="space-y-4">
         {/* Avatar Field */}
         <div>
