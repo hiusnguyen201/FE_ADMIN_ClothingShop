@@ -36,7 +36,7 @@ export default function DataTableCustom({
 }) {
   return (
     <>
-      <div className="rounded-md border flex flex-col w-[400px] sm:w-auto h-96 overflow-y-auto">
+      <div className="rounded-md border flex flex-col  sm:w-auto h-96 overflow-y-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

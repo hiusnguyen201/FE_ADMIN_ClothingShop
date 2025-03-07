@@ -26,13 +26,10 @@ import { useDebouncedCallback } from "use-debounce";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { getAllPermissions } from "@/lib/slices/permission.slice";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Textarea } from "@/components/ui/textarea";
+import { DiamondMinusIcon, DiamondPlusIcon, Trash2Icon } from "lucide-react";
 
 const CreateRoleSchema = Yup.object().shape({
-  icon: Yup.array().of(
-    Yup.mixed().test("icon", "must be a file", (value) => {
-      return value instanceof File;
-    })
-  ),
   name: Yup.string()
     .required("Name is required")
     .min(3, "too short!")
@@ -57,22 +54,19 @@ export default function AddRolePage() {
       })
     );
   }, []);
-  
+
   const formik = useFormik({
     initialValues: {
-      icon: "",
       name: "",
       description: "",
       permissions: [],
       isActive: false,
     },
     validationSchema: CreateRoleSchema,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: true,
     validateOnMount: true,
     onSubmit: async (values) => {
-      console.log("values", values);
-
       const filteredValues = Object.fromEntries(
         Object.entries(values).filter(
           ([_, value]) =>
@@ -104,7 +98,7 @@ export default function AddRolePage() {
     if (error !== null) {
       toast({
         title: "Error!",
-        description: "Created role unsuccessfully",
+        description: "Created role failed, Please try again!",
         variant: "destructive",
       });
       setFieldError("icon", error.message);
@@ -149,22 +143,9 @@ export default function AddRolePage() {
               <CardContent>
                 <div className="grid w-full gap-4">
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="icon">Icon</Label>
-                    <UploadImage
-                      limitFile={1}
-                      files={formik.values.icon}
-                      onValueChange={(files) => {
-                        setFieldValue("icon", files);
-                      }}
-                      oldPicture={formik.values.icon}
-                    />
-                    {touched.icon && errors.icon && (
-                      <p className="text-red-500 text-sm">{errors.icon}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="name">Name</Label>
-                    <Input
+                    <Textarea
+                      placeholder="Type your role name here"
                       id="name"
                       name="name"
                       type="text"
@@ -181,7 +162,8 @@ export default function AddRolePage() {
 
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="description">Description</Label>
-                    <Input
+                    <Textarea
+                      placeholder="Type your role description here"
                       id="description"
                       name="description"
                       type="text"
@@ -286,8 +268,15 @@ export default function AddRolePage() {
       </div>
       <div className="flex justify-between p-4 bg-gray-100">
         <div className="justify-start">
-          <Button type="button" className="bg-red-500 text-white">
-            Cancel
+          <Button
+            type="button"
+            className="bg-red-500 text-white"
+            onClick={() => {
+              resetForm(), navigate("/admin/roles");
+            }}
+          >
+            <Trash2Icon />
+            Delete
           </Button>
         </div>
         <div className="justify-end flex gap-4">
@@ -299,6 +288,7 @@ export default function AddRolePage() {
             }}
             className="bg-green-400 text-white"
           >
+            <DiamondPlusIcon />
             Create with status Active
           </Button>
           <Button
@@ -308,6 +298,7 @@ export default function AddRolePage() {
             }}
             className="bg-yellow-400 text-white"
           >
+            <DiamondMinusIcon />
             Create with status Inactive
           </Button>
         </div>

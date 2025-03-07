@@ -103,7 +103,7 @@ export default function RolesPage() {
         <div className="sm:flex items-center py-4 space-y-2 gap-2">
           <Input
             placeholder="Filter name..."
-            className="max-w-sm mt-2"
+            className=" mt-2"
             value={filter.keyword}
             onChange={(e) => {
               prevKeyword.current = filter.keyword;

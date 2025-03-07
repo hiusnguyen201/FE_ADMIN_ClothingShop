@@ -17,21 +17,15 @@ import _ from "lodash";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import UploadImage from "@/components/UploadImage";
-import { MultiSelect } from "@/components/MultiSelect";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { updateRoleById } from "@/lib/slices/role.slice";
 import { useAppDispatch } from "@/lib/hooks";
 import { checkRoleName } from "@/api/role.api";
 import { useDebouncedCallback } from "use-debounce";
+import { Textarea } from "@/components/ui/textarea";
 
 const UpdateRoleSchema = Yup.object().shape({
-  icon: Yup.array().of(
-    Yup.mixed().test("icon", "must be a file", (value) => {
-      return value instanceof File;
-    })
-  ),
   name: Yup.string()
     .required("Name is required")
     .min(3, "too short!")
@@ -50,35 +44,47 @@ export default function EditRolePage({ data, allPermissions }) {
 
   const formik = useFormik({
     initialValues: {
-      icon: data.icon || "",
       name: data.name || "",
       description: data.description || "",
       permissions: data.permissions || [],
       isActive: data.isActive || false,
     },
     validationSchema: UpdateRoleSchema,
-    validateOnChange: false,
+    validateOnChange: true,
     validateOnBlur: true,
+    validateOnMount: true,
     onSubmit: async (values) => {
       const changedValues = Object.fromEntries(
         Object.entries(values).filter(
           ([key, value]) =>
-            value !== data[key] &&
-            value !== "" &&
-            value !== null &&
-            value !== undefined &&
-            !(Array.isArray(value) && value.length === 0)
+            key === "isActive" || // Always include isActive
+            (value !== data[key] &&
+              value !== "" &&
+              value !== null &&
+              value !== undefined &&
+              !(Array.isArray(value) && value.length === 0))
         )
       );
 
       if (Object.keys(changedValues).length > 0) {
         await dispatch(updateRoleById(data._id, changedValues));
-        toast({
-          title: "Success!",
-          description: "Role updated successfully.",
-          variant: "success",
-        });
-        navigate("/admin/roles");
+        if (error !== null) {
+          toast({
+            title: "Error!",
+            description: "Created role failed, Please try again!",
+            variant: "destructive",
+          });
+          setFieldError("icon", error.message);
+        }
+        if (error === null) {
+          toast({
+            title: "Success!",
+            description: "Role created successfully.",
+            variant: "success",
+          });
+          resetForm();
+          navigate(`/admin/roles`);
+        }
       }
     },
   });
@@ -94,17 +100,6 @@ export default function EditRolePage({ data, allPermissions }) {
     isSubmitting,
     setFieldError,
   } = formik;
-
-  React.useEffect(() => {
-    if (isLoading || !isSubmitting) return;
-    if (error !== null) {
-      toast({
-        title: "Error!",
-        description: "Updated role unsuccessfully",
-        variant: "destructive",
-      });
-    }
-  }, [error]);
 
   const checkRoleNameDebounce = useDebouncedCallback(async () => {
     const response = await checkRoleName(formik.values.name);
@@ -134,22 +129,8 @@ export default function EditRolePage({ data, allPermissions }) {
               <CardContent>
                 <div className="grid w-full gap-4">
                   <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="icon">Icon</Label>
-                    <UploadImage
-                      limitFile={4}
-                      files={formik.values.icon}
-                      onValueChange={(files) => {
-                        setFieldValue("icon", files);
-                      }}
-                      oldPicture={formik.values.icon}
-                    />
-                    {touched.icon && errors.icon && (
-                      <p className="text-red-500 text-sm">{errors.icon}</p>
-                    )}
-                  </div>
-                  <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="name">Name</Label>
-                    <Input
+                    <Textarea
                       id="name"
                       name="name"
                       type="text"
@@ -166,7 +147,7 @@ export default function EditRolePage({ data, allPermissions }) {
 
                   <div className="flex flex-col space-y-1.5">
                     <Label htmlFor="description">Description</Label>
-                    <Input
+                    <Textarea
                       id="description"
                       name="description"
                       type="text"
@@ -271,7 +252,11 @@ export default function EditRolePage({ data, allPermissions }) {
       </div>
       <div className="flex justify-between p-4 bg-gray-100">
         <div className="justify-start">
-          <Button type="button" className="bg-red-500 text-white">
+          <Button
+            type="button"
+            className="bg-red-500 text-white"
+            onClick={() => navigate("/admin/roles")}
+          >
             Cancel
           </Button>
         </div>
@@ -280,7 +265,6 @@ export default function EditRolePage({ data, allPermissions }) {
             type="submit"
             onClick={() => {
               setFieldValue("isActive", true);
-              console.log(formik.values);
             }}
             className="bg-green-400 text-white"
           >

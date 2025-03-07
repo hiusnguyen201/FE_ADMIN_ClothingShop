@@ -31,7 +31,7 @@ export default function DeleteRoleDialog({ role, onClose }) {
     } catch (error) {
         toast({
             title: "Error!",
-            description: "Delete role unsuccessfully",
+            description: "Delete role failed.",
             variant: "destructive",
           });
       
@@ -44,9 +44,9 @@ export default function DeleteRoleDialog({ role, onClose }) {
     <AlertDialog open={true} onOpenChange={onClose}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Delete Role</AlertDialogTitle>
+          <AlertDialogTitle>Delete: {role.name}</AlertDialogTitle>
           <AlertDialogDescription>
-            {role.isActive ? ("This role is currently active and cannot be deleted."):(`Are you sure you want to delete the role: ${role.name}`)}
+            {role.isActive ? ("This role is currently active and cannot be deleted."):(`Are you sure you want to delete this role?`)}
             
           </AlertDialogDescription>
         </AlertDialogHeader>

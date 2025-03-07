@@ -69,7 +69,7 @@ export default function UploadImage({
           >
             <img
               src={URL.createObjectURL(item)}
-              alt={`Preview ${index + 1}`}
+              
               className="w-20 h-auto object-cover"
             />
             <div>

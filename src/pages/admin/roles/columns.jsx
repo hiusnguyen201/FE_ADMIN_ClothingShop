@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MoreHorizontal } from "lucide-react";
+import {
+  DiamondMinusIcon,
+  DiamondPlusIcon,
+  MoreHorizontal,
+  Trash2Icon,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +51,24 @@ export const columns = [
     enableHiding: false,
   },
   {
+    accessorKey: "name",
+    header: "Name",
+    cell: ({ row }) => (
+      <TooltipProvider delayDuration={300}>
+        <Tooltip>
+          <TooltipTrigger className="max-w-[100px] truncate overflow-hidden">
+            {row.getValue("name")}
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{row.getValue("name")}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
     accessorKey: "isActive",
     header: "Status",
     cell: ({ row }) => {
@@ -64,31 +87,6 @@ export const columns = [
       );
     },
     enableHiding: false,
-  },
-  {
-    accessorKey: "icon",
-    header: "Icon",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        <img src={row.getValue("icon")} alt="Preview" className="w-8 h-8" />
-      </div>
-    ),
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => (
-      <TooltipProvider delayDuration={300}>
-        <Tooltip>
-          <TooltipTrigger className="max-w-[100px] truncate overflow-hidden">
-            {row.getValue("name")}
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>{row.getValue("name")}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    ),
   },
   {
     accessorKey: "description",
@@ -133,29 +131,43 @@ export const columns = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-              <DropdownMenuSeparator />
               <Link to={`/admin/roles/${role.name}`} state={{ id: role._id }}>
-                <DropdownMenuItem className="focus:bg-[#27A4F2] focus:text-white">Edit</DropdownMenuItem>
+                <DropdownMenuItem className=" focus:bg-[#f6f6f6]">
+                  Views Details
+                </DropdownMenuItem>
               </Link>
+              <Link to={`/admin/roles/${role.name}`} state={{ id: role._id }}>
+                <DropdownMenuItem className="focus:bg-[#f6f6f6]">
+                  Assign To Users
+                </DropdownMenuItem>
+              </Link>
+              <DropdownMenuSeparator />
               {role.isActive ? (
-                <DropdownMenuItem className="focus:bg-yellow-400 focus:text-white"
+                <DropdownMenuItem
+                  className="focus:bg-yellow-400 focus:text-white text-yellow-400"
                   onClick={async () => {
                     await dispatch(deactiveRoleById(role._id));
                   }}
                 >
+                  <DiamondMinusIcon />
                   Deactivate
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem className="focus:bg-green-400 focus:text-white"
+                <DropdownMenuItem
+                  className="focus:bg-green-400 focus:text-white text-green-400"
                   onClick={async () => {
                     await dispatch(activeRoleById(role._id));
                   }}
                 >
+                  <DiamondPlusIcon />
                   Activate
                 </DropdownMenuItem>
               )}
-              <DropdownMenuItem onClick={handleDeleteClick} className="focus:bg-red-500 focus:text-white">
+              <DropdownMenuItem
+                onClick={handleDeleteClick}
+                className="focus:bg-red-500 focus:text-white text-red-400"
+              >
+                <Trash2Icon />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
