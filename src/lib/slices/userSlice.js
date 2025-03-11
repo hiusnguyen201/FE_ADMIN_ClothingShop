@@ -81,7 +81,6 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // GetUserById cases
       .addCase(getUserById.pending, (state) => {
         state.isLoading = true;
         state.error = null;
@@ -146,7 +145,7 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        // Optionally, add the newly created user to your list:
+      
         if (state.listUsers?.data?.list) {
           state.listUsers.data.list.unshift(action.payload.data);
         }

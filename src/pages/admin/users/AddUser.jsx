@@ -37,7 +37,7 @@ const AddUser = () => {
       name: "",
       email: "",
       phone: "",
-      birthday: "", 
+      birthday: new Date(), 
       gender: "",
       avatar: null,
     },
@@ -68,21 +68,15 @@ const AddUser = () => {
         formData.append("email", values.email);
         formData.append("phone", values.phone);
         
-        // Convert date object to string format
         if (values.birthday) {
-          formData.append("birthday", new Date(values.birthday).toISOString());
-        }
+          formData.append("birthday", format(new Date(values.birthday), "yyyy-MM-dd"));
+        }        
         
         formData.append("gender", values.gender);
         
         if (values.avatar) {
           formData.append("avatar", values.avatar);
         }
-
-        // console.log("Form Data Entries:");
-        // for (let pair of formData.entries()) {
-        //   console.log(pair[0] + ": " + pair[1]);
-        // }
         await dispatch(createUser(formData));
         setShowAlert(true)
       } catch (error) {
