@@ -27,7 +27,6 @@ export function InputField({ name, label, required = false, type, ...props }) {
         onBlur={async (e) => {
           handleBlur(e);
           await validateField(name);
-          e.target.blur();
         }}
       />
 
@@ -41,6 +40,11 @@ InputField.propTypes = {
   label: PropTypes.string.isRequired,
   required: PropTypes.bool,
   type: PropTypes.oneOf(['email', 'text', 'number', 'password', 'tel', 'url']),
+  handleChange: PropTypes.func.isRequired,
+  handleBlur: PropTypes.func.isRequired,
+  setFieldError: PropTypes.func.isRequired,
+  validateField: PropTypes.func.isRequired,
+  errors: PropTypes.object.isRequired,
 };
 
 // 'button' |

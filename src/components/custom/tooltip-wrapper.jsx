@@ -1,7 +1,8 @@
-import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import PropTypes from 'prop-types';
 import { Arrow } from '@radix-ui/react-tooltip';
 import { useState } from 'react';
-import { Button } from '../ui/button';
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
 
 export function TooltipWrapper({ children, content, side = 'bottom', className, ...props }) {
   const [open, setOpen] = useState(false);
@@ -50,3 +51,10 @@ export function TooltipWrapper({ children, content, side = 'bottom', className, 
     </TooltipProvider>
   );
 }
+
+TooltipWrapper.propTypes = {
+  children: PropTypes.node.isRequired,
+  content: PropTypes.node.isRequired,
+  side: PropTypes.string,
+  className: PropTypes.string,
+};
