@@ -4,7 +4,7 @@ import { PlusIcon } from 'lucide-react';
 
 export function Heading({ title, description, actionText, onActionClick }) {
   return (
-    <div className="max-w-5xl mx-auto">
+    <div>
       <div className="flex justify-between items-center">
         <h1 className="text-3xl fw-500">{title}</h1>
         {actionText && <MainButton onClick={onActionClick} icon={<PlusIcon />} children={actionText} />}

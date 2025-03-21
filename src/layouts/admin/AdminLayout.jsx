@@ -17,6 +17,7 @@ export default function AdminLayout() {
   return (
     <div className="[--header-height:calc(theme(spacing.14))]">
       <SidebarProvider
+        defaultOpen={false}
         className="flex flex-col"
         style={{
           '--sidebar-width-icon': '4rem',
@@ -26,7 +27,7 @@ export default function AdminLayout() {
         <div className="flex flex-1">
           <SideBar className="pt-[var(--header-height)]" />
           <SidebarInset>
-            <main className="flex flex-col h-full">
+            <main className="flex flex-col h-full w-full">
               <Outlet />
             </main>
           </SidebarInset>

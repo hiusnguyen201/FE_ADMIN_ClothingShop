@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Heading } from '@/components/custom/heading';
 import { PlaceholderCard, ContentPlaceholder } from '@/components/content-placeholder';
 import { PlaceholderUserIcon } from '@/components/icons';
 import { CreateUserDialogForm } from '@/pages/admin/users/create-user-dialog-form';
+import { DataTable } from '@/components/data-table';
 
 export default function UsersPage() {
   const [openFormCreate, setOpenFormCreate] = useState(false);
@@ -25,14 +26,16 @@ export default function UsersPage() {
         onActionClick={handleOpenFormCreate}
       />
 
-      <PlaceholderCard
+      {/* <PlaceholderCard
         icon={PlaceholderUserIcon}
         title="You don't have any users yet."
         description="All of your users will be found here, regardless of the authentication method they use to access your
         applications."
         actionText="Create User"
         onActionClick={handleOpenFormCreate}
-      />
+      /> */}
+
+      <DataTable />
 
       <CreateUserDialogForm open={openFormCreate} onClose={handleCloseFormCreate} />
     </ContentPlaceholder>

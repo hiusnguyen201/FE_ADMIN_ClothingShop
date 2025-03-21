@@ -22,7 +22,7 @@ export function SelectStringField({ name, label, required = false, type, options
               className={cn(
                 'cursor-pointer transform scale-110',
                 errors[name]
-                  ? 'border-red-500 focus:border-[var(--color-error-focus)]'
+                  ? 'border-red-500 focus:border-red-500'
                   : 'border-[var(--color-secondary)] focus:border-[var(--bgcl-primary)]'
               )}
               onChange={(e) => {

@@ -23,9 +23,7 @@ export function SelectObjectField({ name, label, required = false, options, ...p
           <DropdownMenuTrigger
             className={cn(
               'text-start flex items-center justify-between w-full border py-[9px] px-4 rounded',
-              errors[name]
-                ? 'border-red-500 focus:border-[var(--color-error-focus)]'
-                : 'border-[var(--color-secondary)]'
+              errors[name] ? 'border-red-500 focus:border-red-500' : 'border-[var(--color-secondary)]'
             )}
           >
             <span className="color-[var(--color-secondary)] font-normal text-sm capitalize">

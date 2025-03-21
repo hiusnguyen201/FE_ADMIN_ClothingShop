@@ -17,7 +17,7 @@ export function InputField({ name, label, required = false, type, ...props }) {
         className={cn(
           'flex h-10 w-full font-normal rounded border focus:border-2 border-input bg-transparent py-[9px] px-4 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
           errors[name]
-            ? 'border-red-500 focus:border-[var(--color-error-focus)]'
+            ? 'border-red-500 focus:border-red-500'
             : 'border-[var(--color-secondary)] focus:border-[var(--bgcl-primary)]'
         )}
         onChange={(e) => {
