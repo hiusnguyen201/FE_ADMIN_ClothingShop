@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-export function BasicButton({ children, className, ...props }) {
+export function BasicButton({ icon, text, className, ...props }) {
   return (
     <Button
       className={cn(
@@ -10,7 +10,8 @@ export function BasicButton({ children, className, ...props }) {
       )}
       {...props}
     >
-      {children}
+      <span>{icon}</span>
+      <span>{text}</span>
     </Button>
   );
 }

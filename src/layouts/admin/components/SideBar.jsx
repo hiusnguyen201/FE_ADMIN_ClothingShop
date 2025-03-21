@@ -1,32 +1,28 @@
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-} from "@/components/ui/sidebar";
-import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
-import { navData } from "./nav-data";
+import { SidebarIcon } from 'lucide-react';
+import PropTypes from 'prop-types';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarRail, useSidebar } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { navData } from '@/layouts/admin/components/nav-data';
+import { NavMenu } from '@/components/custom/nav-menu';
 
-export default function SideBar() {
+export function SideBar({ className }) {
+  const { toggleSidebar } = useSidebar();
+
   return (
-    <nav>
-      <Sidebar collapsible="icon">
-        <SidebarHeader>
-          <TeamSwitcher team={navData.team} />
-        </SidebarHeader>
-        <SidebarContent>
-          <NavMain label="Application" items={navData.navMainGroupApp} />
-          <NavMain label="System" items={navData.navMainGroupSystem} />
-          {/* <NavProjects projects={navData.projects} /> */}
-        </SidebarContent>
-        <SidebarFooter>
-          <NavUser user={navData.user} />
-        </SidebarFooter>
-        <SidebarRail />
-      </Sidebar>
-    </nav>
+    <Sidebar collapsible="icon" className={className}>
+      <SidebarContent>
+        <NavMenu items={navData.navItems} />
+      </SidebarContent>
+      <SidebarFooter>
+        <Button className="sm:ml-auto" variant="ghost" size="icon" onClick={toggleSidebar}>
+          <SidebarIcon />
+        </Button>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
   );
 }
+
+SideBar.propTypes = {
+  className: PropTypes.string,
+};

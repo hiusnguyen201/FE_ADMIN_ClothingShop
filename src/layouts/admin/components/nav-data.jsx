@@ -1,178 +1,104 @@
 import {
-  Blocks,
   ClipboardList,
-  ClipboardPlus,
   Gauge,
-  KeyRound,
   Package,
   Settings,
   ShoppingCart,
-  Star,
   Ticket,
-  UserCog2,
   Users2,
-  GalleryVerticalEnd,
+  Frame,
+  PieChart,
+  UserCog,
 } from "lucide-react";
 
-const navMainGroupApp = [
+const navItems = [
   {
     title: "Dashboard",
     url: "/admin/dashboard",
     icon: Gauge,
   },
   {
-    title: "Manage categories",
-    url: "/admin/categories",
-    icon: Blocks,
-    items: [
-      {
-        icon: ClipboardList,
-        title: "List categories",
-        url: "/admin/categories",
-      },
-      {
-        icon: ClipboardPlus,
-        title: "Create category",
-        url: "/admin/categories/create",
-      },
-    ],
-  },
-  {
-    title: "Manage products",
-    url: "/admin/products",
+    title: "Product Management",
     icon: Package,
     items: [
       {
         icon: ClipboardList,
-        title: "List products",
+        title: "Categories",
+        url: "/admin/categories",
+      },
+      {
+        icon: ClipboardList,
+        title: "Products",
         url: "/admin/products",
       },
       {
-        icon: ClipboardPlus,
-        title: "Create product",
-        url: "/admin/products/create",
-      },
-    ],
-  },
-  {
-    title: "Manage vouchers",
-    url: "/admin/vouchers",
-    icon: Ticket,
-    items: [
-      {
         icon: ClipboardList,
-        title: "List vouchers",
-        url: "/admin/vouchers",
-      },
-      {
-        icon: ClipboardPlus,
-        title: "Create voucher",
-        url: "/admin/vouchers/create",
+        title: "Reviews",
+        url: "/admin/reviews",
       },
     ],
   },
   {
-    title: "Manage customers",
-    url: "/admin/customers",
-    icon: Users2,
-    items: [
-      {
-        icon: ClipboardList,
-        title: "List customers",
-        url: "/admin/customers",
-      },
-      {
-        icon: ClipboardPlus,
-        title: "Create customer",
-        url: "/admin/customers/create",
-      },
-    ],
-  },
-  {
-    title: "Manage orders",
-    url: "/admin/orders",
+    title: "Order Management",
     icon: ShoppingCart,
     items: [
       {
         icon: ClipboardList,
-        title: "List orders",
+        title: "Orders",
         url: "/admin/orders",
       },
       {
-        icon: ClipboardPlus,
-        title: "Create order",
-        url: "/admin/orders/create",
+        icon: ClipboardList,
+        title: "Products",
+        url: "/admin/products",
+      },
+      {
+        icon: ClipboardList,
+        title: "Reviews",
+        url: "/admin/reviews",
       },
     ],
   },
   {
-    title: "Manage reviews",
-    url: "#",
-    icon: Star,
+    title: "Promotions",
+    icon: Ticket,
     items: [
       {
         icon: ClipboardList,
-        title: "List reviews",
-        url: "/admin/reviews",
-      },
-      {
-        icon: ClipboardPlus,
-        title: "Create review",
-        url: "/admin/reviews/create",
+        title: "Vouchers",
+        url: "/admin/vouchers",
       },
     ],
   },
-];
-
-const navMainGroupSystem = [
   {
-    title: "Manage users",
-    url: "/admin/users",
+    title: "Customer Management",
     icon: Users2,
     items: [
       {
         icon: ClipboardList,
-        title: "List users",
+        url: "/admin/customers",
+        title: "Customers",
+      },
+    ],
+  },
+  {
+    title: "User Management",
+    icon: UserCog,
+    items: [
+      {
+        icon: ClipboardList,
+        title: "Users",
         url: "/admin/users",
       },
       {
-        icon: ClipboardPlus,
-        title: "Create user",
-        url: "/admin/users/create",
-      },
-    ],
-  },
-  {
-    title: "Manage roles",
-    url: "/admin/roles",
-    icon: UserCog2,
-    items: [
-      {
         icon: ClipboardList,
-        title: "List roles",
+        title: "Roles",
         url: "/admin/roles",
       },
       {
-        icon: ClipboardPlus,
-        title: "Create role",
-        url: "/admin/roles/create",
-      },
-    ],
-  },
-  {
-    title: "Manage permissions",
-    url: "/admin/permissions",
-    icon: KeyRound,
-    items: [
-      {
         icon: ClipboardList,
-        title: "List permissions",
+        title: "Permissions",
         url: "/admin/permissions",
-      },
-      {
-        icon: ClipboardPlus,
-        title: "Create permission",
-        url: "/admin/permissions/create",
       },
     ],
   },
@@ -189,29 +115,22 @@ export const navData = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  team: {
-    name: "Acme Inc",
-    logo: GalleryVerticalEnd,
-    url: "/admin/dashboard",
-    plan: "Enterprise",
-  },
-  navMainGroupApp,
-  navMainGroupSystem,
-  // projects: [
-  //   {
-  //     name: "Design Engineering",
-  //     url: "#",
-  //     icon: Frame,
-  //   },
-  //   {
-  //     name: "Sales & Marketing",
-  //     url: "#",
-  //     icon: PieChart,
-  //   },
-  //   {
-  //     name: "Travel",
-  //     url: "#",
-  //     icon: Map,
-  //   },
-  // ],
+  navItems,
+  projects: [
+    {
+      name: "Design Engineering",
+      url: "#",
+      icon: Frame,
+    },
+    {
+      name: "Sales & Marketing",
+      url: "#",
+      icon: PieChart,
+    },
+    {
+      name: "Travel",
+      url: "#",
+      icon: Map,
+    },
+  ],
 };

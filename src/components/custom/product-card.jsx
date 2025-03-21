@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { LazyImage } from "@/components/lazy-image";
+import { LazyImage } from "@/components/custom/lazy-image";
 
 export default function ProductCard({ product, className }) {
   return (

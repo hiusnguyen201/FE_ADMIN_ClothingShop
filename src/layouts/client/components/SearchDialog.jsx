@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon, XIcon } from "lucide-react";
 import SearchForm from "./SearchForm";
-import ProductCard from "@/components/product-card";
+import ProductCard from "@/components/custom/product-card";
 import { Fragment } from "react";
 
 const data = [1, 23, 4, 4];
@@ -49,11 +49,7 @@ export default function SearchDialog({ open, onOpenChange }) {
                 <Label className="font-bold block">Sản phẩm</Label>
                 <div className="flex items-center -mx-2">
                   {data.map((item, index) => (
-                    <ProductCard
-                      className="w-1/4"
-                      key={index}
-                      product={item}
-                    />
+                    <ProductCard className="w-1/4" key={index} product={item} />
                   ))}
                 </div>
                 <Link to="#" className="text-center block">
@@ -63,9 +59,7 @@ export default function SearchDialog({ open, onOpenChange }) {
                 </Link>
               </Fragment>
             ) : (
-              <p className="text-center">
-                Không tìm thấy kết quả phù hợp!
-              </p>
+              <p className="text-center">Không tìm thấy kết quả phù hợp!</p>
             )}
           </div>
         </Content>

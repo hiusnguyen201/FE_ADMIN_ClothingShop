@@ -1,89 +1,85 @@
-import { useRoutes } from "react-router-dom";
-import AdminLayout from "@/layouts/admin/AdminLayout";
-import HomeLayout from "@/layouts/client/HomeLayout";
-import DashboardPage from "@/pages/admin/dashboard/DashboardPage";
-import CustomersPage from "@/pages/admin/customers/CustomersPage";
-import ProductsPage from "@/pages/admin/products/ProductsPage";
-import VouchersPage from "@/pages/admin/vouchers/VouchersPage";
-import OrdersPage from "@/pages/admin/orders/OrdersPage";
-import ReviewsPage from "@/pages/admin/reviews/ReviewsPage";
-import UsersPage from "@/pages/admin/users/UsersPage";
-import RolesPage from "@/pages/admin/roles/RolesPage";
-import PermissionsPage from "@/pages/admin/permissions/PermissionsPage";
-import SettingsPage from "@/pages/admin/settings/SettingsPage";
-import {
-  CreateCategoryPage,
-  UpdateCategoryPage,
-  CategoriesPage,
-} from "@/pages/admin/categories";
-import HomePage from "@/pages/client/home/HomePage";
+import { useRoutes } from 'react-router-dom';
+import AdminLayout from '@/layouts/admin/AdminLayout';
+import HomeLayout from '@/layouts/client/HomeLayout';
+import DashboardPage from '@/pages/admin/dashboard/DashboardPage';
+import CustomersPage from '@/pages/admin/customers/CustomersPage';
+import ProductsPage from '@/pages/admin/products/ProductsPage';
+import VouchersPage from '@/pages/admin/vouchers/VouchersPage';
+import OrdersPage from '@/pages/admin/orders/OrdersPage';
+import ReviewsPage from '@/pages/admin/reviews/ReviewsPage';
+import UsersPage from '@/pages/admin/users/users-page';
+import RolesPage from '@/pages/admin/roles/RolesPage';
+import PermissionsPage from '@/pages/admin/permissions/PermissionsPage';
+import SettingsPage from '@/pages/admin/settings/SettingsPage';
+import { CreateCategoryPage, UpdateCategoryPage, CategoriesPage } from '@/pages/admin/categories';
+import HomePage from '@/pages/client/home/HomePage';
 
 export function Router() {
   return useRoutes([
     {
-      path: "/",
+      path: '/',
       element: <HomeLayout />,
       children: [
         {
-          path: "",
+          path: '',
           element: <HomePage />,
         },
       ],
     },
     {
-      path: "/admin",
+      path: '/admin',
       element: <AdminLayout />,
       children: [
         {
-          path: "dashboard",
+          path: 'dashboard',
           element: <DashboardPage />,
         },
         {
-          path: "categories",
+          path: 'categories',
           element: <CategoriesPage />,
         },
         {
-          path: "categories/create",
+          path: 'categories/create',
           element: <CreateCategoryPage />,
         },
         {
-          path: "categories/:id",
+          path: 'categories/:id',
           element: <UpdateCategoryPage />,
         },
         {
-          path: "products",
+          path: 'products',
           element: <ProductsPage />,
         },
         {
-          path: "vouchers",
+          path: 'vouchers',
           element: <VouchersPage />,
         },
         {
-          path: "customers",
+          path: 'customers',
           element: <CustomersPage />,
         },
         {
-          path: "orders",
+          path: 'orders',
           element: <OrdersPage />,
         },
         {
-          path: "reviews",
+          path: 'reviews',
           element: <ReviewsPage />,
         },
         {
-          path: "users",
+          path: 'users',
           element: <UsersPage />,
         },
         {
-          path: "roles",
+          path: 'roles',
           element: <RolesPage />,
         },
         {
-          path: "permissions",
+          path: 'permissions',
           element: <PermissionsPage />,
         },
         {
-          path: "settings",
+          path: 'settings',
           element: <SettingsPage />,
         },
       ],
