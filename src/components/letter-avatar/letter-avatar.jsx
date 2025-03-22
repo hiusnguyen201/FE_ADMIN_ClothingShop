@@ -5,7 +5,7 @@ import { letterColors } from '@/components/letter-avatar/letter-color';
 export const LetterAvatar = ({ alt, src }) => {
   const firstLetterUpperCase = alt[0].toUpperCase();
   return (
-    <Avatar>
+    <Avatar className="select-none">
       {src ? (
         <AvatarImage src={src} alt={alt} />
       ) : (

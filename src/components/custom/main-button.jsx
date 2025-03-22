@@ -5,7 +5,7 @@ export const MainButton = ({ icon, className, children, variant = 'default', ...
   return (
     <Button
       className={cn(
-        'text-base rounded gap-0 h-10',
+        'text-base rounded gap-0 h-10 select-none',
         variant === 'default' && 'bg-[var(--bgcl-primary)] hover:bg-[var(--bgcl-hover-primary)]',
         className
       )}

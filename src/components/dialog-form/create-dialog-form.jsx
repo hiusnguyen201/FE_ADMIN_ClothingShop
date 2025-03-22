@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { Dialog, DialogHeader, DialogFooter, DialogDescription } from '@/components/ui/dialog';
 import { MainButton } from '@/components/custom/main-button';
-import { TooltipWrapper } from '@/components/custom/tooltip-wrapper';
+import { TooltipButton } from '@/components/tooltip-button';
 import PropTypes from 'prop-types';
 
 export function CreateDialogForm({ open, onClose, title, initialValues, validationSchema, onSubmit, children }) {
@@ -29,9 +29,9 @@ export function CreateDialogForm({ open, onClose, title, initialValues, validati
           <DialogHeader className="flex-row items-center justify-between px-10 pt-10 pb-6">
             <DialogPrimitive.DialogTitle className="text-xl">{title}</DialogPrimitive.DialogTitle>
 
-            <TooltipWrapper content="Close" onClick={handleClose}>
+            <TooltipButton content="Close" onClick={handleClose}>
               <X className="h-4 w-4" />
-            </TooltipWrapper>
+            </TooltipButton>
           </DialogHeader>
 
           <DialogDescription className="hidden" />

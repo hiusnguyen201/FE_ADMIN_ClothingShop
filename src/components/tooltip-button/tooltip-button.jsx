@@ -5,8 +5,11 @@ import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/comp
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
-export const TooltipWrapper = forwardRef(
-  ({ children, content, shape = 'circle', variant = 'secondary', side = 'bottom', className, ...props }, ref) => {
+export const TooltipButton = forwardRef(
+  (
+    { children, content, shape = 'circle', variant = 'secondary', side = 'bottom', className, size = 8, ...props },
+    ref
+  ) => {
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => {
@@ -24,13 +27,12 @@ export const TooltipWrapper = forwardRef(
             ref={ref}
             onMouseEnter={handleOpen}
             onMouseLeave={handleClose}
-            onClick={(e) => {
-              e.preventDefault();
-            }}
             className={cn(
-              '!mt-0 h-8 w-8 p-2 hover:bg-gray-200 focus-visible:ring-0 shadow-none',
+              '!mt-0 hover:bg-gray-200 p-2 focus-visible:ring-0 shadow-none min-w-auto capitalize',
               shape === 'circle' && 'rounded-full',
-              shape === 'square' && 'rounded'
+              shape === 'square' && 'rounded',
+              size && `h-${size} w-${size}`,
+              className
             )}
             variant={variant}
             {...props}
@@ -60,7 +62,7 @@ export const TooltipWrapper = forwardRef(
   }
 );
 
-TooltipWrapper.propTypes = {
+TooltipButton.propTypes = {
   children: PropTypes.node.isRequired,
   content: PropTypes.node.isRequired,
   side: PropTypes.string,

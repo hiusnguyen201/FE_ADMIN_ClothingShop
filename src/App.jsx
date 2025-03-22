@@ -1,7 +1,12 @@
-import { Router } from "@/routes";
+import { Router } from '@/routes';
+import { CreateUserDialogProvider } from './pages/admin/users/create-user-dialog';
 
 function App() {
-  return <Router />;
+  return (
+    <CreateUserDialogProvider>
+      <Router />
+    </CreateUserDialogProvider>
+  );
 }
 
 export default App;

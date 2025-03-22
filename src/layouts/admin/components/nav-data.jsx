@@ -6,9 +6,11 @@ import {
   ShoppingCart,
   Ticket,
   Users2,
-  Frame,
-  PieChart,
   UserCog,
+  MessageCircleIcon,
+  MessageSquare,
+  MessagesSquare,
+  Boxes,
 } from 'lucide-react';
 
 const navItems = [
@@ -18,85 +20,48 @@ const navItems = [
     icon: Gauge,
   },
   {
-    title: 'Product Management',
-    icon: Package,
-    items: [
-      {
-        icon: ClipboardList,
-        title: 'Categories',
-        url: '/admin/categories',
-      },
-      {
-        icon: ClipboardList,
-        title: 'Products',
-        url: '/admin/products',
-      },
-      {
-        icon: ClipboardList,
-        title: 'Reviews',
-        url: '/admin/reviews',
-      },
-    ],
+    title: 'Categories',
+    icon: Boxes,
+    url: '/admin/categories',
   },
   {
-    title: 'Order Management',
+    title: 'Orders',
     icon: ShoppingCart,
-    items: [
-      {
-        icon: ClipboardList,
-        title: 'Orders',
-        url: '/admin/orders',
-      },
-      {
-        icon: ClipboardList,
-        title: 'Products',
-        url: '/admin/products',
-      },
-      {
-        icon: ClipboardList,
-        title: 'Reviews',
-        url: '/admin/reviews',
-      },
-    ],
+    url: '/admin/orders',
+  },
+  {
+    title: 'Products',
+    icon: Package,
+    url: '/admin/products',
   },
   {
     title: 'Promotions',
     icon: Ticket,
-    items: [
-      {
-        icon: ClipboardList,
-        title: 'Vouchers',
-        url: '/admin/vouchers',
-      },
-    ],
+    url: '/admin/vouchers',
   },
   {
-    title: 'Customer Management',
+    title: 'Customers',
     icon: Users2,
-    items: [
-      {
-        icon: ClipboardList,
-        url: '/admin/customers',
-        title: 'Customers',
-      },
-    ],
+    url: '/admin/customers',
+  },
+  {
+    title: 'Reviews',
+    icon: MessagesSquare,
+    url: '/admin/reviews',
   },
   {
     title: 'User Management',
     icon: UserCog,
     items: [
       {
-        icon: ClipboardList,
         title: 'Users',
         url: '/admin/users',
       },
       {
-        icon: ClipboardList,
         title: 'Roles',
         url: '/admin/roles',
       },
       {
-        icon: ClipboardList,
         title: 'Permissions',
         url: '/admin/permissions',
       },

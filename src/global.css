@@ -106,3 +106,12 @@
   font-weight: bold;
   margin-bottom: 16px;
 }
+
+.hover\:text-sidebar-accent-foreground:hover {
+  color: var(--bgcl-primary) !important;
+}
+
+.data-\[state\=open\]\:hover\:bg-sidebar-accent:hover[data-state='open'],
+.hover\:bg-sidebar-accent:hover {
+  background-color: transparent !important;
+}
