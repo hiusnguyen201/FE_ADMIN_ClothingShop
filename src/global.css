@@ -96,11 +96,6 @@ nav ::-webkit-scrollbar-thumb {
   background: #aaa;
 }
 
-.\[\&_svg\]\:size-4 svg {
-  width: 1.2rem !important;
-  height: 1.2rem !important;
-}
-
 .footer-menu {
   width: 100%;
   font-size: 13px;

@@ -7,17 +7,17 @@ import {
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 
-export default function SelectForm({ filter, setFilter, searchParams ,data, namebtn }) {
+export default function SelectForm({ filter, setFilter, searchParams, data, namebtn }) {
   const searchParam = searchParams.get("statusfilter");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="ml-auto">
-          { filter.statusfilter || `Select a ${namebtn}`} <ChevronDown />
+          {filter.statusfilter || `Select a ${namebtn}`} <ChevronDown />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-      {data.map((status) => {
+        {data.map((status) => {
           return (
             <DropdownMenuCheckboxItem
               key={status.title}

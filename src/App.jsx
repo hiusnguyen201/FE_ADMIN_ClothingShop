@@ -1,16 +1,16 @@
 import { Router } from "@/routes";
 import { Toaster } from "@/components/ui/toaster";
-import { Provider } from "react-redux";
-import { makeStore } from "@/lib/store";
+import { useAuth } from "@/hooks/use-auth";
+import { LoadingScreen } from "@/components/LoadingScreen";
 
 function App() {
+  const { isInitialized } = useAuth();
+
   return (
-    <>
-      <Provider store={makeStore()}>
-        <Router />
-        <Toaster />
-      </Provider>
-    </>
+    <div className="max-h-screen">
+      {isInitialized ? <Router /> : <LoadingScreen />}
+      <Toaster />
+    </div>
   );
 }
 

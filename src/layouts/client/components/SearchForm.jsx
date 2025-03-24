@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { SearchIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { BasicButton } from "@/components/basic-button";
+import { BasicButton } from "@/components/LoadingButton";
 
 export default function SearchForm() {
   const [searchValue, setSearchValue] = useState("");
