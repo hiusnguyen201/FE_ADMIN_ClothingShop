@@ -26,9 +26,7 @@ export interface LoginResponseData {
   };
 }
 
-export interface LoginResponse extends BaseResponse<LoginResponseData> {
-  data: LoginResponseData;
-}
+export interface LoginResponse extends BaseResponse<LoginResponseData> {}
 
 // ============================SEND OTP VIA EMAIL=========================== //
 

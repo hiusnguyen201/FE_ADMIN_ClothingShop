@@ -1,9 +1,23 @@
 import { getAccessToken } from "@/utils/jwt";
 import { filteredObj } from "@/utils/object";
 import axios, { AxiosResponse } from "axios";
-import { CreateRoleResponse, GetListRoleParams, GetListRoleResponse, CreateRolePayload } from "@/redux/role/role.type";
+import {
+  CreateRoleResponse,
+  GetListRoleParams,
+  GetListRoleResponse,
+  CreateRolePayload,
+  CheckRoleNameExistPayload,
+  CheckRoleNameExistResponse,
+} from "@/redux/role/role.type";
 
 const apiUrl: string = import.meta.env.VITE_API_URL;
+
+export const checkRoleNameExistService = async (
+  payload: CheckRoleNameExistPayload
+): Promise<CheckRoleNameExistResponse> => {
+  const response: AxiosResponse = await axios.post(`${apiUrl}/roles/is-exist-role-name`, payload);
+  return response.data;
+};
 
 export const createRoleService = async (payload: CreateRolePayload): Promise<CreateRoleResponse> => {
   const response: AxiosResponse = await axios.post(`${apiUrl}/roles/create-role`, payload, {

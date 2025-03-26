@@ -26,6 +26,10 @@ export type CreateRolePayload = {
   status: ROLE_STATUS;
 };
 
-export interface CreateRoleResponse extends BaseResponse<Role> {
-  data: Role;
-}
+export interface CreateRoleResponse extends BaseResponse<Role> {}
+
+export type CheckRoleNameExistPayload = {
+  name: string;
+};
+
+export interface CheckRoleNameExistResponse extends BaseResponse<boolean> {}

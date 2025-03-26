@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { ROLE_STATUS } from "@/types/role";
 import { toast } from "@/hooks/use-toast";
 import { createRole } from "@/redux/role/role.thunk";
-import { CreateRolePayload, RoleState } from "@/redux/role/role.type";
+import { CheckRoleNameExistResponse, CreateRolePayload, RoleState } from "@/redux/role/role.type";
+import { checkRoleNameExistService } from "@/redux/role/role.service";
 
 type CreateRoleDialogContextType = {
   open: boolean;
@@ -30,7 +31,14 @@ const initialValues: CreateRolePayload = {
 };
 
 const createRoleSchema = Yup.object().shape({
-  name: Yup.string().required().min(3).max(50),
+  name: Yup.string()
+    .required()
+    .min(3)
+    .max(50)
+    .test("uniqueRoleName", "Role name already exist", async (name): Promise<boolean> => {
+      const response: CheckRoleNameExistResponse = await checkRoleNameExistService({ name });
+      return !response.data;
+    }),
   description: Yup.string().required().min(3).max(255),
   status: Yup.string().required().oneOf(Object.values(ROLE_STATUS)),
 });

@@ -7,7 +7,7 @@ export interface BaseResponse<TData> {
   codeMessage: string;
   message: string;
   timestamp: number;
-  data: Nullable<TData>;
+  data: TData;
 }
 
 export interface GetListParams<TData> {
