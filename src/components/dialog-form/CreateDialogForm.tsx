@@ -38,7 +38,7 @@ export function CreateDialogForm<T extends FormikValues>({
 
   const handleClose = () => {
     onClose();
-    formik.resetForm();
+    formik.resetForm({});
   };
 
   return (
@@ -63,7 +63,12 @@ export function CreateDialogForm<T extends FormikValues>({
               <Button variant="outline" type="button" onClick={handleClose}>
                 Cancel
               </Button>
-              <LoadingButton disabled={loading} loading={loading} type="submit" className="min-w-[90px]">
+              <LoadingButton
+                disabled={!formik.isValid || Object.keys(formik.touched).length === 0 || loading || formik.isValidating}
+                loading={loading || formik.isValidating}
+                type="submit"
+                className="min-w-[90px]"
+              >
                 Create
               </LoadingButton>
             </DialogFooter>

@@ -2,11 +2,7 @@
 
 import { ChevronRight, type LucideIcon } from "lucide-react";
 
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -43,31 +39,20 @@ export function NavMain({
       <SidebarGroupLabel>{label}</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => {
-          const active = location.pathname.includes(item.url);
+          const active = location.pathname === item.url;
           return (
-            <Collapsible
-              key={item.title}
-              asChild
-              defaultOpen={active}
-              className="group/collapsible"
-            >
+            <Collapsible key={item.title} asChild defaultOpen={active} className="group/collapsible">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   {!item?.items ? (
                     <Link to={item.url}>
-                      <SidebarMenuButton
-                        tooltip={item.title}
-                        className={active && "bg-[#f4f4f5] text-[#18181b]"}
-                      >
+                      <SidebarMenuButton tooltip={item.title}>
                         {item.icon && <item.icon />}
                         <span>{item.title}</span>
                       </SidebarMenuButton>
                     </Link>
                   ) : (
-                    <SidebarMenuButton
-                      tooltip={item.title}
-                      className={active && "bg-[#f4f4f5] text-[#18181b]"}
-                    >
+                    <SidebarMenuButton tooltip={item.title}>
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />

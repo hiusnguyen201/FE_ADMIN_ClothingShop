@@ -4,42 +4,32 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 // import DeleteRoleDialog from "@/middlewares/DeleteRole";
-import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useDispatch } from "react-redux";
 import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
-import { ROLE_STATUS } from "@/types/role";
+import { Role, ROLE_STATUS } from "@/types/role";
+import { ColumnDef } from "@tanstack/react-table";
 // import { activeRoleById, deactiveRoleById } from "@/lib/features/role/roleThunks";
 
-export const columns = [
+export const columns: ColumnDef<Role>[] = [
   {
     accessorKey: "name",
     header: "Name",
     cell: ({ row }) => (
-      <Link className="text-blue-500" to={"/roles/" + row.original.slug}>
+      <Link className="text-blue-500" to={"/roles/" + row.original.id + "/settings"}>
         {row.getValue("name")}
       </Link>
     ),
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      const status = row.getValue("status");
-      return <Badge className="capitalize">{status}</Badge>;
-    },
-  },
-  {
     accessorKey: "description",
     header: "Description",
-    maxSize: 400,
+    maxSize: 540,
     cell: ({ row }) => <TruncatedTextWithTooltip>{row.getValue("description")}</TruncatedTextWithTooltip>,
   },
   {
@@ -67,7 +57,7 @@ export const columns = [
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="min-w-[180px]">
-              <Link to={`/roles/${role.slug}`}>
+              <Link to={`/roles/${role.id}/settings`}>
                 <DropdownMenuItem className="cursor-pointer capitalize">Views Details</DropdownMenuItem>
               </Link>
 
@@ -76,7 +66,7 @@ export const columns = [
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={async () => {
-                    await dispatch(deactivateRoleById(role._id));
+                    // await dispatch(deactivateRoleById(role._id));
                   }}
                 >
                   <DiamondMinusIcon />
@@ -85,7 +75,7 @@ export const columns = [
               ) : (
                 <DropdownMenuItem
                   onClick={async () => {
-                    await dispatch(activateRoleById(role._id));
+                    // await dispatch(activateRoleById(role._id));
                   }}
                 >
                   <DiamondPlusIcon />
@@ -99,7 +89,7 @@ export const columns = [
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {isDialogOpen && <DeleteRoleDialog role={role} onClose={handleCloseDialog} />}
+          {/* {isDialogOpen && <DeleteRoleDi/alog role={role} onClose={handleCloseDialog} />} */}
         </>
       );
     },

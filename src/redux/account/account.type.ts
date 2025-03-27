@@ -4,7 +4,7 @@ import { User } from "@/types/user";
 
 export interface AccountState {
   user: Nullable<User>;
-  isLoading: boolean;
+  loading: boolean;
   error: Nullable<string>;
 }
 

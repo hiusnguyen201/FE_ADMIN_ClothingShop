@@ -29,7 +29,7 @@ export function DataTableActions({ children, actions }: DataTableActionsProps) {
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       {/* <DropdownMenuContent align="end" className="min-w-[180px]">
         
-        <Link to={`/roles/${role.slug}`}>
+        <Link to={`/roles/${role.id}`}>
             <DropdownMenuItem className="cursor-pointer capitalize">Views Details</DropdownMenuItem>
           </Link>
 

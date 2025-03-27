@@ -3,9 +3,8 @@ import { AuthGuard } from "@/guards/AuthGuard";
 
 // Import your admin pages
 import { DashboardPage } from "@/pages/dashboard";
-import { RolesPage } from "@/pages/roles";
-// import CustomersPage from "@/pages/customers/CustomersPage";
-// import ProductsPage from "@/pages/products/ProductsPage";
+import { DetailsRolePage, ListRolePage } from "@/pages/roles";
+import { RoleExistsGuard } from "@/guards/role/RoleExistsGuard";
 
 export const privateRoutes = [
   {
@@ -16,8 +15,19 @@ export const privateRoutes = [
     ),
     children: [
       { path: "/", element: <DashboardPage /> },
-      { path: "/roles", element: <RolesPage /> },
-      // { path: "/roles/:slug", element: <EditRolePage /> },
+      { path: "/roles", element: <ListRolePage /> },
+      {
+        path: "/roles/:roleId/settings",
+        element: <RoleExistsGuard children={DetailsRolePage} />,
+      },
+      {
+        path: "/roles/:roleId/permissions",
+        element: <RoleExistsGuard children={DetailsRolePage} />,
+      },
+      {
+        path: "/roles/:roleId/users",
+        element: <RoleExistsGuard children={DetailsRolePage} />,
+      },
     ],
   },
 ];

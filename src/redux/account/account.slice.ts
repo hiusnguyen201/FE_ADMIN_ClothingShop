@@ -4,7 +4,7 @@ import { getProfile } from "@/redux/account/account.thunk";
 
 const initialState: AccountState = {
   user: null,
-  isLoading: false,
+  loading: false,
   error: null,
 };
 
@@ -16,16 +16,16 @@ const accountSlice = createSlice({
     builder
       // Get Profile Case
       .addCase(getProfile.pending, (state: Draft<AccountState>) => {
-        state.isLoading = true;
+        state.loading = true;
         state.error = null;
       })
       .addCase(getProfile.fulfilled, (state: Draft<AccountState>, action: PayloadAction<GetProfileResponse>) => {
-        state.isLoading = false;
+        state.loading = false;
         state.error = null;
         state.user = action.payload.data;
       })
       .addCase(getProfile.rejected, (state: Draft<AccountState>, action: PayloadAction<any>) => {
-        state.isLoading = false;
+        state.loading = false;
         state.error = action.payload as string;
         state.user = null;
       });

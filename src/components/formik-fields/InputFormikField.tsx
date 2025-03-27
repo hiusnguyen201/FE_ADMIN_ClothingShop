@@ -1,4 +1,5 @@
 import { FormikProps } from "formik";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -24,9 +25,12 @@ export function InputFormikField<TData>({
   className,
   formikProps,
 }: InputFormikFieldProps<TData>) {
-  const { handleChange, handleBlur, setFieldError, validateField, errors, values } = formikProps;
+  const { handleChange, handleBlur, setFieldError, setTouched, touched, initialValues, validateField, errors, values } =
+    formikProps;
+  const [hasBeenValidated, setHasBeenValidated] = useState(false);
   const currentValue: string = values[name] as string;
   const error: string = errors[name] as string;
+  const initialValue: string = initialValues[name] as string;
 
   return (
     <div className={cn("w-full", className)}>
@@ -43,14 +47,22 @@ export function InputFormikField<TData>({
         placeholder={placeholder}
         name={name}
         value={currentValue}
-        className={cn(error && "border-red-500 focus:border-red-500")}
+        className={cn("w-full", error && "border-red-500 focus:border-red-500")}
         onChange={(e) => {
           handleChange(e);
           setFieldError(name, undefined);
+          setHasBeenValidated(false);
         }}
         onBlur={async (e) => {
           handleBlur(e);
-          await validateField(name);
+          if (touched[name] && hasBeenValidated) return;
+          if (!hasBeenValidated && currentValue !== initialValue) {
+            validateField(name);
+            setHasBeenValidated(true);
+          } else {
+            delete touched[name];
+            setTouched(touched);
+          }
         }}
       />
 

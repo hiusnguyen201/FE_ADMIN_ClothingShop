@@ -1,1 +1,2 @@
-export * from "./RolesPage";
+export * from "./ListRolePage";
+export * from "./DetailsRolePage";

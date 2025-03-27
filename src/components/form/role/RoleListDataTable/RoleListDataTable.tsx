@@ -12,10 +12,11 @@ import { columns } from "./columns";
 import { useRoleTableFilters } from "./useRoleTableFilters";
 import { Input } from "@/components/ui/input";
 import { SelectFormField } from "@/components/form-fields";
+import { RoleState } from "@/redux/role/role.type";
 
 export function RoleListDataTable() {
   const dispatch = useAppDispatch();
-  const { list, totalCount, isLoading, isInitialized } = useAppSelector((state) => state.role);
+  const { list, totalCount, loading, isInitialized } = useAppSelector<RoleState>((state) => state.role);
   const { filters, handlePageChange, handleLimitChange, handleStatusChange, handleKeywordChange } =
     useRoleTableFilters();
   const prevKeyword = useRef(filters.keyword);
@@ -38,11 +39,11 @@ export function RoleListDataTable() {
   }, [filters, dispatch]);
 
   return (
-    <DataTableLoading loading={isLoading} initialized={isInitialized} className="flex flex-col gap-6">
+    <DataTableLoading loading={loading.getListRole} initialized={isInitialized} className="flex flex-col gap-6">
       <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
         <Input
           className="col-span-3 sm:col-span-2"
-          disabled={isLoading}
+          disabled={loading.getListRole}
           name="keyword"
           type="text"
           placeholder="Enter a keyword"
@@ -51,6 +52,7 @@ export function RoleListDataTable() {
         />
 
         <SelectFormField
+          disabled={loading.getListRole}
           name="status"
           value={filters.status}
           onValueChange={handleStatusChange}
@@ -65,7 +67,7 @@ export function RoleListDataTable() {
       />
 
       <DataTablePagination
-        loading={isLoading}
+        loading={loading.getListRole}
         limit={filters.limit}
         totalCount={totalCount}
         page={filters.page}

@@ -5,7 +5,10 @@ import { User } from "@/types/user";
 export interface AuthState {
   user: Nullable<User>;
   isAuthenticated: boolean;
-  isLoading: boolean;
+  loading: {
+    login: boolean;
+    sendOtpViaEmail: boolean;
+  };
   error: Nullable<string>;
 }
 

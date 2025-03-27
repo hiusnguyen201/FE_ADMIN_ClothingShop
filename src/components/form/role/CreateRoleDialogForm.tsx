@@ -9,20 +9,27 @@ import { Button } from "@/components/ui/button";
 import { ROLE_STATUS } from "@/types/role";
 import { toast } from "@/hooks/use-toast";
 import { createRole } from "@/redux/role/role.thunk";
-import { CheckRoleNameExistResponse, CreateRolePayload, RoleState } from "@/redux/role/role.type";
+import { CheckRoleNameExistResponse, CreateRolePayload, CreateRoleResponse, RoleState } from "@/redux/role/role.type";
 import { checkRoleNameExistService } from "@/redux/role/role.service";
 
-type CreateRoleDialogContextType = {
+type CreateRoleDialogFormContextType = {
   open: boolean;
-  openCreateRoleDialog: () => void;
-  closeCreateRoleDialog: () => void;
+  openCreateRoleDialogForm: () => void;
+  closeCreateRoleDialogForm: () => void;
 };
 
-const CreateRoleDialogContext = createContext<CreateRoleDialogContextType>({
+const CreateRoleDialogFormContext = createContext<CreateRoleDialogFormContextType>({
   open: false,
-  openCreateRoleDialog: () => {},
-  closeCreateRoleDialog: () => {},
+  openCreateRoleDialogForm: () => {},
+  closeCreateRoleDialogForm: () => {},
 });
+
+export const useCreateRoleDialogForm = () => useContext(CreateRoleDialogFormContext);
+
+export const ButtonOpenCreateRoleDialog = ({ children }: { children?: ReactNode }) => {
+  const { openCreateRoleDialogForm } = useCreateRoleDialogForm();
+  return <Button onClick={openCreateRoleDialogForm}>{children}</Button>;
+};
 
 const initialValues: CreateRolePayload = {
   name: "",
@@ -43,45 +50,45 @@ const createRoleSchema = Yup.object().shape({
   status: Yup.string().required().oneOf(Object.values(ROLE_STATUS)),
 });
 
-export function CreateRoleDialogProvider({ children }: { children: ReactNode }) {
+export function CreateRoleDialogFormProvider({ children }: { children: ReactNode }) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [open, setOpen] = useState<boolean>(false);
-  const { isLoading } = useAppSelector<RoleState>((selector) => selector.role);
+  const { loading } = useAppSelector<RoleState>((selector) => selector.role);
 
-  const openCreateRoleDialog = () => {
+  const openCreateRoleDialogForm = () => {
     setOpen(true);
   };
 
-  const closeCreateRoleDialog = () => {
+  const closeCreateRoleDialogForm = () => {
     setOpen(false);
   };
 
   const handleSubmit = async (values: CreateRolePayload, { resetForm }: FormikHelpers<CreateRolePayload>) => {
     try {
-      const data = await dispatch(createRole(values)).unwrap();
-      resetForm();
-      const { data: role, message } = data;
+      const response: CreateRoleResponse = await dispatch(createRole(values)).unwrap();
+      resetForm({});
+      const { data: role, message } = response;
       toast({ title: message });
-      navigate("/roles/" + role.slug);
+      navigate(`/roles/${role.id}/settings`);
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
   };
 
   return (
-    <CreateRoleDialogContext.Provider value={{ open, openCreateRoleDialog, closeCreateRoleDialog }}>
+    <CreateRoleDialogFormContext.Provider value={{ open, openCreateRoleDialogForm, closeCreateRoleDialogForm }}>
       {children}
 
       {open && (
         <CreateDialogForm
           title="New Role"
           open={open}
-          onClose={closeCreateRoleDialog}
+          onClose={closeCreateRoleDialogForm}
           initialValues={initialValues}
           validationSchema={createRoleSchema}
           onSubmit={handleSubmit}
-          loading={isLoading}
+          loading={loading.createRole}
         >
           {(formik: ReturnType<typeof useFormik<CreateRolePayload>>) => (
             <Fragment>
@@ -92,13 +99,6 @@ export function CreateRoleDialogProvider({ children }: { children: ReactNode }) 
           )}
         </CreateDialogForm>
       )}
-    </CreateRoleDialogContext.Provider>
+    </CreateRoleDialogFormContext.Provider>
   );
 }
-
-export const useCreateRoleDialog = () => useContext(CreateRoleDialogContext);
-
-export const ButtonOpenCreateRoleDialog = ({ children }: { children?: ReactNode }) => {
-  const { openCreateRoleDialog } = useCreateRoleDialog();
-  return <Button onClick={openCreateRoleDialog}>{children}</Button>;
-};

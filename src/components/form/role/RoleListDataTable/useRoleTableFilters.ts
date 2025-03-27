@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { GetListRoleParams } from "@/redux/role/role.type";
+import { GetListRolePayload } from "@/redux/role/role.type";
 import { ROLE_STATUS } from "@/types/role";
 import { getHistory, HistoryItem } from "@/utils/history";
 import { getUrlParams } from "@/utils/object";
 
-const initialFilters: GetListRoleParams = {
+const initialFilters: GetListRolePayload = {
   page: 1,
   limit: 10,
   keyword: "",
@@ -14,13 +14,13 @@ const initialFilters: GetListRoleParams = {
 };
 
 export function useRoleTableFilters() {
-  const [filters, setFilters] = useState<GetListRoleParams>(() => {
+  const [filters, setFilters] = useState<GetListRolePayload>(() => {
     const history: HistoryItem[] = getHistory();
     const lastHistory = history[history.length - 1];
 
     if (!lastHistory) return initialFilters;
 
-    return getUrlParams<GetListRoleParams>(lastHistory.url);
+    return getUrlParams<GetListRolePayload>(lastHistory.url);
   });
 
   const handlePageChange = (page: number) => {
