@@ -14,6 +14,10 @@ import {
   EditRoleInfoResponse,
   RemoveRolePayload,
   RemoveRoleResponse,
+  ActivateRolePayload,
+  ActivateRoleResponse,
+  DeactivateRoleResponse,
+  DeactivateRolePayload,
 } from "@/redux/role/role.type";
 
 const apiUrl: string = import.meta.env.VITE_API_URL;
@@ -56,6 +60,20 @@ export const editRoleInfoService = async (payload: EditRoleInfoPayload): Promise
 
 export const removeRoleService = async (payload: RemoveRolePayload): Promise<RemoveRoleResponse> => {
   const response: AxiosResponse = await axios.delete(`${apiUrl}/roles/remove-role-by-id/${payload.id}`, {
+    headers: { Authorization: `Bearer ${getAccessToken()}` },
+  });
+  return response.data;
+};
+
+export const activateRoleService = async (payload: ActivateRolePayload): Promise<ActivateRoleResponse> => {
+  const response: AxiosResponse = await axios.patch(`${apiUrl}/roles/activate-role-by-id/${payload.id}`, null, {
+    headers: { Authorization: `Bearer ${getAccessToken()}` },
+  });
+  return response.data;
+};
+
+export const deactivateRoleService = async (payload: DeactivateRolePayload): Promise<DeactivateRoleResponse> => {
+  const response: AxiosResponse = await axios.patch(`${apiUrl}/roles/deactivate-role-by-id/${payload.id}`, null, {
     headers: { Authorization: `Bearer ${getAccessToken()}` },
   });
   return response.data;

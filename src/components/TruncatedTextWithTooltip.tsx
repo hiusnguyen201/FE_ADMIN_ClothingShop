@@ -1,12 +1,13 @@
-import { LegacyRef, useEffect, useRef, useState } from "react";
+import { LegacyRef, ReactNode, useEffect, useRef, useState } from "react";
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"; // Adjust to your tooltip library
 import { cn } from "@/lib/utils";
 
-export type TTruncatedTextWithTooltip = {
-  children?: string;
+export type TruncatedTextWithTooltipProps = {
+  children?: string | ReactNode;
+  className?: string;
 };
 
-export const TruncatedTextWithTooltip = ({ children }: TTruncatedTextWithTooltip) => {
+export const TruncatedTextWithTooltip = ({ children, className }: TruncatedTextWithTooltipProps) => {
   const textRef: LegacyRef<HTMLButtonElement> = useRef(null);
   const [isTruncated, setIsTruncated] = useState(false);
 
@@ -29,7 +30,7 @@ export const TruncatedTextWithTooltip = ({ children }: TTruncatedTextWithTooltip
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger
-          className={cn("truncate w-full text-start", isTruncated ? "cursor-pointer" : "cursor-default")}
+          className={cn("truncate w-full text-start", isTruncated ? "cursor-pointer" : "cursor-default", className)}
           ref={textRef}
         >
           {children}

@@ -1,13 +1,23 @@
 import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import {
+  ActivateRoleResponse,
   CreateRoleResponse,
+  DeactivateRoleResponse,
   EditRoleInfoResponse,
   GetListRoleResponse,
   GetRoleResponse,
   RemoveRoleResponse,
   RoleState,
 } from "@/redux/role/role.type";
-import { getListRole, createRole, getRole, editRoleInfo, removeRole } from "@/redux/role/role.thunk";
+import {
+  getListRole,
+  createRole,
+  getRole,
+  editRoleInfo,
+  removeRole,
+  activateRole,
+  deactivateRole,
+} from "@/redux/role/role.thunk";
 
 const initialState: RoleState = {
   loading: {
@@ -16,6 +26,8 @@ const initialState: RoleState = {
     getRole: false,
     editRole: false,
     removeRole: false,
+    activateRole: false,
+    deactivateRole: false,
   },
   item: null,
   list: [],
@@ -120,6 +132,43 @@ const roleSlice = createSlice({
       })
       .addCase(removeRole.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
         state.loading.removeRole = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      // Activate Role
+      .addCase(activateRole.pending, (state: Draft<RoleState>) => {
+        state.loading.activateRole = true;
+        state.error = null;
+      })
+      .addCase(activateRole.fulfilled, (state: Draft<RoleState>, action: PayloadAction<ActivateRoleResponse>) => {
+        const { data } = action.payload;
+        state.loading.activateRole = false;
+        state.error = null;
+        state.item = data;
+        state.list = state.list.map((item) => (item.id === data.id ? data : item));
+      })
+      .addCase(activateRole.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
+        state.loading.activateRole = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      // Deactivate Role
+      .addCase(deactivateRole.pending, (state: Draft<RoleState>) => {
+        state.loading.deactivateRole = true;
+        state.error = null;
+      })
+      .addCase(deactivateRole.fulfilled, (state: Draft<RoleState>, action: PayloadAction<DeactivateRoleResponse>) => {
+        const { data } = action.payload;
+        console.log(data);
+        state.loading.deactivateRole = false;
+        state.error = null;
+        state.item = data;
+        state.list = state.list.map((item) => (item.id === data.id ? data : item));
+      })
+      .addCase(deactivateRole.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
+        state.loading.deactivateRole = false;
         state.error = action.payload as string;
       });
   },

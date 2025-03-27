@@ -8,6 +8,8 @@ interface LoadingRoleState {
   getRole: boolean;
   editRole: boolean;
   removeRole: boolean;
+  activateRole: boolean;
+  deactivateRole: boolean;
 }
 
 export interface RoleState {
@@ -62,3 +64,15 @@ export type RemoveRolePayload = {
 };
 
 export interface RemoveRoleResponse extends BaseResponse<{ id: string }> {}
+
+export type ActivateRolePayload = {
+  id: string;
+};
+
+export interface ActivateRoleResponse extends BaseResponse<Role> {}
+
+export type DeactivateRolePayload = {
+  id: string;
+};
+
+export interface DeactivateRoleResponse extends BaseResponse<Role> {}
