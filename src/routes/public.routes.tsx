@@ -1,11 +1,16 @@
+import { GuestGuard } from "@/guards/GuestGuard";
+import { AuthLayout } from "@/layouts/AuthLayout";
 import { LoginPage } from "@/pages/auth/LoginPage";
+import { RouteObject } from "react-router-dom";
 // import RegisterPage from "@/pages/auth/RegisterPage";
 
-export const publicRoutes = [
+export const publicRoutes: RouteObject[] = [
   {
-    children: [
-      { path: "/login", element: <LoginPage /> },
-      //   { path: "/register", element: <RegisterPage /> },
-    ],
+    element: (
+      <GuestGuard>
+        <AuthLayout />
+      </GuestGuard>
+    ),
+    children: [{ path: "/login", element: <LoginPage /> }],
   },
 ];

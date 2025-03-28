@@ -3,12 +3,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./auth/auth.slice";
 import accountReducer from "./account/account.slice";
 import roleReducer from "./role/role.slice";
+import permissionReducer from "./permission/permission.slice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     account: accountReducer,
     role: roleReducer,
+    permission: permissionReducer,
   },
 });
 

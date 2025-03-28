@@ -14,6 +14,6 @@ export type User = {
   gender: string;
   status: USER_STATUS;
   verifiedAt: Nullable<Date>;
-  createdAt: Nullable<Date>;
-  updatedAt: Nullable<Date>;
+  createdAt: Date;
+  updatedAt: Date;
 };

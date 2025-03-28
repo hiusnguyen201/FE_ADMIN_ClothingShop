@@ -31,11 +31,6 @@ const navMainGroupApp = [
     icon: Package,
   },
   {
-    title: "Manage vouchers",
-    url: "/vouchers",
-    icon: Ticket,
-  },
-  {
     title: "Manage customers",
     url: "/customers",
     icon: Users2,
@@ -44,11 +39,6 @@ const navMainGroupApp = [
     title: "Manage orders",
     url: "/orders",
     icon: ShoppingCart,
-  },
-  {
-    title: "Manage reviews",
-    url: "#",
-    icon: Star,
   },
 ];
 

@@ -1,11 +1,10 @@
 import { FormikHelpers, useFormik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { createContext, Fragment, ReactNode, useContext, useState } from "react";
+import { cloneElement, createContext, Fragment, ReactElement, ReactNode, useContext, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { CreateDialogForm } from "@/components/dialog-form";
 import { InputFormikField } from "@/components/formik-fields";
-import { Button } from "@/components/ui/button";
 import { ROLE_STATUS } from "@/types/role";
 import { toast } from "@/hooks/use-toast";
 import { createRole } from "@/redux/role/role.thunk";
@@ -26,9 +25,14 @@ const CreateRoleDialogFormContext = createContext<CreateRoleDialogFormContextTyp
 
 export const useCreateRoleDialogForm = () => useContext(CreateRoleDialogFormContext);
 
-export const ButtonOpenCreateRoleDialog = ({ children }: { children?: ReactNode }) => {
+export const ButtonOpenCreateRoleDialog = ({ children }: { children?: ReactElement }) => {
   const { openCreateRoleDialogForm } = useCreateRoleDialogForm();
-  return <Button onClick={openCreateRoleDialogForm}>{children}</Button>;
+  return cloneElement(children as ReactElement, {
+    onClick: (e: MouseEvent) => {
+      e.preventDefault();
+      openCreateRoleDialogForm();
+    },
+  });
 };
 
 const initialValues: CreateRolePayload = {
@@ -61,6 +65,7 @@ export function CreateRoleDialogFormProvider({ children }: { children: ReactNode
   };
 
   const closeCreateRoleDialogForm = () => {
+    if (loading.createRole) return;
     setOpen(false);
   };
 

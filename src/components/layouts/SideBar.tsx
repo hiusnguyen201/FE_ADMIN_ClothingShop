@@ -1,23 +1,29 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarRail, useSidebar } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/nav-main";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
 import { navData } from "./nav-data";
+import { Button } from "@/components/ui/button";
+import { PanelLeft } from "lucide-react";
 
 export function SideBar() {
+  const { toggleSidebar } = useSidebar();
+
   return (
     <nav>
       <Sidebar collapsible="icon">
-        <SidebarHeader>
-          <TeamSwitcher team={navData.team} />
-        </SidebarHeader>
-        <SidebarContent>
+        <SidebarContent className="overflow-x-hidden">
           <NavMain label="Application" items={navData.navMainGroupApp} />
           <NavMain label="System" items={navData.navMainGroupSystem} />
           {/* <NavProjects projects={navData.projects} /> */}
         </SidebarContent>
-        <SidebarFooter>
-          <NavUser user={navData.user} />
+        <SidebarFooter className="p-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="border-t w-full p-4 h-auto justify-end"
+            onClick={toggleSidebar}
+          >
+            <PanelLeft />
+          </Button>
         </SidebarFooter>
         <SidebarRail />
       </Sidebar>

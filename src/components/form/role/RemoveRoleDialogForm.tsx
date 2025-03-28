@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { cloneElement, createContext, ReactElement, ReactNode, useContext, useState } from "react";
 import { AlertDialog } from "@/components/AlertDialog";
 import { Role } from "@/types/role";
 import { Button } from "@/components/ui/button";
@@ -24,11 +24,12 @@ export const useRemoveRoleDialogForm = () => useContext(RemoveRoleDialogFormCont
 
 export const ButtonOpenRemoveRoleDialog = ({ children }: { children?: ReactNode }) => {
   const { openRemoveRoleDialogForm } = useRemoveRoleDialogForm();
-  return (
-    <Button variant="destructive" className="capitalize rounded text-white" onClick={openRemoveRoleDialogForm}>
-      {children}
-    </Button>
-  );
+  return cloneElement(children as ReactElement, {
+    onClick: (e: MouseEvent) => {
+      e.preventDefault();
+      openRemoveRoleDialogForm();
+    },
+  });
 };
 
 type RemoveRoleDialogFormProviderProps = {
@@ -58,6 +59,7 @@ export function RemoveRoleDialogFormProvider({
   };
 
   const closeRemoveRoleDialogForm = () => {
+    if (loading.removeRole) return;
     setOpenDialog(false);
   };
 
@@ -67,8 +69,9 @@ export function RemoveRoleDialogFormProvider({
       toast({ title: response.message });
       navigate("/roles");
     } catch (error: any) {
-      closeRemoveRoleDialogForm();
       toast({ title: error, variant: "destructive" });
+    } finally {
+      closeRemoveRoleDialogForm();
     }
   };
 
@@ -80,11 +83,12 @@ export function RemoveRoleDialogFormProvider({
 
       {openDialog && (
         <AlertDialog
+          variant="destructive"
           open={openDialog}
           onOpenChange={setOpenDialog}
           title={title}
           description={description}
-          onClose={() => setOpenDialog(false)}
+          onClose={closeRemoveRoleDialogForm}
           onConfirm={handleRemove}
           loading={loading.removeRole}
           cancelText={cancelText}

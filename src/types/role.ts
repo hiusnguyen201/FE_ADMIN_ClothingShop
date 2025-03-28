@@ -1,5 +1,3 @@
-import { Nullable } from "@/types/common";
-
 export enum ROLE_STATUS {
   ACTIVE = "active",
   INACTIVE = "inactive",
@@ -11,6 +9,6 @@ export type Role = {
   slug: string;
   status: ROLE_STATUS;
   description: string;
-  createdAt: Nullable<Date>;
-  updatedAt: Nullable<Date>;
+  createdAt: Date;
+  updatedAt: Date;
 };

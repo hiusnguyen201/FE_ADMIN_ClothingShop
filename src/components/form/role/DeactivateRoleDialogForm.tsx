@@ -1,7 +1,6 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { cloneElement, createContext, MouseEvent, ReactElement, ReactNode, useContext, useState } from "react";
 import { AlertDialog } from "@/components/AlertDialog";
 import { Role } from "@/types/role";
-import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { DeactivateRoleResponse, RoleState } from "@/redux/role/role.type";
 import { deactivateRole } from "@/redux/role/role.thunk";
@@ -23,11 +22,12 @@ export const useDeactivateRoleDialogForm = () => useContext(DeactivateRoleDialog
 
 export const ButtonOpenDeactivateRoleDialog = ({ children }: { children?: ReactNode }) => {
   const { openDeactivateRoleDialogForm } = useDeactivateRoleDialogForm();
-  return (
-    <Button variant="destructive" className="capitalize rounded text-white" onClick={openDeactivateRoleDialogForm}>
-      {children}
-    </Button>
-  );
+  return cloneElement(children as ReactElement, {
+    onClick: (e: MouseEvent) => {
+      e.preventDefault();
+      openDeactivateRoleDialogForm();
+    },
+  });
 };
 
 type DeactivateRoleDialogFormProviderProps = {
@@ -56,6 +56,7 @@ export function DeactivateRoleDialogFormProvider({
   };
 
   const closeDeactivateRoleDialogForm = () => {
+    if (loading.deactivateRole) return;
     setOpenDialog(false);
   };
 
@@ -78,11 +79,12 @@ export function DeactivateRoleDialogFormProvider({
 
       {openDialog && (
         <AlertDialog
+          variant="destructive"
           open={openDialog}
           onOpenChange={setOpenDialog}
           title={title}
           description={description}
-          onClose={() => setOpenDialog(false)}
+          onClose={closeDeactivateRoleDialogForm}
           onConfirm={handleDeactivate}
           loading={loading.deactivateRole}
           cancelText={cancelText}

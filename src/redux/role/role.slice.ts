@@ -37,7 +37,7 @@ const initialState: RoleState = {
 };
 
 const roleSlice = createSlice({
-  name: "account",
+  name: "role",
   initialState,
   reducers: {},
   extraReducers: (builder: ActionReducerMapBuilder<RoleState>) => {
@@ -161,7 +161,6 @@ const roleSlice = createSlice({
       })
       .addCase(deactivateRole.fulfilled, (state: Draft<RoleState>, action: PayloadAction<DeactivateRoleResponse>) => {
         const { data } = action.payload;
-        console.log(data);
         state.loading.deactivateRole = false;
         state.error = null;
         state.item = data;

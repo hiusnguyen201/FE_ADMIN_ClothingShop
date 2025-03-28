@@ -5,8 +5,11 @@ import { AuthGuard } from "@/guards/AuthGuard";
 import { DashboardPage } from "@/pages/dashboard";
 import { DetailsRolePage, ListRolePage } from "@/pages/roles";
 import { RoleExistsGuard } from "@/guards/role/RoleExistsGuard";
+import { RouteObject } from "react-router-dom";
+import { NotFoundPage } from "@/pages/errors";
+import { ListPermissionPage } from "@/pages/permissions";
 
-export const privateRoutes = [
+export const privateRoutes: RouteObject[] = [
   {
     element: (
       <AuthGuard>
@@ -28,6 +31,8 @@ export const privateRoutes = [
         path: "/roles/:roleId/users",
         element: <RoleExistsGuard children={DetailsRolePage} />,
       },
+      { path: "/permissions", element: <ListPermissionPage /> },
     ],
   },
+  { path: "*", element: <NotFoundPage /> },
 ];

@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ArrowLeft, CircleCheck, CircleX } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useMemo } from "react";
 import { Heading } from "@/components/Heading";
 import { Tag } from "@/components/Tag";
@@ -7,11 +7,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TabsContent } from "@/components/ui/tabs";
 import { FlexBox } from "@/components/FlexBox";
 import { ContentWrapper } from "@/components/ContentWrapper";
-import { ROLE_STATUS } from "@/types/role";
 import { Spinner } from "@/components/spinner";
-import { EditRoleUsersPage, EditRolePermissionsPage, EditRoleSettingsPage } from "@/pages/roles/tabs";
+import { EditRolePermissionsPage, EditRoleSettingsPage } from "@/pages/roles/tabs";
 import { RoleGuardChildrenProps } from "@/guards/role/RoleExistsGuard";
-import { TooltipWrapper } from "@/components/TooltipWrapper";
+import { BadgeVariant } from "@/components/BadgeVariant";
+import { ROLE_STATUS } from "@/types/role";
 
 enum TABS {
   SETTINGS = "settings",
@@ -27,10 +27,6 @@ const tabs = [
   {
     value: TABS.PERMISSIONS,
     element: <EditRolePermissionsPage />,
-  },
-  {
-    value: TABS.USERS,
-    element: <EditRoleUsersPage />,
   },
 ];
 
@@ -62,22 +58,16 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
           {!checkExistLoading && (
             <Heading
               title={role?.name || "Role"}
-              iconNextToTitle={
-                role && (
-                  <TooltipWrapper content={role.status}>
-                    {role.status === ROLE_STATUS.ACTIVE ? (
-                      <CircleCheck size={20} stroke="green" />
-                    ) : (
-                      <CircleX size={20} stroke="red" />
-                    )}
-                  </TooltipWrapper>
-                )
-              }
               description={
-                <span className="flex items-center gap-1">
+                <div className="flex items-center gap-1">
                   <span>Role ID</span>
                   <Tag>{role?.id || 1}</Tag>
-                </span>
+                  {role && (
+                    <BadgeVariant variant={role.status === ROLE_STATUS.ACTIVE ? "success" : "destructive"}>
+                      {role.status}
+                    </BadgeVariant>
+                  )}
+                </div>
               }
             />
           )}

@@ -24,6 +24,7 @@ interface AlertDialogProps {
   onOpenChange?: (open: boolean) => void;
   onClose?: () => void;
   loading: boolean;
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 }
 
 export function AlertDialog({
@@ -36,6 +37,7 @@ export function AlertDialog({
   onOpenChange,
   onClose,
   loading,
+  variant,
 }: AlertDialogProps) {
   return (
     <ShadAlertDialog open={open} onOpenChange={onOpenChange}>
@@ -52,7 +54,8 @@ export function AlertDialog({
             </AlertDialogCancel>
 
             <Button
-              className="bg-destructive hover:bg-destructive/80 text-white min-w-20 text-sm capitalize"
+              className="text-white min-w-20 text-sm capitalize"
+              variant={variant}
               disabled={loading}
               onClick={(e) => {
                 e.preventDefault();
