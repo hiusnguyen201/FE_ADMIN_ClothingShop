@@ -71,9 +71,10 @@
   }
 }
 
-button:focus-visible,
-button:focus {
-  @apply !ring-0 !ring-offset-0 !outline-none;
+*:focus,
+*:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
 }
 
 [role="menuitem"] {

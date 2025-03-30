@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { ContentWrapper } from "@/components/ContentWrapper";
 import { Heading } from "@/components/Heading";
 import { ButtonOpenCreateRoleDialog, CreateRoleDialogFormProvider } from "@/components/form/role/CreateRoleDialogForm";
-import { RoleListDataTable } from "@/components/form/role/RoleListDataTable";
+import { RoleListTable } from "@/components/form/role/RoleListTable";
 import { rowColumns } from "@/pages/roles/row-columns";
 import { Button } from "@/components/ui/button";
 
@@ -24,7 +24,7 @@ export function ListRolePage() {
         }
       />
 
-      <RoleListDataTable columns={rowColumns} />
+      <RoleListTable columns={rowColumns} />
     </ContentWrapper>
   );
 }

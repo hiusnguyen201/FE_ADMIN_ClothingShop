@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { AuthState, LoginPayload } from "@/redux/auth/auth.type";
 import { useAuth } from "@/hooks/use-auth";
+import { useEffect } from "react";
 
 const initialValues: LoginPayload = {
   email: "admin123@gmail.com",
@@ -24,22 +25,27 @@ export function LoginForm({ className }: { className?: string }) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { login } = useAuth();
-  const { loading, user } = useAppSelector<AuthState>((selector) => selector.auth);
+  const { loading, user, error, isAuthenticated } = useAppSelector<AuthState>((selector) => selector.auth);
+
+  useEffect(() => {
+    if (error) {
+      toast({ variant: "destructive", title: error });
+    }
+  }, [error]);
 
   const handleSubmit = async (values: LoginPayload, { resetForm }: FormikHelpers<LoginPayload>) => {
     if (!login) return;
-    try {
-      await login(values);
-      resetForm({});
-      if (user && user.verifiedAt) {
-        toast({ title: "Login successful" });
-        await navigate("/");
-      } else if (user) {
-        dispatch(sendOtpViaEmail({ email: user.email }));
-        await navigate("/verify-otp");
-      }
-    } catch (error: any) {
-      toast({ variant: "destructive", title: error });
+    await login(values);
+    if (!isAuthenticated || !user) return;
+
+    resetForm({});
+
+    if (user.verifiedAt) {
+      toast({ title: "Login successful" });
+      await navigate("/");
+    } else {
+      dispatch(sendOtpViaEmail({ email: user.email }));
+      await navigate("/verify-otp");
     }
   };
 

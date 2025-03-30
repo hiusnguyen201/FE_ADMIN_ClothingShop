@@ -2,23 +2,26 @@ import { Nullable } from "@/types/common";
 import { BaseResponse } from "@/types/response";
 import { User } from "@/types/user";
 
+/**
+ * State
+ */
 export interface AuthState {
-  user: Nullable<User>;
-  isAuthenticated: boolean;
   loading: {
     login: boolean;
     sendOtpViaEmail: boolean;
   };
+  user: Nullable<User>;
+  isAuthenticated: boolean;
   error: Nullable<string>;
 }
 
-// ===============================LOGIN=================================== //
-
+/**
+ * Login
+ */
 export type LoginPayload = {
   email: string;
   password: string;
 };
-
 export interface LoginResponseData {
   isAuthenticated: boolean;
   is2FactorRequired: boolean;
@@ -28,13 +31,12 @@ export interface LoginResponseData {
     refreshToken: string;
   };
 }
-
 export interface LoginResponse extends BaseResponse<LoginResponseData> {}
 
-// ============================SEND OTP VIA EMAIL=========================== //
-
+/**
+ * Send OTP Via Email
+ */
 export type SendOtpViaEmailPayload = {
   email: string;
 };
-
 export interface SendOtpViaEmailResponse extends BaseResponse<null> {}

@@ -3,8 +3,10 @@ import { AccountState, GetProfileResponse } from "@/redux/account/account.type";
 import { getProfile } from "@/redux/account/account.thunk";
 
 const initialState: AccountState = {
+  loading: {
+    getProfile: false,
+  },
   user: null,
-  loading: false,
   error: null,
 };
 
@@ -16,16 +18,16 @@ const accountSlice = createSlice({
     builder
       // Get Profile Case
       .addCase(getProfile.pending, (state: Draft<AccountState>) => {
-        state.loading = true;
+        state.loading.getProfile = true;
         state.error = null;
       })
       .addCase(getProfile.fulfilled, (state: Draft<AccountState>, action: PayloadAction<GetProfileResponse>) => {
-        state.loading = false;
+        state.loading.getProfile = false;
         state.error = null;
         state.user = action.payload.data;
       })
       .addCase(getProfile.rejected, (state: Draft<AccountState>, action: PayloadAction<any>) => {
-        state.loading = false;
+        state.loading.getProfile = false;
         state.error = action.payload as string;
         state.user = null;
       });

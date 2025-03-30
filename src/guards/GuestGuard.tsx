@@ -1,11 +1,13 @@
 import { ReactNode } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { Navigate } from "react-router-dom";
+import { getHistory } from "@/utils/history";
 export const GuestGuard = ({ children }: { children: ReactNode }) => {
   const { isAuthenticated } = useAuth();
+  const history = getHistory();
 
   if (isAuthenticated) {
-    return <Navigate to="/" />;
+    return <Navigate to={history[history.length - 1].url || "/"} />;
   }
 
   return children;

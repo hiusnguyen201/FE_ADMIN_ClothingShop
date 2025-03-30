@@ -1,28 +1,18 @@
 import { useState } from "react";
 import { GetListRolePayload } from "@/redux/role/role.type";
-import { ROLE_STATUS } from "@/types/role";
 import { getHistory, HistoryItem } from "@/utils/history";
 import { getUrlParams } from "@/utils/object";
-import { Nullable } from "@/types/common";
 
 const initialFilters: GetListRolePayload = {
   page: 1,
   limit: 10,
   keyword: "",
-  status: null,
   sortBy: null,
   sortOrder: null,
 };
 
 export function useRoleTableFilters() {
-  const [filters, setFilters] = useState<GetListRolePayload>(() => {
-    const history: HistoryItem[] = getHistory();
-    const lastHistory = history[history.length - 1];
-
-    if (!lastHistory) return initialFilters;
-
-    return getUrlParams<GetListRolePayload>(lastHistory.url);
-  });
+  const [filters, setFilters] = useState<GetListRolePayload>(initialFilters);
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));
@@ -32,13 +22,9 @@ export function useRoleTableFilters() {
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
-  const handleStatusChange = (status: Nullable<ROLE_STATUS>) => {
-    setFilters((prev) => ({ ...prev, status, page: 1 }));
-  };
-
   const handleKeywordChange = (keyword: string) => {
     setFilters((prev) => ({ ...prev, keyword, page: 1 }));
   };
 
-  return { filters, handlePageChange, handleLimitChange, handleStatusChange, handleKeywordChange };
+  return { filters, handlePageChange, handleLimitChange, handleKeywordChange };
 }

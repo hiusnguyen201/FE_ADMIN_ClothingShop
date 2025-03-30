@@ -1,6 +1,6 @@
 import { ContentWrapper } from "@/components/ContentWrapper";
 import { Heading } from "@/components/Heading";
-import { PermissionListDataTable } from "@/components/form/permission/PermissionListDataTable";
+import { PermissionListTable } from "@/components/form/permission/PermissionListTable";
 import { permissionColumns } from "./permission-columns";
 
 export function ListPermissionPage() {
@@ -8,7 +8,7 @@ export function ListPermissionPage() {
     <ContentWrapper>
       <Heading title="Permissions" description="View Permissions for your applications." />
 
-      <PermissionListDataTable columns={permissionColumns} />
+      <PermissionListTable columns={permissionColumns} />
     </ContentWrapper>
   );
 }

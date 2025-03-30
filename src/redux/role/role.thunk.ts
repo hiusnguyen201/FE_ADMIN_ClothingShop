@@ -1,28 +1,28 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
-  activateRoleService,
   checkRoleNameExistService,
   createRoleService,
-  deactivateRoleService,
+  editListRolePermissionsService,
   editRoleInfoService,
+  getListRolePermissionsService,
   getListRoleService,
   getRoleService,
   removeRoleService,
 } from "@/redux/role/role.service";
 import {
-  ActivateRolePayload,
-  ActivateRoleResponse,
   CheckRoleNameExistPayload,
   CheckRoleNameExistResponse,
   CreateRolePayload,
   CreateRoleResponse,
-  DeactivateRolePayload,
-  DeactivateRoleResponse,
+  EditListRolePermissionsPayload,
+  EditListRolePermissionsResponse,
   EditRoleInfoPayload,
   EditRoleInfoResponse,
   GetListRolePayload,
+  GetListRolePermissionsPayload,
+  GetListRolePermissionsResponse,
   GetListRoleResponse,
-  GetRoleParams,
+  GetRolePayload,
   GetRoleResponse,
   RemoveRolePayload,
   RemoveRoleResponse,
@@ -55,7 +55,7 @@ export const getListRole = createAsyncThunk<GetListRoleResponse, GetListRolePayl
   }
 );
 
-export const getRole = createAsyncThunk<GetRoleResponse, GetRoleParams, ThunkApiConfig>(
+export const getRole = createAsyncThunk<GetRoleResponse, GetRolePayload, ThunkApiConfig>(
   "role/get-role",
   async (payload, { rejectWithValue }) => {
     try {
@@ -108,28 +108,30 @@ export const checkRoleNameExist = createAsyncThunk<
   }
 });
 
-export const activateRole = createAsyncThunk<ActivateRoleResponse, ActivateRolePayload, ThunkApiConfig>(
-  "role/activate-role",
-  async (payload, { rejectWithValue }) => {
-    try {
-      const response: ActivateRoleResponse = await activateRoleService(payload);
-      return response;
-    } catch (e: any) {
-      const message: string = e?.response?.data?.message || e.message || e.toString();
-      return rejectWithValue(message);
-    }
+export const getListRolePermissions = createAsyncThunk<
+  GetListRolePermissionsResponse,
+  GetListRolePermissionsPayload,
+  ThunkApiConfig
+>("role/get-list-role-permissions", async (filters, { rejectWithValue }) => {
+  try {
+    const response: GetListRolePermissionsResponse = await getListRolePermissionsService(filters);
+    return response;
+  } catch (e: any) {
+    const message: string = e?.response?.data?.message || e.message || e.toString();
+    return rejectWithValue(message);
   }
-);
+});
 
-export const deactivateRole = createAsyncThunk<DeactivateRoleResponse, DeactivateRolePayload, ThunkApiConfig>(
-  "role/deactivate-role",
-  async (payload, { rejectWithValue }) => {
-    try {
-      const response: DeactivateRoleResponse = await deactivateRoleService(payload);
-      return response;
-    } catch (e: any) {
-      const message: string = e?.response?.data?.message || e.message || e.toString();
-      return rejectWithValue(message);
-    }
+export const editListRolePermissions = createAsyncThunk<
+  EditListRolePermissionsResponse,
+  EditListRolePermissionsPayload,
+  ThunkApiConfig
+>("role/edit-list-role-permissions", async (payload, { rejectWithValue }) => {
+  try {
+    const response: EditListRolePermissionsResponse = await editListRolePermissionsService(payload);
+    return response;
+  } catch (e: any) {
+    const message: string = e?.response?.data?.message || e.message || e.toString();
+    return rejectWithValue(message);
   }
-);
+});

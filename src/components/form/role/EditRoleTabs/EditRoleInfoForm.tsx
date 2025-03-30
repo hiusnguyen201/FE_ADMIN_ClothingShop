@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { Role, ROLE_STATUS } from "@/types/role";
+import { Role } from "@/types/role";
 import {
   CheckRoleNameExistResponse,
   EditRoleInfoPayload,
@@ -27,7 +27,6 @@ const editRoleInfoSchema = Yup.object().shape({
       return !response.data;
     }),
   description: Yup.string().required().min(3).max(255),
-  status: Yup.string().required().oneOf(Object.values(ROLE_STATUS)),
 });
 
 export function EditRoleInfoForm({ role }: { role: Role }) {
@@ -38,7 +37,6 @@ export function EditRoleInfoForm({ role }: { role: Role }) {
     id: role.id,
     name: role.name,
     description: role.description,
-    status: role.status,
   };
 
   const handleSubmit = async (values: EditRoleInfoPayload, { resetForm }: FormikHelpers<EditRoleInfoPayload>) => {

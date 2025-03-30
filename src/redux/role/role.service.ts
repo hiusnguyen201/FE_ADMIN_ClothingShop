@@ -8,16 +8,16 @@ import {
   CreateRolePayload,
   CheckRoleNameExistPayload,
   CheckRoleNameExistResponse,
-  GetRoleParams,
+  GetRolePayload,
   GetRoleResponse,
   EditRoleInfoPayload,
   EditRoleInfoResponse,
   RemoveRolePayload,
   RemoveRoleResponse,
-  ActivateRolePayload,
-  ActivateRoleResponse,
-  DeactivateRoleResponse,
-  DeactivateRolePayload,
+  GetListRolePermissionsPayload,
+  GetListRolePermissionsResponse,
+  EditListRolePermissionsPayload,
+  EditListRolePermissionsResponse,
 } from "@/redux/role/role.type";
 
 const apiUrl: string = import.meta.env.VITE_API_URL;
@@ -44,7 +44,7 @@ export const getListRoleService = async (filters: GetListRolePayload): Promise<G
   return response.data;
 };
 
-export const getRoleService = async (payload: GetRoleParams): Promise<GetRoleResponse> => {
+export const getRoleService = async (payload: GetRolePayload): Promise<GetRoleResponse> => {
   const response: AxiosResponse = await axios.get(`${apiUrl}/roles/get-role-by-id/${payload.id}`, {
     headers: { Authorization: `Bearer ${getAccessToken()}` },
   });
@@ -65,15 +65,23 @@ export const removeRoleService = async (payload: RemoveRolePayload): Promise<Rem
   return response.data;
 };
 
-export const activateRoleService = async (payload: ActivateRolePayload): Promise<ActivateRoleResponse> => {
-  const response: AxiosResponse = await axios.patch(`${apiUrl}/roles/activate-role-by-id/${payload.id}`, null, {
-    headers: { Authorization: `Bearer ${getAccessToken()}` },
-  });
+export const getListRolePermissionsService = async (
+  payload: GetListRolePermissionsPayload
+): Promise<GetListRolePermissionsResponse> => {
+  const filteredFilters: Record<string, string> = filteredObj(payload);
+  const response: AxiosResponse = await axios.get(
+    `${apiUrl}/roles/get-role-permissions-by-id?${new URLSearchParams(filteredFilters)}`,
+    {
+      headers: { Authorization: `Bearer ${getAccessToken()}` },
+    }
+  );
   return response.data;
 };
 
-export const deactivateRoleService = async (payload: DeactivateRolePayload): Promise<DeactivateRoleResponse> => {
-  const response: AxiosResponse = await axios.patch(`${apiUrl}/roles/deactivate-role-by-id/${payload.id}`, null, {
+export const editListRolePermissionsService = async (
+  payload: EditListRolePermissionsPayload
+): Promise<EditListRolePermissionsResponse> => {
+  const response: AxiosResponse = await axios.put(`${apiUrl}/roles/update-role-permissions-by-id`, payload, {
     headers: { Authorization: `Bearer ${getAccessToken()}` },
   });
   return response.data;
