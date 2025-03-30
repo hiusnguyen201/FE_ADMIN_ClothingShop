@@ -1,16 +1,11 @@
 import { FlexBox } from "@/components/FlexBox";
-import { Button } from "@/components/ui/button";
+import { SelectRolePermissions } from "@/components/form/role/EditRoleTabs/SelectRolePermissions";
+import { Role } from "@/types/role";
 
-export function EditRolePermissionsPage() {
+export function EditRolePermissionsPage({ role }: { role: Role }) {
   return (
     <FlexBox>
-      <FlexBox direction="row">
-        <p className="text-sm">
-          Add Permissions to this Role. Users who have this Role will receive all Permissions below that match the API
-          of their login request.
-        </p>
-        <Button>Add Permissions</Button>
-      </FlexBox>
+      <SelectRolePermissions role={role} />
     </FlexBox>
   );
 }

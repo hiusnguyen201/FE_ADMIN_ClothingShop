@@ -5,7 +5,6 @@ import { cloneElement, createContext, Fragment, ReactElement, ReactNode, useCont
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { CreateDialogForm } from "@/components/dialog-form";
 import { InputFormikField } from "@/components/formik-fields";
-import { ROLE_STATUS } from "@/types/role";
 import { toast } from "@/hooks/use-toast";
 import { createRole } from "@/redux/role/role.thunk";
 import { CheckRoleNameExistResponse, CreateRolePayload, CreateRoleResponse, RoleState } from "@/redux/role/role.type";
@@ -38,7 +37,6 @@ export const ButtonOpenCreateRoleDialog = ({ children }: { children?: ReactEleme
 const initialValues: CreateRolePayload = {
   name: "",
   description: "",
-  status: ROLE_STATUS.ACTIVE,
 };
 
 const createRoleSchema = Yup.object().shape({
@@ -51,7 +49,6 @@ const createRoleSchema = Yup.object().shape({
       return !response.data;
     }),
   description: Yup.string().required().min(3).max(255),
-  status: Yup.string().required().oneOf(Object.values(ROLE_STATUS)),
 });
 
 export function CreateRoleDialogFormProvider({ children }: { children: ReactNode }) {

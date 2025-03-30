@@ -10,8 +10,6 @@ import { ContentWrapper } from "@/components/ContentWrapper";
 import { Spinner } from "@/components/spinner";
 import { EditRolePermissionsPage, EditRoleSettingsPage } from "@/pages/roles/tabs";
 import { RoleGuardChildrenProps } from "@/guards/role/RoleExistsGuard";
-import { BadgeVariant } from "@/components/BadgeVariant";
-import { ROLE_STATUS } from "@/types/role";
 
 enum TABS {
   SETTINGS = "settings",
@@ -22,11 +20,11 @@ enum TABS {
 const tabs = [
   {
     value: TABS.SETTINGS,
-    element: <EditRoleSettingsPage />,
+    element: EditRoleSettingsPage,
   },
   {
     value: TABS.PERMISSIONS,
-    element: <EditRolePermissionsPage />,
+    element: EditRolePermissionsPage,
   },
 ];
 
@@ -62,11 +60,6 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
                 <div className="flex items-center gap-1">
                   <span>Role ID</span>
                   <Tag>{role?.id || 1}</Tag>
-                  {role && (
-                    <BadgeVariant variant={role.status === ROLE_STATUS.ACTIVE ? "success" : "destructive"}>
-                      {role.status}
-                    </BadgeVariant>
-                  )}
                 </div>
               }
             />
@@ -96,7 +89,7 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
               <div>
                 {tabs.map((item) => (
                   <TabsContent key={item.value} value={item.value} className="py-4 mt-0">
-                    {item.element}
+                    {item.element({ role })}
                   </TabsContent>
                 ))}
               </div>

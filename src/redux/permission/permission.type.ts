@@ -2,12 +2,13 @@ import { Nullable, Optional } from "@/types/common";
 import { Permission } from "@/types/permission";
 import { GetListParams, GetListResponseData } from "@/types/response";
 
-interface LoadingPermissionState {
-  getListPermission: boolean;
-}
-
+/**
+ * State
+ */
 export interface PermissionState {
-  loading: LoadingPermissionState;
+  loading: {
+    getListPermission: boolean;
+  };
   item: Nullable<Permission>;
   list: Permission[];
   totalCount: number;
@@ -15,10 +16,11 @@ export interface PermissionState {
   isInitialized: boolean;
 }
 
-export type SortByField = Extract<"name" | "createdAt", Permission>;
-
+/**
+ * Get List Permission
+ */
+type PermissionFieldsSort = Extract<"name" | "createdAt", Permission>;
 export interface GetListPermissionPayload extends GetListParams<Permission> {
-  sortBy: Optional<Nullable<SortByField>>;
+  sortBy?: Optional<Nullable<PermissionFieldsSort>>;
 }
-
 export interface GetListPermissionResponse extends GetListResponseData<Permission> {}

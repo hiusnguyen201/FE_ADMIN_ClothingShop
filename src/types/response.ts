@@ -13,9 +13,9 @@ export interface BaseResponse<TData> {
 export interface GetListParams<TData> {
   page: number;
   limit: number;
-  keyword: Optional<string>;
-  sortOrder: Optional<Nullable<SortOrderValue>>;
-  sortBy: Optional<Nullable<keyof TData>>;
+  keyword?: Optional<string>;
+  sortOrder?: Optional<Nullable<SortOrderValue>>;
+  sortBy?: Optional<Nullable<keyof TData>>;
 }
 
 export interface GetListResponseData<TData>

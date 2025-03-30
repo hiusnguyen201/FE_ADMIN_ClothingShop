@@ -2,26 +2,26 @@ import { ReactNode } from "react";
 import { createContext, useEffect, useReducer } from "react";
 import { getAccessToken, isValidToken, setSession } from "@/utils/jwt";
 import { User } from "@/types/user";
-import { PayloadAction } from "@reduxjs/toolkit";
 import { getProfile } from "@/redux/account/account.thunk";
 import { useAppDispatch } from "@/redux/store";
 import { toast } from "@/hooks/use-toast";
 import { LoginPayload, LoginResponse } from "@/redux/auth/auth.type";
 import { login } from "@/redux/auth/auth.thunk";
+import { Nullable } from "@/types/common";
 
 type State = {
-  isAuthenticated: boolean;
+  isAuthenticated?: boolean;
   isInitialized?: boolean;
-  error?: string | null;
-  user?: User | null;
+  error?: Nullable<string>;
+  user?: Nullable<User>;
   reInitialize?: () => Promise<void>;
   logout?: () => Promise<void>;
   login?: (values: LoginPayload) => Promise<void>;
 };
 
 const initialState: State = {
-  isAuthenticated: true,
-  isInitialized: true,
+  isAuthenticated: false,
+  isInitialized: false,
   error: null,
   user: null,
   login: () => Promise.resolve(),
@@ -29,11 +29,16 @@ const initialState: State = {
   reInitialize: () => Promise.resolve(),
 };
 
-type ActionType = "INITIALIZE" | "LOGOUT" | "LOGIN";
+type ActionType = "INITIALIZE" | "LOGOUT" | "LOGIN" | "CLEAR" | "ERROR";
 
-const handlers: Record<ActionType, (state: State, action?: PayloadAction<State>) => State> = {
-  INITIALIZE: (state: State, action?: PayloadAction<State>) => {
-    if (!action?.payload) return state;
+type AuthAction = {
+  type: ActionType;
+  payload?: State;
+};
+
+const handlers: Record<ActionType, (state: State, action: AuthAction) => State> = {
+  INITIALIZE: (state: State, action: AuthAction) => {
+    if (!action?.payload) return { ...state, isInitialized: true };
     const { isAuthenticated, user } = action.payload;
     return {
       ...state,
@@ -49,17 +54,38 @@ const handlers: Record<ActionType, (state: State, action?: PayloadAction<State>)
       user: null,
     };
   },
-  LOGIN: (state: State, action?: PayloadAction<State>) => {
+  LOGIN: (state: State, action: AuthAction) => {
     if (!action?.payload) return state;
     return {
       ...state,
       isAuthenticated: true,
       user: action.payload.user,
+      isInitialized: true,
+    };
+  },
+  CLEAR: (state: State) => {
+    return {
+      ...state,
+      isAuthenticated: false,
+      isInitialized: false,
+      user: null,
+      error: null,
+    };
+  },
+  ERROR: (state: State, action: AuthAction) => {
+    if (!action?.payload) return state;
+    const { error } = action.payload;
+    return {
+      ...state,
+      isInitialized: true,
+      isAuthenticated: false,
+      user: null,
+      error,
     };
   },
 };
 
-const reducer = (state: State, action: PayloadAction<State> & { type: ActionType }) =>
+const reducer = (state: State, action: AuthAction & { type: ActionType }) =>
   handlers[action.type] ? handlers[action.type](state, action) : state;
 
 export const AuthContext = createContext<State>(initialState);
@@ -70,6 +96,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const initialize = async () => {
     try {
+      dispatch({ type: "CLEAR" });
       const accessToken = getAccessToken();
 
       if (accessToken && isValidToken(accessToken)) {
@@ -81,33 +108,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         dispatch({ type: "INITIALIZE", payload: { isAuthenticated: false, user: null } });
       }
     } catch (e: any) {
-      const message = e?.response?.data?.message || e.message || e.toString();
-      dispatch({ type: "INITIALIZE", payload: { isAuthenticated: false, user: null, error: message } });
-    }
-  };
-
-  const logoutAction = async () => {
-    setSession(null);
-    dispatch({ type: "LOGOUT", payload: { isAuthenticated: false } });
-    toast({ title: "Logout successful" });
-  };
-
-  const loginAction = async (values: LoginPayload) => {
-    try {
-      const response: LoginResponse = await appDispatch(login(values)).unwrap();
-      const { user, tokens } = response.data;
-      dispatch({ type: "LOGIN", payload: { isAuthenticated: true, user } });
-      setSession(tokens.accessToken, tokens.refreshToken);
-      toast({ title: "Login successful" });
-    } catch (e: any) {
-      const message = e?.response?.data?.message || e.message || e.toString();
-      dispatch({ type: "LOGIN", payload: { isAuthenticated: false, user: null, error: message } });
+      // const message = e?.response?.data?.message || e.message || e.toString();
+      dispatch({ type: "INITIALIZE", payload: { isAuthenticated: false, user: null } });
     }
   };
 
   useEffect(() => {
     initialize();
   }, []);
+
+  const loginAction = async (values: LoginPayload) => {
+    try {
+      dispatch({ type: "CLEAR" });
+      const response: LoginResponse = await appDispatch(login(values)).unwrap();
+      const { user, tokens } = response.data;
+      dispatch({ type: "LOGIN", payload: { user } });
+      setSession(tokens.accessToken, tokens.refreshToken);
+      toast({ title: "Login successful" });
+    } catch (e: any) {
+      const message = e?.response?.data?.message || e.message || e.toString();
+      dispatch({ type: "ERROR", payload: { error: message } });
+    }
+  };
+
+  const logoutAction = async () => {
+    setSession(null);
+    dispatch({ type: "LOGOUT" });
+    toast({ title: "Logout successful" });
+  };
 
   return (
     <AuthContext.Provider value={{ ...state, reInitialize: initialize, logout: logoutAction, login: loginAction }}>

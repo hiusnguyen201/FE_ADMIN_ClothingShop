@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-r
 import { Button } from "@/components/ui/button";
 import { SelectFormField } from "@/components/form-fields";
 
-export const LIMIT_PER_PAGE: number[] = [10, 20, 30, 40, 50];
+export const LIMIT_PER_PAGE: number[] = [10, 25, 50, 100];
 
 export type DataTablePaginationProps = {
   loading: boolean;
