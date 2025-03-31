@@ -1,5 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import {
+  CheckRoleNameExistResponse,
   CreateRoleResponse,
   EditListRolePermissionsResponse,
   EditRoleInfoResponse,
@@ -17,10 +18,12 @@ import {
   removeRole,
   getListRolePermissions,
   editListRolePermissions,
+  checkRoleNameExist,
 } from "@/redux/role/role.thunk";
 
 const initialState: RoleState = {
   loading: {
+    checkRoleNameExist: false,
     createRole: false,
     getListRole: false,
     getRole: false,
@@ -33,7 +36,6 @@ const initialState: RoleState = {
   list: [],
   totalCount: 0,
   error: null,
-  isInitialized: false,
   listRolePermissions: [],
 };
 
@@ -42,6 +44,21 @@ const roleSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder: ActionReducerMapBuilder<RoleState>) => {
+    // Check Role Name
+    builder
+      .addCase(checkRoleNameExist.pending, (state) => {
+        state.loading.checkRoleNameExist = true;
+        state.error = null;
+      })
+      .addCase(checkRoleNameExist.fulfilled, (state) => {
+        state.loading.checkRoleNameExist = false;
+        state.error = null;
+      })
+      .addCase(checkRoleNameExist.rejected, (state, action: PayloadAction<any>) => {
+        state.loading.checkRoleNameExist = false;
+        state.error = action.payload;
+      });
+
     // Create Role
     builder
       .addCase(createRole.pending, (state) => {
@@ -72,14 +89,12 @@ const roleSlice = createSlice({
         state.error = null;
         state.list = data.list;
         state.totalCount = data.totalCount;
-        state.isInitialized = true;
       })
       .addCase(getListRole.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
         state.loading.getListRole = false;
         state.error = action.payload as string;
         state.list = [];
         state.totalCount = 0;
-        state.isInitialized = true;
       });
 
     builder

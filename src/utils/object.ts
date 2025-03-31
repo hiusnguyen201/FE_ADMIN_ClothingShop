@@ -1,12 +1,11 @@
-export function filteredObj(obj: Record<string, any>): Record<string, any> {
+export function filterObj(obj: Record<string, any>): Record<string, any> {
   return Object.fromEntries(Object.entries(obj).filter(([_, value]) => value));
 }
 
-export function getUrlParams<T>(urlString: string): T {
-  const url: URL = new URL(urlString);
-  const urlSearchParams: URLSearchParams = new URLSearchParams(url.searchParams);
-  const params: Record<string, string> = Object.fromEntries(urlSearchParams.entries());
-  return convertTo<T>(params);
+export function getQueryFromUrl<T>(url: string): T {
+  const [_, queryString] = url.split("?");
+  const queryObject = Object.fromEntries(new URLSearchParams(queryString));
+  return convertTo<T>(queryObject);
 }
 
 export function convertTo<T>(record: Record<string, string>): T {

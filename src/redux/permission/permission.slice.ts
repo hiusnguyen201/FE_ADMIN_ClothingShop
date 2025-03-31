@@ -10,7 +10,6 @@ const initialState: PermissionState = {
   list: [],
   totalCount: 0,
   error: null,
-  isInitialized: false,
 };
 
 const roleSlice = createSlice({
@@ -32,7 +31,6 @@ const roleSlice = createSlice({
           state.error = null;
           state.list = data.list;
           state.totalCount = data.totalCount;
-          state.isInitialized = true;
         }
       )
       .addCase(getListPermission.rejected, (state: Draft<PermissionState>, action: PayloadAction<any>) => {
@@ -40,7 +38,6 @@ const roleSlice = createSlice({
         state.error = action.payload as string;
         state.list = [];
         state.totalCount = 0;
-        state.isInitialized = true;
       });
   },
 });

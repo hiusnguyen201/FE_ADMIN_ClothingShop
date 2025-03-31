@@ -31,7 +31,8 @@ const tabs = [
 export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const tab = useMemo(() => {
+
+  const activeTab = useMemo(() => {
     const path = location.pathname.split("/").pop();
     if (Object.values(TABS).includes(path as TABS)) {
       return path as TABS;
@@ -69,7 +70,7 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
         {!checkExistLoading && role && (
           <FlexBox size="large">
             <Tabs
-              value={tab}
+              value={activeTab}
               onValueChange={(val) => {
                 navigate(`/roles/${role.id}/${val}`);
               }}
@@ -80,9 +81,12 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
                   <TabsTrigger
                     key={item.value}
                     value={item.value}
-                    className="capitalize py-3 px-1 data-[state=active]:bg-[transparent] border-0 focus-visible:ring-0 data-[state=active]:shadow-none hover:text-foreground rounded-none"
+                    className="relative capitalize transition-all py-3 px-1 data-[state=active]:bg-[transparent] hover:text-primary data-[state=active]:text-primary border-0 data-[state=active]:shadow-none rounded-none "
                   >
                     {item.value}
+                    {activeTab === item.value && (
+                      <div className="absolute h-[2px] bg-primary w-full inset-x-0 bottom-0"></div>
+                    )}
                   </TabsTrigger>
                 ))}
               </TabsList>

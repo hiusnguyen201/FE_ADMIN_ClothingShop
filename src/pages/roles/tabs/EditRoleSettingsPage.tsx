@@ -1,7 +1,7 @@
 import { FlexBox } from "@/components/FlexBox";
 import { AlertBox } from "@/components/AlertBox";
 import { EditRoleInfoForm } from "@/components/form/role/EditRoleTabs/EditRoleInfoForm";
-import { ButtonOpenRemoveRoleDialog, RemoveRoleDialogFormProvider } from "@/components/form/role/RemoveRoleDialogForm";
+import { RemoveRoleDialogForm } from "@/components/form/role/RemoveRoleDialogForm";
 import { Button } from "@/components/ui/button";
 import { Role } from "@/types/role";
 
@@ -14,25 +14,17 @@ export function EditRoleSettingsPage({ role }: { role: Role }) {
       <FlexBox size="small">
         <h2 className="text-lg font-medium">Danger Zone</h2>
 
-        <RemoveRoleDialogFormProvider
-          cancelText="Cancel"
-          confirmText="Confirm"
+        <AlertBox
           title="Remove Role"
-          description={`Are you sure you want to delete role "${role.name}"?`}
-          role={role}
-        >
-          <AlertBox
-            title="Remove Role"
-            description="Once confirmed, this operation can't be undone!"
-            rightAction={
-              <ButtonOpenRemoveRoleDialog>
-                <Button variant="destructive" className="capitalize rounded text-white">
-                  Remove
-                </Button>
-              </ButtonOpenRemoveRoleDialog>
-            }
-          />
-        </RemoveRoleDialogFormProvider>
+          description="Once confirmed, this operation can't be undone!"
+          rightAction={
+            <RemoveRoleDialogForm role={role}>
+              <Button variant="destructive" className="capitalize rounded text-white">
+                Remove
+              </Button>
+            </RemoveRoleDialogForm>
+          }
+        />
       </FlexBox>
     </FlexBox>
   );

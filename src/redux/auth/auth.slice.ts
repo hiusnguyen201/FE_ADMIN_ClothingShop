@@ -1,11 +1,12 @@
 import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import { AuthState, LoginResponse, SendOtpViaEmailResponse } from "@/redux/auth/auth.type";
-import { login, sendOtpViaEmail } from "@/redux/auth/auth.thunk";
+import { login, logout, sendOtpViaEmail } from "@/redux/auth/auth.thunk";
 
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   loading: {
+    logout: false,
     login: false,
     sendOtpViaEmail: false,
   },
@@ -17,6 +18,25 @@ const authSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder: ActionReducerMapBuilder<AuthState>) => {
+    // Logout
+    builder
+      .addCase(logout.pending, (state: Draft<AuthState>) => {
+        state.loading.logout = true;
+        state.error = null;
+      })
+      .addCase(logout.fulfilled, (state: Draft<AuthState>) => {
+        state.loading.logout = false;
+        state.error = null;
+        state.isAuthenticated = false;
+        state.user = null;
+      })
+      .addCase(logout.rejected, (state: Draft<AuthState>, action: PayloadAction<any>) => {
+        state.loading.logout = false;
+        state.error = action.payload as string;
+        state.isAuthenticated = false;
+        state.user = null;
+      });
+
     // Login
     builder
       .addCase(login.pending, (state: Draft<AuthState>) => {

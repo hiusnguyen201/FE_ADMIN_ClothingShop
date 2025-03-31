@@ -1,19 +1,21 @@
-import { ReactNode } from "react";
+import { cloneElement, ReactElement, ReactNode, useState } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { Schema } from "yup";
-import { FormikHelpers, FormikValues, useFormik } from "formik";
+import { FormikErrors, FormikHelpers, FormikValues, useFormik } from "formik";
 import { X } from "lucide-react";
 import { Dialog, DialogHeader, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/LoadingButton";
 
 export type CreateDialogFormProps<T extends FormikValues> = {
-  open: boolean;
+  open?: boolean;
   loading: boolean;
-  onClose: () => void;
+  onOpenChange?: (value: boolean) => void;
   title: string;
   initialValues: T;
   validationSchema: Schema<T>;
+  trigger?: ReactNode;
+  extendSchema: (values: T) => void | object | Promise<FormikErrors<T>>;
   onSubmit: (values: T, helpers: FormikHelpers<T>) => void;
   children: (formik: ReturnType<typeof useFormik<T>>) => ReactNode;
 };
@@ -21,60 +23,98 @@ export type CreateDialogFormProps<T extends FormikValues> = {
 export function CreateDialogForm<T extends FormikValues>({
   open,
   loading,
-  onClose,
+  onOpenChange,
   title,
   initialValues,
   validationSchema,
+  trigger,
+  extendSchema,
   onSubmit,
   children,
 }: CreateDialogFormProps<T>) {
   const formik = useFormik<T>({
     initialValues,
     validationSchema,
+    validate: extendSchema,
     onSubmit,
     validateOnBlur: false,
     validateOnChange: false,
   });
 
-  const handleClose = () => {
-    onClose();
-    formik.resetForm({});
+  const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
+
+  const [internalOpen, setInternalOpen] = useState<boolean>(false);
+
+  const dialogOpen = isControlled ? open! : internalOpen;
+
+  const setDialogOpen = (value: boolean) => {
+    if (value === false) formik.resetForm({});
+
+    if (isControlled) {
+      onOpenChange!(value);
+    } else {
+      setInternalOpen(value);
+    }
   };
 
+  const handleClose = () => {
+    if (loading) return;
+    formik.resetForm({});
+    setDialogOpen(false);
+  };
+
+  const handleClick = (e: MouseEvent) => {
+    e.preventDefault();
+    setDialogOpen(true);
+  };
+
+  const renderedTrigger = isControlled ? trigger : cloneElement(trigger as ReactElement, { onClick: handleClick });
+
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
+    <>
+      {renderedTrigger}
 
-        <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 grid w-full sm:max-w-[640px] max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg">
-          <DialogHeader className="flex-row items-center justify-between px-10 pt-10 pb-6">
-            <DialogPrimitive.DialogTitle className="text-xl font-medium">{title}</DialogPrimitive.DialogTitle>
+      {dialogOpen && (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogPrimitive.Portal>
+            <DialogPrimitive.Overlay
+              onClick={handleClose}
+              className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=open]:fade-in-0"
+            />
 
-            <Button variant="ghost" size="icon" className="rounded-full" onClick={handleClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogHeader>
+            <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 grid w-full sm:max-w-[640px] max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg">
+              <DialogHeader className="flex-row items-center justify-between px-10 pt-10 pb-6">
+                <DialogPrimitive.DialogTitle className="text-xl font-medium">{title}</DialogPrimitive.DialogTitle>
 
-          <DialogDescription className="hidden" />
+                <Button disabled={loading} variant="ghost" size="icon" className="rounded-full" onClick={handleClose}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </DialogHeader>
 
-          <form onSubmit={formik.handleSubmit}>
-            <div className="px-10 py-1 flex flex-col gap-6">{children(formik)}</div>
-            <DialogFooter className="px-10 pb-10 pt-6 gap-2">
-              <Button variant="outline" type="button" onClick={handleClose}>
-                Cancel
-              </Button>
-              <LoadingButton
-                disabled={!formik.isValid || Object.keys(formik.touched).length === 0 || loading || formik.isValidating}
-                loading={loading || formik.isValidating}
-                type="submit"
-                className="min-w-[90px]"
-              >
-                Create
-              </LoadingButton>
-            </DialogFooter>
-          </form>
-        </DialogPrimitive.Content>
-      </DialogPrimitive.Portal>
-    </Dialog>
+              <DialogDescription className="hidden" />
+
+              <form onSubmit={formik.handleSubmit}>
+                <div className="px-10 py-1 flex flex-col gap-6">{children(formik)}</div>
+                <DialogFooter className="px-10 pb-10 pt-6 gap-2">
+                  <Button disabled={loading} variant="outline" type="button" onClick={handleClose}>
+                    Cancel
+                  </Button>
+                  <LoadingButton
+                    disabled={
+                      !formik.isValid || Object.keys(formik.touched).length === 0 || loading || formik.isValidating
+                    }
+                    loading={loading || formik.isValidating}
+                    type="submit"
+                    className="min-w-[90px]"
+                  >
+                    Create
+                  </LoadingButton>
+                </DialogFooter>
+              </form>
+            </DialogPrimitive.Content>
+          </DialogPrimitive.Portal>
+        </Dialog>
+      )}
+    </>
   );
 }

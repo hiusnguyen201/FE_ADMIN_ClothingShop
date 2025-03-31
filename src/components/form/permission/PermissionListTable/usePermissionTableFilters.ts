@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { GetListPermissionPayload } from "@/redux/permission/permission.type";
+import { getPreviousPathnameHistory, matchPreviousHistory } from "@/utils/history";
+import { getQueryFromUrl } from "@/utils/object";
+import { useLocation } from "react-router-dom";
 
 export const PERMISSION_KEY_HISTORY_URL = "PERMISSION_LIST";
 
@@ -12,7 +15,16 @@ const initialFilters: GetListPermissionPayload = {
 };
 
 export function usePermissionTableFilters() {
-  const [filters, setFilters] = useState<GetListPermissionPayload>(initialFilters);
+  const location = useLocation();
+
+  const getInitialFilters = (): GetListPermissionPayload => {
+    const previousUrl = getPreviousPathnameHistory();
+    if (!previousUrl) return initialFilters;
+    const query = getQueryFromUrl<Record<string, any>>(previousUrl);
+    return matchPreviousHistory(location.pathname) ? (query as GetListPermissionPayload) : initialFilters;
+  };
+
+  const [filters, setFilters] = useState<GetListPermissionPayload>(getInitialFilters());
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));

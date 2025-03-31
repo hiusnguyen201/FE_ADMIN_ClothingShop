@@ -47,7 +47,10 @@ export function InputFormikField<TData>({
         placeholder={placeholder}
         name={name}
         value={currentValue}
-        className={cn("w-full", error && "border-red-500 focus:border-red-500")}
+        className={cn(
+          "w-full rounded focus-visible:!outline focus-visible:!outline-2 focus-visible:!outline-primary",
+          error && "border-red-500 focus:border-red-500"
+        )}
         onChange={(e) => {
           handleChange(e);
           setFieldError(name, undefined);

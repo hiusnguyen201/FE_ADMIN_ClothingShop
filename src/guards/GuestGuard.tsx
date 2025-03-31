@@ -7,7 +7,8 @@ export const GuestGuard = ({ children }: { children: ReactNode }) => {
   const history = getHistory();
 
   if (isAuthenticated) {
-    return <Navigate to={history[history.length - 1].url || "/"} />;
+    const previousHistory = history[history.length - 1];
+    return <Navigate to={previousHistory ? previousHistory.url : "/"} />;
   }
 
   return children;

@@ -8,6 +8,7 @@ import { Role } from "@/types/role";
  */
 export interface RoleState {
   loading: {
+    checkRoleNameExist: boolean;
     createRole: boolean;
     getListRole: boolean;
     getRole: boolean;
@@ -20,7 +21,6 @@ export interface RoleState {
   list: Role[];
   totalCount: number;
   error: Nullable<string>;
-  isInitialized: boolean;
   listRolePermissions: Permission[];
 }
 

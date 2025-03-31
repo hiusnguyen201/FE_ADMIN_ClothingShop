@@ -13,7 +13,6 @@ export interface PermissionState {
   list: Permission[];
   totalCount: number;
   error: Nullable<string>;
-  isInitialized: boolean;
 }
 
 /**

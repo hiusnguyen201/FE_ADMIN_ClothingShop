@@ -11,15 +11,25 @@ export const getHistory = (): HistoryItem[] => {
 };
 
 export const setHistory = (url: string): void => {
-  let history: HistoryItem[] = getHistory();
+  const history = getHistory();
+  const lastEntry = history[history.length - 1];
 
-  if (history[history.length - 1]?.url === url) return;
+  if (lastEntry?.url === url) return;
 
-  if (history.length > 0) {
-    history = [history[history.length - 1], { url, browserTime: Date.now() }];
-  } else {
-    history = [{ url, browserTime: Date.now() }];
-  }
+  const newEntry: HistoryItem = { url, browserTime: Date.now() };
+  const updatedHistory = lastEntry ? [lastEntry, newEntry] : [newEntry];
 
-  sessionStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+  sessionStorage.setItem(HISTORY_KEY, JSON.stringify(updatedHistory));
+};
+
+export const matchPreviousHistory = (pathname: string): boolean => {
+  const history = getHistory();
+  const previous = history[history.length - 1];
+  if (!previous) return false;
+  return previous.url.split("?")[0] === pathname;
+};
+
+export const getPreviousPathnameHistory = (): string | undefined => {
+  const history = getHistory();
+  return history[history.length - 1]?.url;
 };

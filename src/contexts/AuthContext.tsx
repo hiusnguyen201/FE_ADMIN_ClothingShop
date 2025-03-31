@@ -1,12 +1,11 @@
 import { ReactNode } from "react";
 import { createContext, useEffect, useReducer } from "react";
-import { getAccessToken, isValidToken, setSession } from "@/utils/jwt";
 import { User } from "@/types/user";
 import { getProfile } from "@/redux/account/account.thunk";
 import { useAppDispatch } from "@/redux/store";
 import { toast } from "@/hooks/use-toast";
 import { LoginPayload, LoginResponse } from "@/redux/auth/auth.type";
-import { login } from "@/redux/auth/auth.thunk";
+import { login, logout } from "@/redux/auth/auth.thunk";
 import { Nullable } from "@/types/common";
 
 type State = {
@@ -51,6 +50,7 @@ const handlers: Record<ActionType, (state: State, action: AuthAction) => State> 
     return {
       ...state,
       isAuthenticated: false,
+      isInitialized: true,
       user: null,
     };
   },
@@ -96,17 +96,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const initialize = async () => {
     try {
-      dispatch({ type: "CLEAR" });
-      const accessToken = getAccessToken();
-
-      if (accessToken && isValidToken(accessToken)) {
-        const response = await appDispatch(getProfile()).unwrap();
-        const userInfo = response.data;
-        dispatch({ type: "INITIALIZE", payload: { isAuthenticated: true, user: userInfo } });
-      } else {
-        setSession(null);
-        dispatch({ type: "INITIALIZE", payload: { isAuthenticated: false, user: null } });
-      }
+      const response = await appDispatch(getProfile()).unwrap();
+      const userInfo = response.data;
+      dispatch({ type: "INITIALIZE", payload: { isAuthenticated: true, user: userInfo } });
     } catch (e: any) {
       // const message = e?.response?.data?.message || e.message || e.toString();
       dispatch({ type: "INITIALIZE", payload: { isAuthenticated: false, user: null } });
@@ -119,11 +111,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const loginAction = async (values: LoginPayload) => {
     try {
-      dispatch({ type: "CLEAR" });
       const response: LoginResponse = await appDispatch(login(values)).unwrap();
-      const { user, tokens } = response.data;
+      const { user } = response.data;
       dispatch({ type: "LOGIN", payload: { user } });
-      setSession(tokens.accessToken, tokens.refreshToken);
       toast({ title: "Login successful" });
     } catch (e: any) {
       const message = e?.response?.data?.message || e.message || e.toString();
@@ -132,9 +122,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logoutAction = async () => {
-    setSession(null);
-    dispatch({ type: "LOGOUT" });
-    toast({ title: "Logout successful" });
+    try {
+      dispatch({ type: "LOGOUT" });
+      await appDispatch(logout()).unwrap();
+      toast({ title: "Logout successful" });
+    } catch (e: any) {
+      const message = e?.response?.data?.message || e.message || e.toString();
+      dispatch({ type: "ERROR", payload: { error: message } });
+    }
   };
 
   return (

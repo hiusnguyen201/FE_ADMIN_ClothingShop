@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { GetListRolePayload } from "@/redux/role/role.type";
-import { getHistory, HistoryItem } from "@/utils/history";
-import { getUrlParams } from "@/utils/object";
+import { getPreviousPathnameHistory, matchPreviousHistory } from "@/utils/history";
+import { getQueryFromUrl } from "@/utils/object";
+import { useLocation } from "react-router-dom";
 
 const initialFilters: GetListRolePayload = {
   page: 1,
@@ -12,7 +13,16 @@ const initialFilters: GetListRolePayload = {
 };
 
 export function useRoleTableFilters() {
-  const [filters, setFilters] = useState<GetListRolePayload>(initialFilters);
+  const location = useLocation();
+
+  const getInitialFilters = (): GetListRolePayload => {
+    const previousUrl = getPreviousPathnameHistory();
+    if (!previousUrl) return initialFilters;
+    const query = getQueryFromUrl<Record<string, any>>(previousUrl);
+    return matchPreviousHistory(location.pathname) ? (query as GetListRolePayload) : initialFilters;
+  };
+
+  const [filters, setFilters] = useState<GetListRolePayload>(getInitialFilters());
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));

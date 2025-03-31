@@ -7,6 +7,7 @@ import { User } from "@/types/user";
  */
 export interface AuthState {
   loading: {
+    logout: boolean;
     login: boolean;
     sendOtpViaEmail: boolean;
   };
@@ -14,6 +15,11 @@ export interface AuthState {
   isAuthenticated: boolean;
   error: Nullable<string>;
 }
+
+/**
+ * Logout
+ */
+export interface LogoutResponse extends BaseResponse<null> {}
 
 /**
  * Login
@@ -26,10 +32,6 @@ export interface LoginResponseData {
   isAuthenticated: boolean;
   is2FactorRequired: boolean;
   user: User;
-  tokens: {
-    accessToken: string;
-    refreshToken: string;
-  };
 }
 export interface LoginResponse extends BaseResponse<LoginResponseData> {}
 

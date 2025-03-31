@@ -8,10 +8,10 @@ import "./global.css";
 
 createRoot(document.getElementById("root")!).render(
   <ReduxProvider store={store}>
-    <BrowserRouter>
-      <AuthProvider>
+    <AuthProvider>
+      <BrowserRouter>
         <App />
-      </AuthProvider>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AuthProvider>
   </ReduxProvider>
 );

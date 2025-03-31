@@ -1,22 +1,22 @@
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { useDebouncedCallback } from "use-debounce";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { DataTable } from "@/components/data-table";
 import { getListPermission } from "@/redux/permission/permission.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
-import { Input } from "@/components/ui/input";
 import { PermissionState } from "@/redux/permission/permission.type";
 import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
 import { Permission } from "@/types/permission";
 import { usePermissionTableFilters } from "./usePermissionTableFilters";
+import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
+import { filterObj } from "@/utils/object";
+import { setHistory } from "@/utils/history";
 
 export function PermissionListTable({ columns }: { columns: ColumnDef<Permission, any>[] }) {
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, isInitialized } = useAppSelector<PermissionState>((state) => state.permission);
+  const { list, totalCount, loading } = useAppSelector<PermissionState>((state) => state.permission);
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = usePermissionTableFilters();
-  const prevKeyword = useRef(filters.keyword);
 
   const handleGetPermissionList = async () => {
     try {
@@ -26,32 +26,21 @@ export function PermissionListTable({ columns }: { columns: ColumnDef<Permission
     }
   };
 
-  const getListPermissionDebounced = useDebouncedCallback(handleGetPermissionList, 500);
-
   useEffect(() => {
-    if (prevKeyword.current !== filters.keyword) {
-      prevKeyword.current = filters.keyword;
-      getListPermissionDebounced();
-    } else {
-      handleGetPermissionList();
-    }
+    setHistory(`${location.pathname}?${new URLSearchParams(filterObj(filters))}`);
+    handleGetPermissionList();
   }, [filters, dispatch]);
 
   return (
-    <DataTableLoading
-      loading={loading.getListPermission}
-      initialized={isInitialized}
-      className="flex flex-col gap-6 w-full"
-    >
+    <DataTableLoading loading={loading.getListPermission} className="flex flex-col gap-6 w-full">
       <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
-        <Input
-          className="col-span-3 sm:col-span-2"
-          disabled={loading.getListPermission}
+        <SearchFormField
           name="keyword"
-          type="text"
-          placeholder="Enter a keyword"
+          disabled={loading.getListPermission}
+          className="col-span-3 sm:col-span-2"
           value={filters.keyword}
-          onChange={(e) => handleKeywordChange(e.target.value)}
+          onSearchClick={(value) => handleKeywordChange(value)}
+          placeholder="Enter a keyword"
         />
       </div>
 

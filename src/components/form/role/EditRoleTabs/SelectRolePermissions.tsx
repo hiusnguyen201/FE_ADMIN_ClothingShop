@@ -15,26 +15,17 @@ import { EditListRolePermissionsResponse } from "@/redux/role/role.type";
 
 export function SelectRolePermissions({ role }: { role: Role }) {
   const dispatch = useAppDispatch();
-  const {
-    listRolePermissions,
-    loading: roleLoading,
-    isInitialized: roleIsInitialized,
-  } = useAppSelector((state) => state.role);
-  const {
-    list: listPermission,
-    loading: permissionLoading,
-    isInitialized: permissionIsInitialized,
-  } = useAppSelector((state) => state.permission);
+  const { listRolePermissions, loading: roleLoading } = useAppSelector((state) => state.role);
+  const { list: listPermission, loading: permissionLoading } = useAppSelector((state) => state.permission);
 
   const [selectedPermissionIds, setSelectedPermissionIds] = useState<Set<string>>(new Set());
 
   const fetchPermissions = useCallback(async () => {
     try {
-      const promises = [
-        dispatch(getListRolePermissions({ limit: 500, roleId: role.id, page: 1 })).unwrap(),
-        dispatch(getListPermission({ limit: 500, page: 1 })).unwrap(),
-      ];
-      await Promise.all(promises);
+      await Promise.all([
+        dispatch(getListRolePermissions({ limit: 100, roleId: role.id, page: 1 })).unwrap(),
+        dispatch(getListPermission({ limit: 100, page: 1 })).unwrap(),
+      ]);
     } catch (error: any) {
       toast({ title: error, variant: "destructive" });
     }
