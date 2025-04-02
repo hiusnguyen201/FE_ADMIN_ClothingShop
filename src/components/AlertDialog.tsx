@@ -16,7 +16,7 @@ import { LoaderCircle } from "lucide-react";
 interface AlertDialogProps {
   title: string;
   description: string;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;
   confirmText: string;
   cancelText: string;
   children?: ReactNode;
@@ -87,9 +87,10 @@ export function AlertDialog({
                   className="text-white min-w-20 text-sm capitalize"
                   variant={variant}
                   disabled={loading}
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     e.preventDefault();
-                    onConfirm();
+                    await onConfirm();
+                    setDialogOpen(false);
                   }}
                 >
                   {loading ? <LoaderCircle className="animate-spin" /> : confirmText}

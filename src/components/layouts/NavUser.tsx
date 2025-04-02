@@ -10,15 +10,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/use-auth";
 import { Link } from "react-router-dom";
+import { toast } from "@/hooks/use-toast";
+import { MouseEvent } from "react";
 
 export function NavUser() {
-  const { isMobile } = useSidebar();
   const { logout, user } = useAuth();
-
   if (!user) return <></>;
+
+  const handleLogout = async (e: MouseEvent) => {
+    e.preventDefault();
+
+    try {
+      await logout();
+      toast({ title: "Logout successful" });
+    } catch (err: any) {
+      toast({ title: err.message || "Logout failed" });
+    }
+  };
 
   return (
     <SidebarMenu className="w-auto">
@@ -63,7 +74,7 @@ export function NavUser() {
               </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logout}>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

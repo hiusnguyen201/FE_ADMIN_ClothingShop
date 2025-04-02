@@ -3,7 +3,7 @@ import { ContentWrapper } from "@/components/ContentWrapper";
 import { Heading } from "@/components/Heading";
 import { CreateRoleDialogForm } from "@/components/form/role/CreateRoleDialogForm";
 import { RoleListTable } from "@/components/form/role/RoleListTable";
-import { rowColumns } from "@/pages/roles/row-columns";
+import { roleColumns } from "@/pages/roles/role-columns";
 import { Button } from "@/components/ui/button";
 
 export function ListRolePage() {
@@ -22,7 +22,7 @@ export function ListRolePage() {
         }
       />
 
-      <RoleListTable columns={rowColumns} />
+      <RoleListTable columns={roleColumns} />
     </ContentWrapper>
   );
 }

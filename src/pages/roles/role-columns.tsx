@@ -14,7 +14,7 @@ import { Role } from "@/types/role";
 import { RemoveRoleDialogForm } from "@/components/form/role/RemoveRoleDialogForm";
 import { useState } from "react";
 
-export const rowColumns: ColumnDef<Role, any>[] = [
+export const roleColumns: ColumnDef<Role, any>[] = [
   {
     accessorKey: "name",
     header: "Name",

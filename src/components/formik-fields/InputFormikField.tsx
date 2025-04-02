@@ -1,5 +1,4 @@
 import { FormikProps } from "formik";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -7,30 +6,28 @@ import { Input } from "@/components/ui/input";
 export type InputFormikFieldProps<TData> = {
   name: keyof TData & string;
   label?: string;
-  disabled?: boolean;
   required?: boolean;
   placeholder?: string;
   type: "email" | "text" | "number" | "password" | "tel" | "url";
   className?: string;
+  autoFocus?: boolean;
   formikProps: FormikProps<TData>;
 };
 
 export function InputFormikField<TData>({
   name,
   label,
-  disabled,
   required = false,
   placeholder,
+  autoFocus = false,
   type,
   className,
   formikProps,
 }: InputFormikFieldProps<TData>) {
-  const { handleChange, handleBlur, setFieldError, setTouched, touched, initialValues, validateField, errors, values } =
-    formikProps;
-  const [hasBeenValidated, setHasBeenValidated] = useState(false);
+  const { handleChange, handleBlur, setFieldError, validateField, errors, values, isSubmitting } = formikProps;
+
   const currentValue: string = values[name] as string;
   const error: string = errors[name] as string;
-  const initialValue: string = initialValues[name] as string;
 
   return (
     <div className={cn("w-full", className)}>
@@ -42,30 +39,23 @@ export function InputFormikField<TData>({
 
       <Input
         id={name}
-        disabled={disabled}
+        disabled={isSubmitting}
         type={type}
+        autoFocus={autoFocus}
         placeholder={placeholder}
         name={name}
         value={currentValue}
         className={cn(
-          "w-full rounded focus-visible:!outline focus-visible:!outline-2 focus-visible:!outline-primary",
-          error && "border-red-500 focus:border-red-500"
+          "w-full rounded focus-visible:!outline focus-visible:!outline-1",
+          error ? "border-red-500 focus:border-red-500" : "focus-visible:!outline-primary focus-visible:!outline-2"
         )}
         onChange={(e) => {
           handleChange(e);
           setFieldError(name, undefined);
-          setHasBeenValidated(false);
         }}
         onBlur={async (e) => {
           handleBlur(e);
-          if (touched[name] && hasBeenValidated) return;
-          if (!hasBeenValidated && currentValue !== initialValue) {
-            validateField(name);
-            setHasBeenValidated(true);
-          } else {
-            delete touched[name];
-            setTouched(touched);
-          }
+          validateField(name);
         }}
       />
 

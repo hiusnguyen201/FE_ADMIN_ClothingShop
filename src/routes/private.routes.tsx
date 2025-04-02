@@ -1,13 +1,13 @@
-import AdminLayout from "@/layouts/AdminLayout";
-import { AuthGuard } from "@/guards/AuthGuard";
-
-// Import your admin pages
-import { DashboardPage } from "@/pages/dashboard";
-import { DetailsRolePage, ListRolePage } from "@/pages/roles";
-import { RoleExistsGuard } from "@/guards/role/RoleExistsGuard";
 import { RouteObject } from "react-router-dom";
-import { NotFoundPage } from "@/pages/errors";
+import { AdminLayout } from "@/layouts/AdminLayout";
+import { AuthGuard } from "@/guards/AuthGuard";
+import { DashboardPage } from "@/pages/dashboard";
+import { RoleExistsGuard } from "@/guards/role/RoleExistsGuard";
+import { UserExistsGuard } from "@/guards/user/UserExistsGuard";
+import { DetailsUserPage, ListUserPage } from "@/pages/users";
+import { DetailsRolePage, ListRolePage } from "@/pages/roles";
 import { ListPermissionPage } from "@/pages/permissions";
+import { NotFoundPage } from "@/pages/errors";
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -18,6 +18,15 @@ export const privateRoutes: RouteObject[] = [
     ),
     children: [
       { path: "/", element: <DashboardPage /> },
+      { path: "/users", element: <ListUserPage /> },
+      {
+        path: "/users/:userId/settings",
+        element: <UserExistsGuard children={DetailsUserPage} />,
+      },
+      {
+        path: "/users/:userId/permissions",
+        element: <UserExistsGuard children={DetailsUserPage} />,
+      },
       { path: "/roles", element: <ListRolePage /> },
       {
         path: "/roles/:roleId/settings",

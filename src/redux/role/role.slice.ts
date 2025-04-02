@@ -1,8 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import {
-  CheckRoleNameExistResponse,
   CreateRoleResponse,
-  EditListRolePermissionsResponse,
   EditRoleInfoResponse,
   GetListRolePermissionsResponse,
   GetListRoleResponse,
@@ -178,14 +176,10 @@ const roleSlice = createSlice({
         state.loading.editListRolePermissions = true;
         state.error = null;
       })
-      .addCase(
-        editListRolePermissions.fulfilled,
-        (state: Draft<RoleState>, action: PayloadAction<EditListRolePermissionsResponse>) => {
-          const { data } = action.payload;
-          state.loading.editListRolePermissions = false;
-          state.error = null;
-        }
-      )
+      .addCase(editListRolePermissions.fulfilled, (state: Draft<RoleState>) => {
+        state.loading.editListRolePermissions = false;
+        state.error = null;
+      })
       .addCase(editListRolePermissions.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
         state.loading.editListRolePermissions = false;
         state.error = action.payload as string;

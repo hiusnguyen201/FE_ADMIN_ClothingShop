@@ -10,6 +10,7 @@ export interface AuthState {
     logout: boolean;
     login: boolean;
     sendOtpViaEmail: boolean;
+    verifyOtp: boolean;
   };
   user: Nullable<User>;
   isAuthenticated: boolean;
@@ -42,3 +43,12 @@ export type SendOtpViaEmailPayload = {
   email: string;
 };
 export interface SendOtpViaEmailResponse extends BaseResponse<null> {}
+
+/**
+ * Verify OTP
+ */
+export type VerifyOtpPayload = {
+  userId: string;
+  otp: string;
+};
+export interface VerifyOtpResponse extends BaseResponse<LoginResponseData> {}

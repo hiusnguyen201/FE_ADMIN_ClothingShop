@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from "axios";
+import { BaseResponse } from "@/types/response";
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 export const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -9,25 +10,26 @@ export const apiInstance = axios.create({
 });
 
 let retry = false;
-
 apiInstance.interceptors.response.use(
   (response: AxiosResponse) => response.data,
-  async (error) => {
-    const originalRequest = error.config;
+  async (error: AxiosError) => {
+    if (!error.config) {
+      return Promise.reject(error);
+    }
 
-    if (error.response && error.response.status === 401) {
-      if (retry) {
-        retry = false;
-        return Promise.reject(error);
-      }
+    const originalRequest: AxiosRequestConfig = error.config;
 
-      retry = true;
+    const responseData = error.response?.data as BaseResponse<null>;
 
+    if (error.response?.status === 401 && responseData.codeMessage === "REFRESH_TOKEN_FAILED" && !retry) {
       try {
-        await apiInstance.post("/auth/refresh-token");
-        return apiInstance(originalRequest);
+        retry = true;
+
+        const response = await apiInstance.post("/auth/refresh-token");
+        if (response.status === 200) {
+          return apiInstance(originalRequest);
+        }
       } catch (e: any) {
-        window.location.href = "/login";
         return Promise.reject(e);
       }
     }

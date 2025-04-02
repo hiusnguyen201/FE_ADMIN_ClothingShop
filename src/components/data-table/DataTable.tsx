@@ -45,7 +45,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow }: D
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody className="block w-full overflow-auto max-h-[630px]">
+        <TableBody className={cn("block w-full overflow-auto", data.length > 15 ? " max-h-[630px]" : "")}>
           {data.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <TableRow

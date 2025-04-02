@@ -1,4 +1,10 @@
-import { Nullable } from "./common";
+import { Nullable } from "@/types/common";
+
+export enum GENDER {
+  MALE = "male",
+  FEMALE = "female",
+  OTHER = "other",
+}
 
 export enum USER_STATUS {
   ACTIVE = "active",
@@ -11,9 +17,8 @@ export type User = {
   name: string;
   email: string;
   phone: string;
-  gender: string;
+  gender: GENDER;
   status: USER_STATUS;
   verifiedAt: Nullable<Date>;
-  createdAt: Date;
-  updatedAt: Date;
+  lastLoginAt: Nullable<Date>;
 };

@@ -1,6 +1,6 @@
 import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
-import { AuthState, LoginResponse, SendOtpViaEmailResponse } from "@/redux/auth/auth.type";
-import { login, logout, sendOtpViaEmail } from "@/redux/auth/auth.thunk";
+import { AuthState, LoginResponse, SendOtpViaEmailResponse, VerifyOtpResponse } from "@/redux/auth/auth.type";
+import { login, logout, sendOtpViaEmail, verifyOtp } from "@/redux/auth/auth.thunk";
 
 const initialState: AuthState = {
   user: null,
@@ -9,6 +9,7 @@ const initialState: AuthState = {
     logout: false,
     login: false,
     sendOtpViaEmail: false,
+    verifyOtp: false,
   },
   error: null,
 };
@@ -60,7 +61,7 @@ const authSlice = createSlice({
     // Send OTP via email
     builder
       .addCase(sendOtpViaEmail.pending, (state: Draft<AuthState>) => {
-        state.loading.login = true;
+        state.loading.sendOtpViaEmail = true;
         state.error = null;
       })
       .addCase(sendOtpViaEmail.fulfilled, (state: Draft<AuthState>, _: PayloadAction<SendOtpViaEmailResponse>) => {
@@ -69,6 +70,24 @@ const authSlice = createSlice({
       })
       .addCase(sendOtpViaEmail.rejected, (state: Draft<AuthState>, action: PayloadAction<any>) => {
         state.loading.sendOtpViaEmail = false;
+        state.error = action.payload as string;
+      });
+
+    // VerifyOTP
+    builder
+      .addCase(verifyOtp.pending, (state: Draft<AuthState>) => {
+        state.loading.verifyOtp = true;
+        state.error = null;
+      })
+      .addCase(verifyOtp.fulfilled, (state: Draft<AuthState>, action: PayloadAction<VerifyOtpResponse>) => {
+        const { data } = action.payload;
+        state.loading.verifyOtp = false;
+        state.error = null;
+        state.isAuthenticated = true;
+        state.user = data.user;
+      })
+      .addCase(verifyOtp.rejected, (state: Draft<AuthState>, action: PayloadAction<any>) => {
+        state.loading.verifyOtp = false;
         state.error = action.payload as string;
       });
   },

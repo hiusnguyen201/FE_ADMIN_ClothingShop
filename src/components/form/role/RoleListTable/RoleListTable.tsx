@@ -10,7 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
 import { useRoleTableFilters } from "./useRoleTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
-import { getPreviousPathnameHistory, setHistory } from "@/utils/history";
+import { setHistory } from "@/utils/history";
 import { useLocation } from "react-router-dom";
 import { filterObj } from "@/utils/object";
 

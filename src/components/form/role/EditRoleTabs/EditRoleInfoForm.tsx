@@ -60,31 +60,12 @@ export function EditRoleInfoForm({ role }: { role: Role }) {
   return (
     <FlexBox size="large" onSubmit={formik.handleSubmit} component="form" className="max-w-[600px]">
       <FlexBox>
-        <InputFormikField
-          label="Name"
-          name="name"
-          type="text"
-          required
-          formikProps={formik}
-          disabled={loading.editRole}
-        />
+        <InputFormikField label="Name" name="name" type="text" required formikProps={formik} />
 
-        <InputFormikField
-          label="Description"
-          name="description"
-          type="text"
-          required
-          disabled={loading.editRole}
-          formikProps={formik}
-        />
+        <InputFormikField label="Description" name="description" type="text" required formikProps={formik} />
       </FlexBox>
 
-      <LoadingButton
-        loading={loading.editRole || formik.isValidating}
-        disabled={
-          !formik.isValid || Object.keys(formik.touched).length === 0 || loading.editRole || formik.isValidating
-        }
-      >
+      <LoadingButton loading={loading.editRole} disabled={loading.editRole}>
         Save
       </LoadingButton>
     </FlexBox>

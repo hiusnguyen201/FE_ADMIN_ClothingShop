@@ -15,7 +15,7 @@ export type RoleExistsGuardProps = {
 
 export function RoleExistsGuard({ children }: RoleExistsGuardProps) {
   const { roleId } = useParams();
-  if (!roleId) return <Navigate to={"/roles"} replace />;
+  if (!roleId) return <Navigate to="/roles" />;
 
   const dispatch = useAppDispatch();
   const { item, loading } = useAppSelector<RoleState>((selector) => selector.role);

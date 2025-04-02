@@ -18,13 +18,4 @@ export interface GetListParams<TData> {
   sortBy?: Optional<Nullable<keyof TData>>;
 }
 
-export interface GetListResponseData<TData>
-  extends BaseResponse<{
-    totalCount: number;
-    list: TData[];
-  }> {
-  data: {
-    totalCount: number;
-    list: TData[];
-  };
-}
+export interface GetListResponseData<TData> extends BaseResponse<{ totalCount: number; list: TData[] }> {}

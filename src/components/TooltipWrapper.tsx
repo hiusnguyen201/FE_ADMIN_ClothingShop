@@ -1,26 +1,66 @@
-import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
-import { forwardRef, ReactNode } from "react";
+import React, { ReactNode } from "react";
+import { type LucideIcon } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
 
-type TooltipWrapperProps = {
-  content: string;
+interface TooltipWrapperProps {
+  /**
+   * The icon to display
+   */
   children: ReactNode;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
-};
+  /**
+   * The content to display in the tooltip
+   */
+  content: React.ReactNode;
+  /**
+   * Additional classes to apply to the icon
+   */
+  className?: string;
+  /**
+   * Side of the tooltip
+   */
+  side?: "top" | "right" | "bottom" | "left";
+  /**
+   * Alignment of the tooltip
+   */
+  align?: "start" | "center" | "end";
+  /**
+   * Whether the tooltip should be shown
+   */
+  showTooltip?: boolean;
+  /**
+   * Additional props to pass to the icon
+   */
+  iconProps?: React.ComponentProps<LucideIcon>;
+}
 
-export const TooltipWrapper = forwardRef<HTMLDivElement, TooltipWrapperProps>(
-  ({ content, children, open, onOpenChange }, ref) => {
-    return (
-      <TooltipProvider delayDuration={300}>
-        <Tooltip open={false} onOpenChange={onOpenChange}>
-          <TooltipTrigger className="cursor-pointer" asChild>
-            {children}
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="bg-black text-white" ref={ref}>
-            <p className="capitalize">{content}</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    );
+export function TooltipWrapper({
+  children,
+  content,
+  className = "",
+  side = "top",
+  align = "center",
+  showTooltip = true,
+  iconProps = {},
+  ...props
+}: TooltipWrapperProps) {
+  // If tooltip is disabled, just render the icon
+  if (!showTooltip) {
+    return children;
   }
-);
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild className="cursor-pointer">
+          <Button variant="ghost" size="icon" className="rounded-full w-8 h-8">
+            {children}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent side={side} align={align} {...props}>
+          {content}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}

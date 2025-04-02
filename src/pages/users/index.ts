@@ -1,1 +1,2 @@
-export * from "./UsersPage";
+export * from "./ListUserPage";
+export * from "./DetailsUserPage";

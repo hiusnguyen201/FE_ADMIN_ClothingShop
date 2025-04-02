@@ -4,11 +4,13 @@ import authReducer from "./auth/auth.slice";
 import accountReducer from "./account/account.slice";
 import roleReducer from "./role/role.slice";
 import permissionReducer from "./permission/permission.slice";
+import userReducer from "./user/user.slice";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     account: accountReducer,
+    user: userReducer,
     role: roleReducer,
     permission: permissionReducer,
   },

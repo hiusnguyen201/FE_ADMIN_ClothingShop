@@ -1,19 +1,19 @@
-import { FormikProps, FormikValues } from "formik";
+import { FormikProps } from "formik";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
-export type SelectBoxFormikField = {
+export type SelectBoxFormikFieldProps<TData> = {
   name: string;
   label?: string;
   required?: boolean;
   type: "radio" | "checkbox";
   options: string[];
-  onValueChange: (value: string) => void;
   className?: string;
-  formikProps: FormikProps<FormikValues>;
+  formikProps: FormikProps<TData>;
 };
 
-export function SelectBoxFormikField({
+export function SelectBoxFormikField<TData extends { [key: string]: any }>({
   name,
   label,
   required = false,
@@ -21,35 +21,39 @@ export function SelectBoxFormikField({
   className,
   options,
   formikProps,
-}: SelectBoxFormikField) {
-  const { errors, setFieldValue, validateField, values } = formikProps;
+}: SelectBoxFormikFieldProps<TData>) {
+  const { handleChange, handleBlur, setFieldError, validateField, errors, values, isSubmitting } = formikProps;
+
+  const currentValue: string = values[name] as string;
+  const error: string = errors[name] as string;
 
   return (
     <div className={cn("w-full", className)}>
       {label && (
-        <Label className={cn("select-none mb-2 block", errors[name] && "text-red-500")}>
+        <Label className={cn("select-none mb-2 block", error && "text-red-500")}>
           {label} {required && <span>*</span>}
         </Label>
       )}
 
       <div className="flex font-normal bg-transparent text-base md:text-sm w-full gap-5">
-        {options.map((item) => (
+        {options.map((item: string) => (
           <Label className="flex gap-1 items-center cursor-pointer -ml-1 p-1" key={item} htmlFor={item}>
-            <input
+            <Input
+              tabIndex={-1}
               id={item}
+              disabled={isSubmitting}
               type={type}
               name={name}
               value={item}
-              checked={values[name] === item}
-              className={cn(
-                "cursor-pointer transform scale-110",
-                errors[name] && "border-red-500 focus:border-red-500"
-              )}
+              checked={currentValue === item}
+              className={cn("cursor-pointer transform scale-110", error && "border-red-500 focus:border-red-500")}
               onChange={(e) => {
-                setFieldValue(name, e.target.value);
+                handleChange(e);
+                setFieldError(name, undefined);
               }}
-              onBlur={async () => {
-                await validateField(name);
+              onBlur={async (e) => {
+                handleBlur(e);
+                validateField(name);
               }}
             />
             <span className="select-none font-normal capitalize">{item}</span>
@@ -57,7 +61,7 @@ export function SelectBoxFormikField({
         ))}
       </div>
 
-      {errors[name] && <p className="text-sm text-red-500 font-normal mt-2">{String(errors[name])}</p>}
+      {error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
     </div>
   );
 }

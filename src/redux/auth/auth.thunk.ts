@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { loginService, logoutService, sendOtpViaEmailService } from "@/redux/auth/auth.service";
+import { loginService, logoutService, sendOtpViaEmailService, verifyOtpService } from "@/redux/auth/auth.service";
 import { ThunkApiConfig } from "@/types/thunk-api";
 import {
   LoginResponse,
@@ -7,6 +7,8 @@ import {
   SendOtpViaEmailPayload,
   SendOtpViaEmailResponse,
   LogoutResponse,
+  VerifyOtpResponse,
+  VerifyOtpPayload,
 } from "@/redux/auth/auth.type";
 
 export const logout = createAsyncThunk<LogoutResponse, void, ThunkApiConfig>(
@@ -40,6 +42,19 @@ export const sendOtpViaEmail = createAsyncThunk<SendOtpViaEmailResponse, SendOtp
   async (payload, { rejectWithValue }) => {
     try {
       const response: SendOtpViaEmailResponse = await sendOtpViaEmailService(payload);
+      return response;
+    } catch (error: any) {
+      const message: string = error.response?.data?.message || error.message || error.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const verifyOtp = createAsyncThunk<VerifyOtpResponse, VerifyOtpPayload, ThunkApiConfig>(
+  "auth/verify-otp",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response: VerifyOtpResponse = await verifyOtpService(payload);
       return response;
     } catch (error: any) {
       const message: string = error.response?.data?.message || error.message || error.toString();

@@ -48,19 +48,17 @@ export function CreateDialogForm<T extends FormikValues>({
   const dialogOpen = isControlled ? open! : internalOpen;
 
   const setDialogOpen = (value: boolean) => {
-    if (value === false) formik.resetForm({});
+    if (loading) return;
+
+    if (value === false) {
+      formik.resetForm({});
+    }
 
     if (isControlled) {
       onOpenChange!(value);
     } else {
       setInternalOpen(value);
     }
-  };
-
-  const handleClose = () => {
-    if (loading) return;
-    formik.resetForm({});
-    setDialogOpen(false);
   };
 
   const handleClick = (e: MouseEvent) => {
@@ -78,7 +76,7 @@ export function CreateDialogForm<T extends FormikValues>({
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogPrimitive.Portal>
             <DialogPrimitive.Overlay
-              onClick={handleClose}
+              onClick={() => setDialogOpen(false)}
               className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=open]:fade-in-0"
             />
 
@@ -86,24 +84,34 @@ export function CreateDialogForm<T extends FormikValues>({
               <DialogHeader className="flex-row items-center justify-between px-10 pt-10 pb-6">
                 <DialogPrimitive.DialogTitle className="text-xl font-medium">{title}</DialogPrimitive.DialogTitle>
 
-                <Button disabled={loading} variant="ghost" size="icon" className="rounded-full" onClick={handleClose}>
+                <Button
+                  disabled={loading}
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  onClick={() => setDialogOpen(false)}
+                >
                   <X className="h-4 w-4" />
                 </Button>
               </DialogHeader>
 
               <DialogDescription className="hidden" />
 
-              <form onSubmit={formik.handleSubmit}>
+              <form>
                 <div className="px-10 py-1 flex flex-col gap-6">{children(formik)}</div>
                 <DialogFooter className="px-10 pb-10 pt-6 gap-2">
-                  <Button disabled={loading} variant="outline" type="button" onClick={handleClose}>
+                  <Button disabled={loading} variant="outline" type="button" onClick={() => setDialogOpen(false)}>
                     Cancel
                   </Button>
                   <LoadingButton
-                    disabled={
-                      !formik.isValid || Object.keys(formik.touched).length === 0 || loading || formik.isValidating
-                    }
-                    loading={loading || formik.isValidating}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (formik.isValid) {
+                        formik.handleSubmit();
+                      }
+                    }}
+                    disabled={loading}
+                    loading={loading}
                     type="submit"
                     className="min-w-[90px]"
                   >

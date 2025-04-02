@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, MouseEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { LoaderCircle } from "lucide-react";
@@ -9,7 +9,7 @@ export type LoadingButtonProps = {
   disabled?: boolean;
   loading?: boolean;
   className?: string;
-  onClick?: () => void;
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | null | undefined;
 };
 

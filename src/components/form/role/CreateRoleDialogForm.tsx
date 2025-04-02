@@ -33,7 +33,7 @@ export function CreateRoleDialogForm({ children, open, onOpenChange }: CreateRol
   const handleSubmit = async (values: CreateRolePayload, { resetForm }: FormikHelpers<CreateRolePayload>) => {
     try {
       const response: CreateRoleResponse = await dispatch(createRole(values)).unwrap();
-      resetForm({});
+      resetForm();
       const { data: role, message } = response;
       toast({ title: message });
       navigate(`/roles/${role.id}/settings`);
@@ -67,7 +67,7 @@ export function CreateRoleDialogForm({ children, open, onOpenChange }: CreateRol
     >
       {(formik: ReturnType<typeof useFormik<CreateRolePayload>>) => (
         <Fragment>
-          <InputFormikField name="name" type="text" label="Name" required formikProps={formik} />
+          <InputFormikField autoFocus name="name" type="text" label="Name" required formikProps={formik} />
 
           <InputFormikField name="description" type="text" label="Description" required formikProps={formik} />
         </Fragment>

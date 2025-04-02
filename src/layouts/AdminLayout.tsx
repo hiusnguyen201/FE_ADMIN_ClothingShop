@@ -3,7 +3,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SideBar } from "@/components/layouts/SideBar";
 import { Header } from "@/components/layouts/Header";
 
-export default function AdminLayout() {
+export function AdminLayout() {
   return (
     <SidebarProvider>
       <SideBar />
