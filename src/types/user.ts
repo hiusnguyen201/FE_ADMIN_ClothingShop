@@ -19,6 +19,7 @@ export type User = {
   phone: string;
   gender: GENDER;
   status: USER_STATUS;
+  role: Nullable<string>;
   verifiedAt: Nullable<Date>;
   lastLoginAt: Nullable<Date>;
 };

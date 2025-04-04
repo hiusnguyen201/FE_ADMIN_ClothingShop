@@ -4,7 +4,7 @@ import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip"
 
 export type HeadingProps = {
   title?: string | ReactNode;
-  description: string | ReactNode;
+  description?: string | ReactNode;
   actionRight?: ReactNode;
   className?: string;
 };
@@ -21,9 +21,15 @@ export function Heading({ title, description, actionRight, className }: HeadingP
           </h1>
         )}
 
+        {!title && description && (
+          <Component className="flex items-centers gap-1 text-gray-600 text-sm">{description}</Component>
+        )}
+
         {actionRight}
       </div>
-      {description && <Component className="flex items-centers gap-1 text-gray-600 text-sm">{description}</Component>}
+      {title && description && (
+        <Component className="flex items-centers gap-1 text-gray-600 text-sm">{description}</Component>
+      )}
     </FlexBox>
   );
 }

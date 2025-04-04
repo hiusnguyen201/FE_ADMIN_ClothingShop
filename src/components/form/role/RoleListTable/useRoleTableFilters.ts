@@ -3,10 +3,11 @@ import { GetListRolePayload } from "@/redux/role/role.type";
 import { getPreviousPathnameHistory, matchPreviousHistory } from "@/utils/history";
 import { getQueryFromUrl } from "@/utils/object";
 import { useLocation } from "react-router-dom";
+import { LIMIT_PER_PAGE } from "@/components/data-table";
 
 const initialFilters: GetListRolePayload = {
   page: 1,
-  limit: 10,
+  limit: LIMIT_PER_PAGE[0],
   keyword: "",
   sortBy: null,
   sortOrder: null,

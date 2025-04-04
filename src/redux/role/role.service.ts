@@ -1,4 +1,4 @@
-import { filterObj } from "@/utils/object";
+import { convertToQueryString } from "@/utils/object";
 import { apiInstance } from "@/redux/api";
 import {
   CreateRoleResponse,
@@ -15,8 +15,10 @@ import {
   RemoveRoleResponse,
   GetListRolePermissionsPayload,
   GetListRolePermissionsResponse,
-  EditListRolePermissionsPayload,
-  EditListRolePermissionsResponse,
+  RemoveRolePermissionPayload,
+  RemoveRolePermissionResponse,
+  AddRolePermissionsPayload,
+  AddRolePermissionsResponse,
 } from "@/redux/role/role.type";
 
 export const checkRoleNameExistService = async (
@@ -29,9 +31,8 @@ export const createRoleService = async (payload: CreateRolePayload): Promise<Cre
   return await apiInstance.post("/roles/create-role", payload);
 };
 
-export const getListRoleService = async (filters: GetListRolePayload): Promise<GetListRoleResponse> => {
-  const filteredFilters: Record<string, string> = filterObj(filters);
-  return await apiInstance.get(`/roles/get-roles?${new URLSearchParams(filteredFilters)}`);
+export const getListRoleService = async (payload: GetListRolePayload): Promise<GetListRoleResponse> => {
+  return await apiInstance.get(`/roles/get-roles?${convertToQueryString(payload)}`);
 };
 
 export const getRoleService = async (payload: GetRolePayload): Promise<GetRoleResponse> => {
@@ -39,7 +40,7 @@ export const getRoleService = async (payload: GetRolePayload): Promise<GetRoleRe
 };
 
 export const editRoleInfoService = async (payload: EditRoleInfoPayload): Promise<EditRoleInfoResponse> => {
-  return await apiInstance.patch(`/roles/update-role-by-id/${payload.id}`, payload);
+  return await apiInstance.put(`/roles/update-role-by-id/${payload.id}`, payload);
 };
 
 export const removeRoleService = async (payload: RemoveRolePayload): Promise<RemoveRoleResponse> => {
@@ -49,12 +50,19 @@ export const removeRoleService = async (payload: RemoveRolePayload): Promise<Rem
 export const getListRolePermissionsService = async (
   payload: GetListRolePermissionsPayload
 ): Promise<GetListRolePermissionsResponse> => {
-  const filteredFilters: Record<string, string> = filterObj(payload);
-  return await apiInstance.get(`/roles/get-role-permissions-by-id?${new URLSearchParams(filteredFilters)}`);
+  return await apiInstance.get(
+    `/roles/${payload.roleId}/permissions?${convertToQueryString({ ...payload, roleId: null })}`
+  );
 };
 
-export const editListRolePermissionsService = async (
-  payload: EditListRolePermissionsPayload
-): Promise<EditListRolePermissionsResponse> => {
-  return await apiInstance.put("/roles/update-role-permissions-by-id", payload);
+export const addRolePermissionsService = async (
+  payload: AddRolePermissionsPayload
+): Promise<AddRolePermissionsResponse> => {
+  return await apiInstance.patch(`/roles/${payload.roleId}/permissions`, { permissionIds: payload.permissionIds });
+};
+
+export const removeRolePermissionService = async (
+  payload: RemoveRolePermissionPayload
+): Promise<RemoveRolePermissionResponse> => {
+  return await apiInstance.delete(`/roles/${payload.roleId}/permissions/${payload.permissionId}`);
 };

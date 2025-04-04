@@ -1,29 +1,36 @@
 import { ReactNode } from "react";
 import { AlertDialog } from "@/components/AlertDialog";
-import { Role } from "@/types/role";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { RemoveRoleResponse, RoleState } from "@/redux/role/role.type";
-import { removeRole } from "@/redux/role/role.thunk";
+import { RemoveRolePermissionResponse, RoleState } from "@/redux/role/role.type";
+import { removeRolePermission } from "@/redux/role/role.thunk";
 import { toast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { Permission } from "@/types/permission";
+import { Role } from "@/types/role";
 
-type RemoveRoleDialogFormProps = {
+type RemoveRolePermissionDialogFormProps = {
   role: Role;
+  permission: Permission;
   children?: ReactNode;
   open?: boolean;
   onOpenChange?: (value: boolean) => void;
 };
 
-export function RemoveRoleDialogForm({ role, children, open, onOpenChange }: RemoveRoleDialogFormProps) {
+export function RemoveRolePermissionDialogForm({
+  role,
+  permission,
+  children,
+  open,
+  onOpenChange,
+}: RemoveRolePermissionDialogFormProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { loading } = useAppSelector<RoleState>((selector) => selector.role);
 
   const handleRemove = async () => {
     try {
-      const response: RemoveRoleResponse = await dispatch(removeRole({ id: role.id })).unwrap();
+      const response: RemoveRolePermissionResponse = await dispatch(
+        removeRolePermission({ roleId: role.id, permissionId: permission.id })
+      ).unwrap();
       toast({ title: response.message });
-      navigate("/roles");
     } catch (error: any) {
       toast({ title: error, variant: "destructive" });
     }
@@ -35,10 +42,10 @@ export function RemoveRoleDialogForm({ role, children, open, onOpenChange }: Rem
       open={open}
       trigger={children}
       onOpenChange={onOpenChange}
-      title="Remove Role"
-      description={`Are you sure you want to remove role "${role.name}"?`}
+      title="Remove permission?"
+      description={`Are you sure that you want to remove "${permission.name}"?`}
       onConfirm={handleRemove}
-      loading={loading.removeRole}
+      loading={loading.removeRolePermission}
       cancelText="Cancel"
       confirmText="Confirm"
     />

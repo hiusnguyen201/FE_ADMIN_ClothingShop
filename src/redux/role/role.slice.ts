@@ -1,10 +1,12 @@
 import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import {
+  AddRolePermissionsResponse,
   CreateRoleResponse,
   EditRoleInfoResponse,
   GetListRolePermissionsResponse,
   GetListRoleResponse,
   GetRoleResponse,
+  RemoveRolePermissionResponse,
   RemoveRoleResponse,
   RoleState,
 } from "@/redux/role/role.type";
@@ -15,8 +17,9 @@ import {
   editRoleInfo,
   removeRole,
   getListRolePermissions,
-  editListRolePermissions,
+  removeRolePermission,
   checkRoleNameExist,
+  addRolePermissions,
 } from "@/redux/role/role.thunk";
 
 const initialState: RoleState = {
@@ -28,13 +31,15 @@ const initialState: RoleState = {
     editRole: false,
     removeRole: false,
     getListRolePermissions: false,
-    editListRolePermissions: false,
+    addRolePermissions: false,
+    removeRolePermission: false,
   },
   item: null,
   list: [],
   totalCount: 0,
   error: null,
-  listRolePermissions: [],
+  assignedRolePermissions: [],
+  unassignedRolePermissions: [],
 };
 
 const roleSlice = createSlice({
@@ -161,27 +166,61 @@ const roleSlice = createSlice({
           const { data } = action.payload;
           state.loading.getListRolePermissions = false;
           state.error = null;
-          state.listRolePermissions = data.list;
+          state.assignedRolePermissions = data.assignedList;
+          state.unassignedRolePermissions = data.unassignedList;
         }
       )
       .addCase(getListRolePermissions.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
         state.loading.getListRolePermissions = false;
         state.error = action.payload as string;
-        state.listRolePermissions = [];
+        state.assignedRolePermissions = [];
+        state.unassignedRolePermissions = [];
       });
 
     builder
-      // Edit List Role Permissions
-      .addCase(editListRolePermissions.pending, (state: Draft<RoleState>) => {
-        state.loading.editListRolePermissions = true;
+      // Add Role Permissions
+      .addCase(addRolePermissions.pending, (state: Draft<RoleState>) => {
+        state.loading.addRolePermissions = true;
         state.error = null;
       })
-      .addCase(editListRolePermissions.fulfilled, (state: Draft<RoleState>) => {
-        state.loading.editListRolePermissions = false;
+      .addCase(
+        addRolePermissions.fulfilled,
+        (state: Draft<RoleState>, action: PayloadAction<AddRolePermissionsResponse>) => {
+          const { data } = action.payload;
+          state.loading.addRolePermissions = false;
+          state.assignedRolePermissions = [...data, ...state.assignedRolePermissions];
+          state.unassignedRolePermissions = state.unassignedRolePermissions.filter(
+            (item) => !data.map((permission) => permission.id).includes(item.id)
+          );
+          state.error = null;
+        }
+      )
+      .addCase(addRolePermissions.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
+        state.loading.addRolePermissions = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      // Remove Role Permission
+      .addCase(removeRolePermission.pending, (state: Draft<RoleState>) => {
+        state.loading.removeRolePermission = true;
         state.error = null;
       })
-      .addCase(editListRolePermissions.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
-        state.loading.editListRolePermissions = false;
+      .addCase(
+        removeRolePermission.fulfilled,
+        (state: Draft<RoleState>, action: PayloadAction<RemoveRolePermissionResponse>) => {
+          const { data } = action.payload;
+          state.loading.removeRolePermission = false;
+          const removedPermission = state.assignedRolePermissions.find((item) => item.id === data.id);
+          state.assignedRolePermissions = state.assignedRolePermissions.filter((item) => item.id !== data.id);
+          if (removedPermission) {
+            state.unassignedRolePermissions = [removedPermission, ...state.unassignedRolePermissions];
+          }
+          state.error = null;
+        }
+      )
+      .addCase(removeRolePermission.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
+        state.loading.removeRolePermission = false;
         state.error = action.payload as string;
       });
   },

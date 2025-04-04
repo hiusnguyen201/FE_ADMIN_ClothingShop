@@ -1,4 +1,4 @@
-import { filterObj } from "@/utils/object";
+import { convertToQueryString } from "@/utils/object";
 import { apiInstance } from "@/redux/api";
 import {
   CreateUserResponse,
@@ -27,9 +27,8 @@ export const createUserService = async (payload: CreateUserPayload): Promise<Cre
   return await apiInstance.post("/users/create-user", payload);
 };
 
-export const getListUserService = async (filters: GetListUserPayload): Promise<GetListUserResponse> => {
-  const filteredFilters: Record<string, string> = filterObj(filters);
-  return await apiInstance.get(`/users/get-users?${new URLSearchParams(filteredFilters)}`);
+export const getListUserService = async (payload: GetListUserPayload): Promise<GetListUserResponse> => {
+  return await apiInstance.get(`/users/get-users?${convertToQueryString(payload)}`);
 };
 
 export const getUserService = async (payload: GetUserPayload): Promise<GetUserResponse> => {
@@ -37,7 +36,7 @@ export const getUserService = async (payload: GetUserPayload): Promise<GetUserRe
 };
 
 export const editUserInfoService = async (payload: EditUserInfoPayload): Promise<EditUserInfoResponse> => {
-  return await apiInstance.patch(`/users/update-user-by-id/${payload.id}`, payload);
+  return await apiInstance.put(`/users/update-user-by-id/${payload.id}`, payload);
 };
 
 export const removeUserService = async (payload: RemoveUserPayload): Promise<RemoveUserResponse> => {
@@ -47,8 +46,7 @@ export const removeUserService = async (payload: RemoveUserPayload): Promise<Rem
 export const getListUserPermissionsService = async (
   payload: GetListUserPermissionsPayload
 ): Promise<GetListUserPermissionsResponse> => {
-  const filteredFilters: Record<string, string> = filterObj(payload);
-  return await apiInstance.get(`/users/get-user-permissions-by-id?${new URLSearchParams(filteredFilters)}`);
+  return await apiInstance.get(`/users/get-user-permissions-by-id?${convertToQueryString(payload)}`);
 };
 
 export const editListUserPermissionsService = async (

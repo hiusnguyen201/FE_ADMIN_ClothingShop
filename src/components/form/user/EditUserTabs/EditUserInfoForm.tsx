@@ -5,10 +5,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { checkEmailExist, editUserInfo } from "@/redux/user/user.thunk";
 import { FormikHelpers, FormikProps, useFormik } from "formik";
 import { toast } from "@/hooks/use-toast";
-import { InputFormikField, SelectBoxFormikField } from "@/components/formik-fields";
+import { InputFormikField, SelectBoxFormikField, SelectObjectFormikField } from "@/components/formik-fields";
 import { LoadingButton } from "@/components/LoadingButton";
 import { FlexBox } from "@/components/FlexBox";
 import { REGEX_PATTERNS } from "@/types/constant";
+import { RoleState } from "@/redux/role/role.type";
+import { getListRole } from "@/redux/role/role.thunk";
+import { useEffect } from "react";
 
 const editUserInfoSchema = Yup.object().shape({
   name: Yup.string().required().min(3).max(50),
@@ -19,11 +22,13 @@ const editUserInfoSchema = Yup.object().shape({
   gender: Yup.string()
     .required()
     .oneOf([...Object.values(GENDER)], { message: "gender is required" }),
+  roleId: Yup.string().nullable().optional(),
 });
 
 export function EditUserInfoForm({ user }: { user: User }) {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector<UserState>((selector) => selector.user);
+  const { list: listRole, loading: roleLoading } = useAppSelector<RoleState>((selector) => selector.role);
 
   const initialValues: EditUserInfoPayload = {
     id: user.id,
@@ -31,13 +36,14 @@ export function EditUserInfoForm({ user }: { user: User }) {
     email: user.email,
     phone: user.phone,
     gender: user.gender,
+    roleId: user.role,
   };
 
   const handleSubmit = async (values: EditUserInfoPayload, { resetForm }: FormikHelpers<EditUserInfoPayload>) => {
     try {
       const response: EditUserInfoResponse = await dispatch(editUserInfo(values)).unwrap();
       resetForm({ values: { ...values, ...response.data } });
-      toast({ title: response.message });
+      toast({ title: "Edit user successful" });
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
@@ -64,6 +70,13 @@ export function EditUserInfoForm({ user }: { user: User }) {
     onSubmit: handleSubmit,
   });
 
+  useEffect(() => {
+    if (listRole.length > 0) return;
+    (async () => {
+      await dispatch(getListRole({ page: 1, limit: 500 })).unwrap();
+    })();
+  }, []);
+
   return (
     <FlexBox size="large" onSubmit={formik.handleSubmit} component="form" className="max-w-[600px]">
       <FlexBox>
@@ -79,6 +92,16 @@ export function EditUserInfoForm({ user }: { user: User }) {
           label="Gender"
           options={Object.values(GENDER)}
           required
+          formikProps={formik}
+        />
+
+        <SelectObjectFormikField
+          switchable
+          label="Role"
+          placeHolder="Select a role"
+          name="roleId"
+          loading={roleLoading.getListRole}
+          options={listRole.map((item) => ({ value: item.id, title: item.name }))}
           formikProps={formik}
         />
       </FlexBox>

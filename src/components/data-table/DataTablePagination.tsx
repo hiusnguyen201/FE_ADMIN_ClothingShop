@@ -22,11 +22,6 @@ export function DataTablePagination({
   onPageChange,
 }: DataTablePaginationProps) {
   const totalPages: number = Math.max(Math.ceil(totalCount / limit), 1);
-
-  if (totalPages === 1) {
-    return <></>;
-  }
-
   const isFirst: boolean = page !== 1;
   const isLast: boolean = page !== totalPages;
   const pageOptions = Array.from({ length: totalPages }, (_, i: number) => i + 1);

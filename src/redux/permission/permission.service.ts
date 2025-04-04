@@ -1,10 +1,9 @@
-import { filterObj } from "@/utils/object";
+import { convertToQueryString } from "@/utils/object";
 import { apiInstance } from "@/redux/api";
 import { GetListPermissionPayload, GetListPermissionResponse } from "@/redux/permission/permission.type";
 
 export const getListPermissionService = async (
-  filters: GetListPermissionPayload
+  payload: GetListPermissionPayload
 ): Promise<GetListPermissionResponse> => {
-  const filteredFilters: Record<string, string> = filterObj(filters);
-  return await apiInstance.get(`/permissions/get-permissions?${new URLSearchParams(filteredFilters)}`);
+  return await apiInstance.get(`/permissions/get-permissions?${convertToQueryString(payload)}`);
 };

@@ -104,6 +104,7 @@ export function UserActions({ user }: { user: User }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
+          aria-hidden={open ? "true" : "false"}
           side="bottom"
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"

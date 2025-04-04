@@ -15,9 +15,12 @@ export type CreateDialogFormProps<T extends FormikValues> = {
   initialValues: T;
   validationSchema: Schema<T>;
   trigger?: ReactNode;
-  extendSchema: (values: T) => void | object | Promise<FormikErrors<T>>;
+  extendSchema?: (values: T) => void | object | Promise<FormikErrors<T>>;
   onSubmit: (values: T, helpers: FormikHelpers<T>) => void;
   children: (formik: ReturnType<typeof useFormik<T>>) => ReactNode;
+  disableClose?: boolean;
+  titleSubmit?: string;
+  onClose?: () => void;
 };
 
 export function CreateDialogForm<T extends FormikValues>({
@@ -31,6 +34,9 @@ export function CreateDialogForm<T extends FormikValues>({
   extendSchema,
   onSubmit,
   children,
+  titleSubmit = "Create",
+  disableClose = false,
+  onClose,
 }: CreateDialogFormProps<T>) {
   const formik = useFormik<T>({
     initialValues,
@@ -50,15 +56,13 @@ export function CreateDialogForm<T extends FormikValues>({
   const setDialogOpen = (value: boolean) => {
     if (loading) return;
 
-    if (value === false) {
-      formik.resetForm({});
-    }
-
     if (isControlled) {
       onOpenChange!(value);
     } else {
       setInternalOpen(value);
     }
+
+    formik.resetForm();
   };
 
   const handleClick = (e: MouseEvent) => {
@@ -73,14 +77,23 @@ export function CreateDialogForm<T extends FormikValues>({
       {renderedTrigger}
 
       {dialogOpen && (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <Dialog
+          open={dialogOpen}
+          onOpenChange={(value: boolean) => {
+            if (disableClose) return;
+            if (value === false) {
+              onClose?.();
+            }
+            setDialogOpen(value);
+          }}
+        >
           <DialogPrimitive.Portal>
-            <DialogPrimitive.Overlay
-              onClick={() => setDialogOpen(false)}
-              className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=open]:fade-in-0"
-            />
+            <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/60 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
 
-            <DialogPrimitive.Content className="fixed left-[50%] top-[50%] z-50 grid w-full sm:max-w-[640px] max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg">
+            <DialogPrimitive.Content
+              aria-hidden={dialogOpen ? "false" : "true"}
+              className="fixed left-[50%] top-[50%] z-50 grid w-full sm:max-w-[640px] max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg"
+            >
               <DialogHeader className="flex-row items-center justify-between px-10 pt-10 pb-6">
                 <DialogPrimitive.DialogTitle className="text-xl font-medium">{title}</DialogPrimitive.DialogTitle>
 
@@ -115,7 +128,7 @@ export function CreateDialogForm<T extends FormikValues>({
                     type="submit"
                     className="min-w-[90px]"
                   >
-                    Create
+                    {titleSubmit}
                   </LoadingButton>
                 </DialogFooter>
               </form>

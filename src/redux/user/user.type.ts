@@ -32,6 +32,7 @@ export type CreateUserPayload = {
   email: string;
   phone: string;
   gender: GENDER | string;
+  roleId?: Nullable<string>;
 };
 export interface CreateUserResponse extends BaseResponse<User> {}
 
@@ -61,6 +62,7 @@ export type EditUserInfoPayload = {
   email?: string;
   phone?: string;
   gender?: GENDER;
+  roleId?: Nullable<string>;
 };
 export interface EditUserInfoResponse extends BaseResponse<User> {}
 

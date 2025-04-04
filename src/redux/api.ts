@@ -21,12 +21,13 @@ apiInstance.interceptors.response.use(
 
     const responseData = error.response?.data as BaseResponse<null>;
 
-    if (error.response?.status === 401 && responseData.codeMessage === "REFRESH_TOKEN_FAILED" && !retry) {
+    if (error.response?.status === 401 && responseData.codeMessage === "INVALID_TOKEN" && !retry) {
       try {
         retry = true;
 
         const response = await apiInstance.post("/auth/refresh-token");
         if (response.status === 200) {
+          retry = false;
           return apiInstance(originalRequest);
         }
       } catch (e: any) {

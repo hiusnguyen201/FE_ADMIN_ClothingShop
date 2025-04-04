@@ -8,7 +8,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import { FlexBox } from "@/components/FlexBox";
 import { ContentWrapper } from "@/components/ContentWrapper";
 import { Spinner } from "@/components/spinner";
-import { EditUserPermissionsPage, EditUserSettingsPage } from "@/pages/users/tabs";
+import { EditUserSettingsPage } from "@/pages/users/tabs";
 import { UserGuardChildrenProps } from "@/guards/user/UserExistsGuard";
 
 enum TABS {
@@ -21,10 +21,6 @@ const tabs = [
   {
     value: TABS.SETTINGS,
     element: EditUserSettingsPage,
-  },
-  {
-    value: TABS.PERMISSIONS,
-    element: EditUserPermissionsPage,
   },
 ];
 

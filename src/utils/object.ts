@@ -1,7 +1,3 @@
-export function filterObj(obj: Record<string, any>): Record<string, any> {
-  return Object.fromEntries(Object.entries(obj).filter(([_, value]) => value));
-}
-
 export function getQueryFromUrl<T>(url: string): T {
   const [_, queryString] = url.split("?");
   const queryObject = Object.fromEntries(new URLSearchParams(queryString));
@@ -20,4 +16,9 @@ export function convertTo<T>(record: Record<string, string>): T {
   });
 
   return result as T;
+}
+
+export function convertToQueryString(obj: Record<string, any>): string {
+  const params = Object.fromEntries(Object.entries(obj).filter(([_, value]) => value));
+  return new URLSearchParams(params).toString();
 }

@@ -12,7 +12,7 @@ import { toast } from "@/hooks/use-toast";
 import { useUserTableFilters } from "./useUserTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { setHistory } from "@/utils/history";
-import { filterObj } from "@/utils/object";
+import { convertToQueryString } from "@/utils/object";
 
 export function UserListTable({ columns }: { columns: ColumnDef<User, any>[] }) {
   const dispatch = useAppDispatch();
@@ -29,7 +29,7 @@ export function UserListTable({ columns }: { columns: ColumnDef<User, any>[] }) 
   };
 
   useEffect(() => {
-    setHistory(`${location.pathname}?${new URLSearchParams(filterObj(filters))}`);
+    setHistory(`${location.pathname}?${convertToQueryString(filters)}`);
     handleGetUserList();
   }, [filters, dispatch]);
 

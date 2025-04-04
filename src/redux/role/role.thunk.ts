@@ -1,12 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import {
+  addRolePermissionsService,
   checkRoleNameExistService,
   createRoleService,
-  editListRolePermissionsService,
   editRoleInfoService,
   getListRolePermissionsService,
   getListRoleService,
   getRoleService,
+  removeRolePermissionService,
   removeRoleService,
 } from "@/redux/role/role.service";
 import {
@@ -14,8 +15,8 @@ import {
   CheckRoleNameExistResponse,
   CreateRolePayload,
   CreateRoleResponse,
-  EditListRolePermissionsPayload,
-  EditListRolePermissionsResponse,
+  RemoveRolePermissionPayload,
+  RemoveRolePermissionResponse,
   EditRoleInfoPayload,
   EditRoleInfoResponse,
   GetListRolePayload,
@@ -26,6 +27,8 @@ import {
   GetRoleResponse,
   RemoveRolePayload,
   RemoveRoleResponse,
+  AddRolePermissionsResponse,
+  AddRolePermissionsPayload,
 } from "@/redux/role/role.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
 
@@ -122,13 +125,27 @@ export const getListRolePermissions = createAsyncThunk<
   }
 });
 
-export const editListRolePermissions = createAsyncThunk<
-  EditListRolePermissionsResponse,
-  EditListRolePermissionsPayload,
+export const addRolePermissions = createAsyncThunk<
+  AddRolePermissionsResponse,
+  AddRolePermissionsPayload,
   ThunkApiConfig
->("role/edit-list-role-permissions", async (payload, { rejectWithValue }) => {
+>("role/add-role-permissions", async (payload, { rejectWithValue }) => {
   try {
-    const response: EditListRolePermissionsResponse = await editListRolePermissionsService(payload);
+    const response: AddRolePermissionsResponse = await addRolePermissionsService(payload);
+    return response;
+  } catch (e: any) {
+    const message: string = e?.response?.data?.message || e.message || e.toString();
+    return rejectWithValue(message);
+  }
+});
+
+export const removeRolePermission = createAsyncThunk<
+  RemoveRolePermissionResponse,
+  RemoveRolePermissionPayload,
+  ThunkApiConfig
+>("role/remove-role-permission", async (payload, { rejectWithValue }) => {
+  try {
+    const response: RemoveRolePermissionResponse = await removeRolePermissionService(payload);
     return response;
   } catch (e: any) {
     const message: string = e?.response?.data?.message || e.message || e.toString();

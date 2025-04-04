@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { Permission } from "@/types/permission";
 import { usePermissionTableFilters } from "./usePermissionTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
-import { filterObj } from "@/utils/object";
+import { convertToQueryString } from "@/utils/object";
 import { setHistory } from "@/utils/history";
 
 export function PermissionListTable({ columns }: { columns: ColumnDef<Permission, any>[] }) {
@@ -27,7 +27,7 @@ export function PermissionListTable({ columns }: { columns: ColumnDef<Permission
   };
 
   useEffect(() => {
-    setHistory(`${location.pathname}?${new URLSearchParams(filterObj(filters))}`);
+    setHistory(`${location.pathname}?${convertToQueryString(filters)}`);
     handleGetPermissionList();
   }, [filters, dispatch]);
 

@@ -20,7 +20,7 @@ export const roleColumns: ColumnDef<Role, any>[] = [
     header: "Name",
     cell: ({ row }) => (
       <Link className="text-blue-500" to={"/roles/" + row.original.id + "/settings"}>
-        {row.getValue("name")}
+        {row.original.name}
       </Link>
     ),
   },
@@ -52,6 +52,7 @@ export function RoleActions({ role }: { role: Role }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
+          aria-hidden={open ? "true" : "false"}
           side="bottom"
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"

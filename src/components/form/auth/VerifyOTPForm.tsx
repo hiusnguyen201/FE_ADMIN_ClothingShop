@@ -46,6 +46,7 @@ export function VerifyOTPForm({ user }: { user: User }) {
 
   const handleResendOTP = async () => {
     await dispatch(sendOtpViaEmail({ email: user.email })).unwrap();
+    toast({ title: "Resend successful" });
   };
 
   return (

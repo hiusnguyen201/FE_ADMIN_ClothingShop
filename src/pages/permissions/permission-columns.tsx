@@ -7,7 +7,7 @@ export const permissionColumns: ColumnDef<Permission, any>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: ({ row }) => <Tag className="text-sm">{row.getValue("name")}</Tag>,
+    cell: ({ row }) => <Tag className="text-sm">{row.original.name}</Tag>,
   },
   {
     accessorKey: "description",

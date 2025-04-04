@@ -15,13 +15,15 @@ export interface RoleState {
     editRole: boolean;
     removeRole: boolean;
     getListRolePermissions: boolean;
-    editListRolePermissions: boolean;
+    addRolePermissions: boolean;
+    removeRolePermission: boolean;
   };
   item: Nullable<Role>;
   list: Role[];
   totalCount: number;
   error: Nullable<string>;
-  listRolePermissions: Permission[];
+  assignedRolePermissions: Permission[];
+  unassignedRolePermissions: Permission[];
 }
 
 /**
@@ -38,7 +40,7 @@ export interface CreateRoleResponse extends BaseResponse<Role> {}
  */
 type RoleFieldsSort = Extract<"name" | "createdAt", Role>;
 export interface GetListRolePayload extends GetListParams<Role> {
-  sortBy: Optional<Nullable<RoleFieldsSort>>;
+  sortBy?: Optional<Nullable<RoleFieldsSort>>;
 }
 export interface GetListRoleResponse extends GetListResponseData<Role> {}
 
@@ -84,13 +86,28 @@ export interface GetListRolePermissionsPayload extends GetListParams<Permission>
   roleId: string;
   sortBy?: Optional<Nullable<RolePermissionsFieldsSort>>;
 }
-export interface GetListRolePermissionsResponse extends GetListResponseData<Permission> {}
+export interface GetListRolePermissionsResponse
+  extends BaseResponse<{
+    assignedTotalCount: number;
+    assignedList: Permission[];
+    unassignedTotalCount: number;
+    unassignedList: Permission[];
+  }> {}
 
 /**
- * Edit List Role Permissions
+ * Add Role Permissions
  */
-export interface EditListRolePermissionsPayload {
+export interface AddRolePermissionsPayload {
   roleId: string;
   permissionIds: string[];
 }
-export interface EditListRolePermissionsResponse extends BaseResponse<Permission[]> {}
+export interface AddRolePermissionsResponse extends BaseResponse<Permission[]> {}
+
+/**
+ * Remove Role Permission
+ */
+export interface RemoveRolePermissionPayload {
+  roleId: string;
+  permissionId: string;
+}
+export interface RemoveRolePermissionResponse extends BaseResponse<{ id: string }> {}

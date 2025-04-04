@@ -12,7 +12,7 @@ import { useRoleTableFilters } from "./useRoleTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { setHistory } from "@/utils/history";
 import { useLocation } from "react-router-dom";
-import { filterObj } from "@/utils/object";
+import { convertToQueryString } from "@/utils/object";
 
 export function RoleListTable({ columns }: { columns: ColumnDef<Role, any>[] }) {
   const dispatch = useAppDispatch();
@@ -29,7 +29,7 @@ export function RoleListTable({ columns }: { columns: ColumnDef<Role, any>[] }) 
   };
 
   useEffect(() => {
-    setHistory(`${location.pathname}?${new URLSearchParams(filterObj(filters))}`);
+    setHistory(`${location.pathname}?${convertToQueryString(filters)}`);
     handleGetRoleList();
   }, [filters, dispatch]);
 

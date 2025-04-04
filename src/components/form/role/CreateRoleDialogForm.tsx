@@ -67,7 +67,7 @@ export function CreateRoleDialogForm({ children, open, onOpenChange }: CreateRol
     >
       {(formik: ReturnType<typeof useFormik<CreateRolePayload>>) => (
         <Fragment>
-          <InputFormikField autoFocus name="name" type="text" label="Name" required formikProps={formik} />
+          <InputFormikField name="name" type="text" label="Name" required formikProps={formik} />
 
           <InputFormikField name="description" type="text" label="Description" required formikProps={formik} />
         </Fragment>
