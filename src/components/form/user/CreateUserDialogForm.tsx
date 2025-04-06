@@ -63,16 +63,15 @@ export function CreateUserDialogForm({ children, open, onOpenChange }: CreateUse
 
     const response: CheckEmailExistResponse = await dispatch(checkEmailExist({ email: values.email })).unwrap();
     if (response.data) {
-      errors.name = "Email already exists";
+      errors.email = "Email already exists";
     }
 
     return errors;
   };
 
   useEffect(() => {
-    if (listRole.length > 0) return;
     (async () => {
-      await dispatch(getListRole({ page: 1, limit: 500 })).unwrap();
+      await dispatch(getListRole({ page: 1, limit: 100 })).unwrap();
     })();
   }, []);
 

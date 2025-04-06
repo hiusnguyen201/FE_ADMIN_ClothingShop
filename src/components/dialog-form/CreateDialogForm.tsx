@@ -41,7 +41,13 @@ export function CreateDialogForm<T extends FormikValues>({
   const formik = useFormik<T>({
     initialValues,
     validationSchema,
-    validate: extendSchema,
+    validate: async (values: T) => {
+      const isValid = await validationSchema.isValid(values);
+
+      if (!isValid) return;
+
+      return await extendSchema?.(values);
+    },
     onSubmit,
     validateOnBlur: false,
     validateOnChange: false,

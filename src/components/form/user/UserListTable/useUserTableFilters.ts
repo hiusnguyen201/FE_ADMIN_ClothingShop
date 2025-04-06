@@ -1,8 +1,5 @@
 import { useState } from "react";
 import { GetListUserPayload } from "@/redux/user/user.type";
-import { getPreviousPathnameHistory, matchPreviousHistory } from "@/utils/history";
-import { getQueryFromUrl } from "@/utils/object";
-import { useLocation } from "react-router-dom";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 
 const initialFilters: GetListUserPayload = {
@@ -13,17 +10,8 @@ const initialFilters: GetListUserPayload = {
   sortOrder: null,
 };
 
-export function useUserTableFilters() {
-  const location = useLocation();
-
-  const getInitialFilters = (): GetListUserPayload => {
-    const previousUrl = getPreviousPathnameHistory();
-    if (!previousUrl) return initialFilters;
-    const query = getQueryFromUrl<Record<string, any>>(previousUrl);
-    return matchPreviousHistory(location.pathname) ? (query as GetListUserPayload) : initialFilters;
-  };
-
-  const [filters, setFilters] = useState<GetListUserPayload>(getInitialFilters());
+export function useUserTableFilters(props?: { searchParams?: URLSearchParams }) {
+  const [filters, setFilters] = useState<GetListUserPayload>({ ...initialFilters, ...props?.searchParams });
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));

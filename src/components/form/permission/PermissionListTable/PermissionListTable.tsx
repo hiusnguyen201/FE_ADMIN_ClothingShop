@@ -10,13 +10,16 @@ import { toast } from "@/hooks/use-toast";
 import { Permission } from "@/types/permission";
 import { usePermissionTableFilters } from "./usePermissionTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
-import { convertToQueryString } from "@/utils/object";
-import { setHistory } from "@/utils/history";
+import { convertToSearchParams } from "@/utils/object";
+import { useSearchParams } from "react-router-dom";
 
 export function PermissionListTable({ columns }: { columns: ColumnDef<Permission, any>[] }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading } = useAppSelector<PermissionState>((state) => state.permission);
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = usePermissionTableFilters();
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = usePermissionTableFilters({
+    searchParams,
+  });
 
   const handleGetPermissionList = async () => {
     try {
@@ -27,7 +30,7 @@ export function PermissionListTable({ columns }: { columns: ColumnDef<Permission
   };
 
   useEffect(() => {
-    setHistory(`${location.pathname}?${convertToQueryString(filters)}`);
+    setSearchParams(convertToSearchParams(searchParams));
     handleGetPermissionList();
   }, [filters, dispatch]);
 
@@ -50,16 +53,14 @@ export function PermissionListTable({ columns }: { columns: ColumnDef<Permission
         columns={columns}
       />
 
-      {Math.ceil(totalCount / filters.limit) > 1 && (
-        <DataTablePagination
-          loading={loading.getListPermission}
-          limit={filters.limit}
-          totalCount={totalCount}
-          page={filters.page}
-          onLimitChange={handleLimitChange}
-          onPageChange={handlePageChange}
-        />
-      )}
+      <DataTablePagination
+        loading={loading.getListPermission}
+        limit={filters.limit}
+        totalCount={totalCount}
+        page={filters.page}
+        onLimitChange={handleLimitChange}
+        onPageChange={handlePageChange}
+      />
     </DataTableLoading>
   );
 }

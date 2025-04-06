@@ -86,7 +86,7 @@ export function SelectObjectFormikField<TData>({
               {options.map((item) => (
                 <DropdownMenuCheckboxItem
                   key={item.value}
-                  className="capitalize cursor-pointer font-normal"
+                  className="capitalize cursor-pointer font-normal hover:bg-gray-100 min-h-10"
                   checked={currentValue === item.value}
                   disabled={!switchable && currentValue === item.value}
                   onCheckedChange={() => {

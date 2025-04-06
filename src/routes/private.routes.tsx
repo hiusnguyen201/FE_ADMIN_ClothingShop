@@ -8,6 +8,7 @@ import { DetailsUserPage, ListUserPage } from "@/pages/users";
 import { DetailsRolePage, ListRolePage } from "@/pages/roles";
 import { ListPermissionPage } from "@/pages/permissions";
 import { NotFoundPage } from "@/pages/errors";
+import { ListCategoryPage } from "@/pages/categories";
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -18,13 +19,10 @@ export const privateRoutes: RouteObject[] = [
     ),
     children: [
       { path: "/", element: <DashboardPage /> },
+      { path: "/categories", element: <ListCategoryPage /> },
       { path: "/users", element: <ListUserPage /> },
       {
         path: "/users/:userId/settings",
-        element: <UserExistsGuard children={DetailsUserPage} />,
-      },
-      {
-        path: "/users/:userId/permissions",
         element: <UserExistsGuard children={DetailsUserPage} />,
       },
       { path: "/roles", element: <ListRolePage /> },

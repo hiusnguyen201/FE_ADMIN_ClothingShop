@@ -4,7 +4,8 @@ import {
   checkRoleNameExistService,
   createRoleService,
   editRoleInfoService,
-  getListRolePermissionsService,
+  getListAssignedRolePermissionsService,
+  getListUnassignedRolePermissionsService,
   getListRoleService,
   getRoleService,
   removeRolePermissionService,
@@ -20,8 +21,8 @@ import {
   EditRoleInfoPayload,
   EditRoleInfoResponse,
   GetListRolePayload,
-  GetListRolePermissionsPayload,
-  GetListRolePermissionsResponse,
+  GetListAssignedRolePermissionsPayload,
+  GetListAssignedRolePermissionsResponse,
   GetListRoleResponse,
   GetRolePayload,
   GetRoleResponse,
@@ -29,6 +30,8 @@ import {
   RemoveRoleResponse,
   AddRolePermissionsResponse,
   AddRolePermissionsPayload,
+  GetListUnassignedRolePermissionsResponse,
+  GetListUnassignedRolePermissionsPayload,
 } from "@/redux/role/role.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
 
@@ -111,13 +114,27 @@ export const checkRoleNameExist = createAsyncThunk<
   }
 });
 
-export const getListRolePermissions = createAsyncThunk<
-  GetListRolePermissionsResponse,
-  GetListRolePermissionsPayload,
+export const getListAssignedRolePermissions = createAsyncThunk<
+  GetListAssignedRolePermissionsResponse,
+  GetListAssignedRolePermissionsPayload,
   ThunkApiConfig
->("role/get-list-role-permissions", async (filters, { rejectWithValue }) => {
+>("role/get-list-assigned-role-permissions", async (filters, { rejectWithValue }) => {
   try {
-    const response: GetListRolePermissionsResponse = await getListRolePermissionsService(filters);
+    const response: GetListAssignedRolePermissionsResponse = await getListAssignedRolePermissionsService(filters);
+    return response;
+  } catch (e: any) {
+    const message: string = e?.response?.data?.message || e.message || e.toString();
+    return rejectWithValue(message);
+  }
+});
+
+export const getListUnassignedRolePermissions = createAsyncThunk<
+  GetListUnassignedRolePermissionsResponse,
+  GetListUnassignedRolePermissionsPayload,
+  ThunkApiConfig
+>("role/get-list-unassigned-role-permissions", async (filters, { rejectWithValue }) => {
+  try {
+    const response: GetListUnassignedRolePermissionsResponse = await getListUnassignedRolePermissionsService(filters);
     return response;
   } catch (e: any) {
     const message: string = e?.response?.data?.message || e.message || e.toString();

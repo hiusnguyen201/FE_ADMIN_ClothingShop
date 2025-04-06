@@ -11,6 +11,13 @@ export enum USER_STATUS {
   INACTIVE = "inactive",
 }
 
+type UserRole = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+};
+
 export type User = {
   id: string;
   avatar: Nullable<string>;
@@ -19,7 +26,7 @@ export type User = {
   phone: string;
   gender: GENDER;
   status: USER_STATUS;
-  role: Nullable<string>;
+  role: Nullable<UserRole>;
   verifiedAt: Nullable<Date>;
   lastLoginAt: Nullable<Date>;
 };

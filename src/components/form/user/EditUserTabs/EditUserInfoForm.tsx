@@ -71,9 +71,8 @@ export function EditUserInfoForm({ user }: { user: User }) {
   });
 
   useEffect(() => {
-    if (listRole.length > 0) return;
     (async () => {
-      await dispatch(getListRole({ page: 1, limit: 500 })).unwrap();
+      await dispatch(getListRole({ page: 1, limit: 100 })).unwrap();
     })();
   }, []);
 

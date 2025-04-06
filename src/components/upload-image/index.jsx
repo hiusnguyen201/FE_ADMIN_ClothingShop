@@ -4,7 +4,7 @@ import { Upload } from "lucide-react";
 
 export default function UploadImage({ onValueChange, limitFile, files: oldFiles }) {
   const [errorMessage, setErrorMessage] = useState("");
-  const [files, setFiles] = useState(oldFiles || []); // Lưu danh sách các ảnh xem trước
+  const [files, setFiles] = useState(oldFiles || []);
 
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: limitFile,
@@ -21,11 +21,10 @@ export default function UploadImage({ onValueChange, limitFile, files: oldFiles 
       }
       setErrorMessage("");
 
-      const updatedFiles = [...files, ...acceptedFiles].slice(0, limitFile); // Giới hạn số lượng file
+      const updatedFiles = [...files, ...acceptedFiles].slice(0, limitFile);
       setFiles(updatedFiles);
 
-      // Trả về một chuỗi URL thay vì một mảng
-      onValueChange && onValueChange(updatedFiles); // Join thành chuỗi
+      onValueChange && onValueChange(updatedFiles);
     },
   });
 
@@ -33,7 +32,7 @@ export default function UploadImage({ onValueChange, limitFile, files: oldFiles 
     const updatedFiles = files.filter((_, i) => i !== index);
 
     setFiles(updatedFiles);
-    onValueChange && onValueChange(updatedFiles); // Join thành chuỗi
+    onValueChange && onValueChange(updatedFiles);
   };
 
   return (

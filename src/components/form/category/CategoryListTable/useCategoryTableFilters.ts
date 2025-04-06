@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { GetListRolePayload } from "@/redux/role/role.type";
+import { GetListCategoryPayload } from "@/redux/category/category.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 
-const initialFilters: GetListRolePayload = {
+const initialFilters: GetListCategoryPayload = {
   page: 1,
   limit: LIMIT_PER_PAGE[0],
   keyword: "",
@@ -10,8 +10,8 @@ const initialFilters: GetListRolePayload = {
   sortOrder: null,
 };
 
-export function useRoleTableFilters(props?: { searchParams?: URLSearchParams }) {
-  const [filters, setFilters] = useState<GetListRolePayload>({ ...initialFilters, ...props?.searchParams });
+export function useCategoryTableFilters(props?: { searchParams?: URLSearchParams }) {
+  const [filters, setFilters] = useState<GetListCategoryPayload>({ ...initialFilters, ...props?.searchParams });
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));

@@ -1,29 +1,20 @@
 import { useState } from "react";
-import { GetListRolePermissionsPayload } from "@/redux/role/role.type";
-import { getPreviousPathnameHistory, matchPreviousHistory } from "@/utils/history";
-import { getQueryFromUrl } from "@/utils/object";
-import { useLocation } from "react-router-dom";
+import { GetListAssignedRolePermissionsPayload } from "@/redux/role/role.type";
 
-export function useRolePermissionsTableFilters(roleId: string) {
-  const location = useLocation();
-
-  const initialFilters: GetListRolePermissionsPayload = {
+export function useRolePermissionsTableFilters(props: { searchParams?: URLSearchParams; roleId: string }) {
+  const initialFilters: GetListAssignedRolePermissionsPayload = {
     page: 1,
-    limit: 500,
+    limit: 100,
     keyword: "",
     sortBy: null,
     sortOrder: null,
-    roleId: roleId,
+    roleId: props.roleId,
   };
 
-  const getInitialFilters = (): GetListRolePermissionsPayload => {
-    const previousUrl = getPreviousPathnameHistory();
-    if (!previousUrl) return initialFilters;
-    const query = getQueryFromUrl<Record<string, any>>(previousUrl);
-    return matchPreviousHistory(location.pathname) ? (query as GetListRolePermissionsPayload) : initialFilters;
-  };
-
-  const [filters, setFilters] = useState<GetListRolePermissionsPayload>(getInitialFilters());
+  const [filters, setFilters] = useState<GetListAssignedRolePermissionsPayload>({
+    ...initialFilters,
+    ...props?.searchParams,
+  });
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));

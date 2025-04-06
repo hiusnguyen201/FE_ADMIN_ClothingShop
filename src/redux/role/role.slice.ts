@@ -3,8 +3,9 @@ import {
   AddRolePermissionsResponse,
   CreateRoleResponse,
   EditRoleInfoResponse,
-  GetListRolePermissionsResponse,
+  GetListAssignedRolePermissionsResponse,
   GetListRoleResponse,
+  GetListUnassignedRolePermissionsResponse,
   GetRoleResponse,
   RemoveRolePermissionResponse,
   RemoveRoleResponse,
@@ -16,10 +17,11 @@ import {
   getRole,
   editRoleInfo,
   removeRole,
-  getListRolePermissions,
+  getListAssignedRolePermissions,
   removeRolePermission,
   checkRoleNameExist,
   addRolePermissions,
+  getListUnassignedRolePermissions,
 } from "@/redux/role/role.thunk";
 
 const initialState: RoleState = {
@@ -30,7 +32,8 @@ const initialState: RoleState = {
     getRole: false,
     editRole: false,
     removeRole: false,
-    getListRolePermissions: false,
+    getListAssignedRolePermissions: false,
+    getListUnassignedRolePermissions: false,
     addRolePermissions: false,
     removeRolePermission: false,
   },
@@ -155,25 +158,44 @@ const roleSlice = createSlice({
       });
 
     builder
-      // Get List Role Permissions
-      .addCase(getListRolePermissions.pending, (state: Draft<RoleState>) => {
-        state.loading.getListRolePermissions = true;
+      // Get List Assigned Role Permissions
+      .addCase(getListAssignedRolePermissions.pending, (state: Draft<RoleState>) => {
+        state.loading.getListAssignedRolePermissions = true;
         state.error = null;
       })
       .addCase(
-        getListRolePermissions.fulfilled,
-        (state: Draft<RoleState>, action: PayloadAction<GetListRolePermissionsResponse>) => {
+        getListAssignedRolePermissions.fulfilled,
+        (state: Draft<RoleState>, action: PayloadAction<GetListAssignedRolePermissionsResponse>) => {
           const { data } = action.payload;
-          state.loading.getListRolePermissions = false;
+          state.loading.getListAssignedRolePermissions = false;
           state.error = null;
-          state.assignedRolePermissions = data.assignedList;
-          state.unassignedRolePermissions = data.unassignedList;
+          state.assignedRolePermissions = data.list;
         }
       )
-      .addCase(getListRolePermissions.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
-        state.loading.getListRolePermissions = false;
+      .addCase(getListAssignedRolePermissions.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
+        state.loading.getListAssignedRolePermissions = false;
         state.error = action.payload as string;
         state.assignedRolePermissions = [];
+      });
+
+    builder
+      // Get List Unassigned Role Permissions
+      .addCase(getListUnassignedRolePermissions.pending, (state: Draft<RoleState>) => {
+        state.loading.getListUnassignedRolePermissions = true;
+        state.error = null;
+      })
+      .addCase(
+        getListUnassignedRolePermissions.fulfilled,
+        (state: Draft<RoleState>, action: PayloadAction<GetListUnassignedRolePermissionsResponse>) => {
+          const { data } = action.payload;
+          state.loading.getListUnassignedRolePermissions = false;
+          state.error = null;
+          state.unassignedRolePermissions = data.list;
+        }
+      )
+      .addCase(getListUnassignedRolePermissions.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
+        state.loading.getListUnassignedRolePermissions = false;
+        state.error = action.payload as string;
         state.unassignedRolePermissions = [];
       });
 

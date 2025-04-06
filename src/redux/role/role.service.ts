@@ -1,4 +1,4 @@
-import { convertToQueryString } from "@/utils/object";
+import { convertToSearchParams } from "@/utils/object";
 import { apiInstance } from "@/redux/api";
 import {
   CreateRoleResponse,
@@ -13,12 +13,14 @@ import {
   EditRoleInfoResponse,
   RemoveRolePayload,
   RemoveRoleResponse,
-  GetListRolePermissionsPayload,
-  GetListRolePermissionsResponse,
   RemoveRolePermissionPayload,
   RemoveRolePermissionResponse,
   AddRolePermissionsPayload,
   AddRolePermissionsResponse,
+  GetListAssignedRolePermissionsPayload,
+  GetListAssignedRolePermissionsResponse,
+  GetListUnassignedRolePermissionsPayload,
+  GetListUnassignedRolePermissionsResponse,
 } from "@/redux/role/role.type";
 
 export const checkRoleNameExistService = async (
@@ -32,7 +34,7 @@ export const createRoleService = async (payload: CreateRolePayload): Promise<Cre
 };
 
 export const getListRoleService = async (payload: GetListRolePayload): Promise<GetListRoleResponse> => {
-  return await apiInstance.get(`/roles/get-roles?${convertToQueryString(payload)}`);
+  return await apiInstance.get(`/roles/get-roles?${convertToSearchParams(payload)}`);
 };
 
 export const getRoleService = async (payload: GetRolePayload): Promise<GetRoleResponse> => {
@@ -47,11 +49,19 @@ export const removeRoleService = async (payload: RemoveRolePayload): Promise<Rem
   return await apiInstance.delete(`/roles/remove-role-by-id/${payload.id}`);
 };
 
-export const getListRolePermissionsService = async (
-  payload: GetListRolePermissionsPayload
-): Promise<GetListRolePermissionsResponse> => {
+export const getListAssignedRolePermissionsService = async (
+  payload: GetListAssignedRolePermissionsPayload
+): Promise<GetListAssignedRolePermissionsResponse> => {
   return await apiInstance.get(
-    `/roles/${payload.roleId}/permissions?${convertToQueryString({ ...payload, roleId: null })}`
+    `/roles/${payload.roleId}/assigned-permissions?${convertToSearchParams({ ...payload, roleId: null })}`
+  );
+};
+
+export const getListUnassignedRolePermissionsService = async (
+  payload: GetListUnassignedRolePermissionsPayload
+): Promise<GetListUnassignedRolePermissionsResponse> => {
+  return await apiInstance.get(
+    `/roles/${payload.roleId}/unassigned-permissions?${convertToSearchParams({ ...payload, roleId: null })}`
   );
 };
 

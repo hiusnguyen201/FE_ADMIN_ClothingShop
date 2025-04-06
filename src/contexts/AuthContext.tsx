@@ -10,7 +10,7 @@ import {
   VerifyOtpPayload,
   VerifyOtpResponse,
 } from "@/redux/auth/auth.type";
-import { login, logout, sendOtpViaEmail, verifyOtp } from "@/redux/auth/auth.thunk";
+import { login, logout, verifyOtp } from "@/redux/auth/auth.thunk";
 import { Nullable } from "@/types/common";
 
 type State = {

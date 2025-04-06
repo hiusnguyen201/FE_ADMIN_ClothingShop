@@ -1,19 +1,17 @@
 import * as Yup from "yup";
 import { CreateDialogForm } from "@/components/dialog-form";
-import { AddRolePermissionsPayload, AddRolePermissionsResponse, RoleState } from "@/redux/role/role.type";
+import { AddRolePermissionsPayload, RoleState } from "@/redux/role/role.type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { FormikHelpers, useFormik } from "formik";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "@/hooks/use-toast";
-import { addRolePermissions, getListRolePermissions } from "@/redux/role/role.thunk";
-import { getListPermission } from "@/redux/permission/permission.thunk";
+import { addRolePermissions, getListUnassignedRolePermissions } from "@/redux/role/role.thunk";
 import { Button } from "@/components/ui/button";
 import { FlexBox } from "@/components/FlexBox";
 import { Separator } from "@/components/ui/separator";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Role } from "@/types/role";
-import { PermissionState } from "@/redux/permission/permission.type";
 import { Spinner } from "@/components/spinner";
 
 const addRolePermissionsSchema = Yup.object().shape({
@@ -67,11 +65,17 @@ export function SelectRolePermissionsDialogForm({
     }
   };
 
-  useEffect(() => {
-    if (open && unassignedRolePermissions.length === 0) {
-      dispatch(getListRolePermissions({ page: 1, limit: 500, roleId: role.id }));
+  const fetchPermissions = useCallback(async () => {
+    try {
+      await dispatch(getListUnassignedRolePermissions({ page: 1, limit: 100, roleId: role.id })).unwrap();
+    } catch (error: any) {
+      toast({ title: error, variant: "destructive" });
     }
-  }, [dispatch, open]);
+  }, [unassignedRolePermissions]);
+
+  useEffect(() => {
+    fetchPermissions();
+  }, [dispatch]);
 
   return (
     <CreateDialogForm
@@ -154,7 +158,7 @@ export function SelectRolePermissionsDialogForm({
               </ul>
             ) : (
               <div className="flex justify-center absolute top-[50%] w-full text-gray-500">
-                {loading.getListRolePermissions ? <Spinner /> : <p>No Permissions found</p>}
+                {loading.getListUnassignedRolePermissions ? <Spinner /> : <p>No Permissions found</p>}
               </div>
             )}
           </div>

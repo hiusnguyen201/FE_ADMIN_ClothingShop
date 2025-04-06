@@ -1,4 +1,4 @@
-import { convertToQueryString } from "@/utils/object";
+import { convertToSearchParams } from "@/utils/object";
 import { apiInstance } from "@/redux/api";
 import {
   CreateUserResponse,
@@ -28,7 +28,7 @@ export const createUserService = async (payload: CreateUserPayload): Promise<Cre
 };
 
 export const getListUserService = async (payload: GetListUserPayload): Promise<GetListUserResponse> => {
-  return await apiInstance.get(`/users/get-users?${convertToQueryString(payload)}`);
+  return await apiInstance.get(`/users/get-users?${convertToSearchParams(payload)}`);
 };
 
 export const getUserService = async (payload: GetUserPayload): Promise<GetUserResponse> => {
@@ -46,7 +46,7 @@ export const removeUserService = async (payload: RemoveUserPayload): Promise<Rem
 export const getListUserPermissionsService = async (
   payload: GetListUserPermissionsPayload
 ): Promise<GetListUserPermissionsResponse> => {
-  return await apiInstance.get(`/users/get-user-permissions-by-id?${convertToQueryString(payload)}`);
+  return await apiInstance.get(`/users/get-user-permissions-by-id?${convertToSearchParams(payload)}`);
 };
 
 export const editListUserPermissionsService = async (

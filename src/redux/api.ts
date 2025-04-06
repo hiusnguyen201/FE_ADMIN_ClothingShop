@@ -1,4 +1,5 @@
 import { BaseResponse } from "@/types/response";
+import { getPreviousPathnameHistory } from "@/utils/history";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 export const apiInstance = axios.create({
@@ -26,11 +27,16 @@ apiInstance.interceptors.response.use(
         retry = true;
 
         const response = await apiInstance.post("/auth/refresh-token");
+        console.log(response);
         if (response.status === 200) {
           retry = false;
+
+          window.location.href = getPreviousPathnameHistory() || "/";
+
           return apiInstance(originalRequest);
         }
       } catch (e: any) {
+        retry = false;
         return Promise.reject(e);
       }
     }

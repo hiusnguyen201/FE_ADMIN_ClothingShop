@@ -10,15 +10,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
 import { useRoleTableFilters } from "./useRoleTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
-import { setHistory } from "@/utils/history";
-import { useLocation } from "react-router-dom";
-import { convertToQueryString } from "@/utils/object";
+import { convertToSearchParams } from "@/utils/object";
+import { useSearchParams } from "react-router-dom";
 
 export function RoleListTable({ columns }: { columns: ColumnDef<Role, any>[] }) {
+  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading } = useAppSelector<RoleState>((state) => state.role);
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useRoleTableFilters();
-  const location = useLocation();
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useRoleTableFilters({ searchParams });
 
   const handleGetRoleList = async () => {
     try {
@@ -29,7 +28,7 @@ export function RoleListTable({ columns }: { columns: ColumnDef<Role, any>[] }) 
   };
 
   useEffect(() => {
-    setHistory(`${location.pathname}?${convertToQueryString(filters)}`);
+    setSearchParams(convertToSearchParams(searchParams));
     handleGetRoleList();
   }, [filters, dispatch]);
 

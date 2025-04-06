@@ -22,6 +22,7 @@ export const userColumns: ColumnDef<User, any>[] = [
   {
     accessorKey: "name",
     header: "Name",
+    minSize: 300,
     cell: ({ row }) => {
       const user = row.original;
 
@@ -32,18 +33,31 @@ export const userColumns: ColumnDef<User, any>[] = [
             <AvatarFallback className="rounded-full capitalize">{user.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <FlexBox className="gap-0">
-            <Link className="text-blue-500" to={"/users/" + user.id + "/settings"}>
-              {user.name}
-            </Link>
-            <TruncatedTextWithTooltip>{user.email}</TruncatedTextWithTooltip>
+            <TruncatedTextWithTooltip className="max-w-[300px]">
+              <Link className="text-blue-500" to={"/users/" + user.id + "/settings"}>
+                {user.name}
+              </Link>
+            </TruncatedTextWithTooltip>
+            <TruncatedTextWithTooltip className="max-w-[300px]">{user.email}</TruncatedTextWithTooltip>
           </FlexBox>
         </FlexBox>
       );
     },
   },
   {
+    accessorKey: "role",
+    header: "Role",
+    minSize: 150,
+    maxSize: 150,
+    cell: ({ row }) => {
+      const user = row.original;
+      return <TruncatedTextWithTooltip>{user.role?.name}</TruncatedTextWithTooltip>;
+    },
+  },
+  {
     accessorKey: "gender",
     header: "Gender",
+    minSize: 100,
     maxSize: 100,
     cell: ({ row }) => {
       const user = row.original;
@@ -53,7 +67,8 @@ export const userColumns: ColumnDef<User, any>[] = [
   {
     accessorKey: "contact",
     header: "Contact",
-    maxSize: 96,
+    minSize: 150,
+    maxSize: 150,
     cell: ({ row }) => {
       const user = row.original;
       return (
@@ -75,7 +90,8 @@ export const userColumns: ColumnDef<User, any>[] = [
   {
     accessorKey: "lastLogin",
     header: "Last Login",
-    maxSize: 150,
+    minSize: 100,
+    maxSize: 100,
     cell: ({ row }) => {
       const user = row.original;
       return user.lastLoginAt ? formatDateString(user.lastLoginAt) : "never";
@@ -83,6 +99,7 @@ export const userColumns: ColumnDef<User, any>[] = [
   },
   {
     id: "actions",
+    minSize: 64,
     maxSize: 64,
     cell: ({ row }) => {
       const user = row.original;

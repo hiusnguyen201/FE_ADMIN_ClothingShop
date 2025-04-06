@@ -18,7 +18,7 @@ export function convertTo<T>(record: Record<string, string>): T {
   return result as T;
 }
 
-export function convertToQueryString(obj: Record<string, any>): string {
+export function convertToSearchParams(obj: Record<string, any>): URLSearchParams {
   const params = Object.fromEntries(Object.entries(obj).filter(([_, value]) => value));
-  return new URLSearchParams(params).toString();
+  return new URLSearchParams(params);
 }
