@@ -52,3 +52,8 @@ export type VerifyOtpPayload = {
   otp: string;
 };
 export interface VerifyOtpResponse extends BaseResponse<LoginResponseData> {}
+
+/**
+ * Refresh token
+ */
+export interface RefreshTokenResponse extends BaseResponse<User> {}

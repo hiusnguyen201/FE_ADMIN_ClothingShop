@@ -9,6 +9,8 @@ import { DetailsRolePage, ListRolePage } from "@/pages/roles";
 import { ListPermissionPage } from "@/pages/permissions";
 import { NotFoundPage } from "@/pages/errors";
 import { ListCategoryPage } from "@/pages/categories";
+import { DetailsCategoryPage } from "@/pages/categories/DetailsCategoryPage";
+import { CategoryExistsGuard } from "@/guards/category/CategoryExistsGuard";
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -20,6 +22,14 @@ export const privateRoutes: RouteObject[] = [
     children: [
       { path: "/", element: <DashboardPage /> },
       { path: "/categories", element: <ListCategoryPage /> },
+      {
+        path: "/categories/:categoryId/settings",
+        element: <CategoryExistsGuard children={DetailsCategoryPage} />,
+      },
+      {
+        path: "/categories/:categoryId/subcategories",
+        element: <CategoryExistsGuard children={DetailsCategoryPage} />,
+      },
       { path: "/users", element: <ListUserPage /> },
       {
         path: "/users/:userId/settings",

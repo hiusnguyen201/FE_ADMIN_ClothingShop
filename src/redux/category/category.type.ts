@@ -7,15 +7,38 @@ import { BaseResponse, GetListParams, GetListResponseData } from "@/types/respon
  */
 export interface CategoryState {
   loading: {
-    getListCategory: boolean;
-    createCategory: boolean;
     checkCategoryNameExist: boolean;
+    createCategory: boolean;
+    getListCategory: boolean;
+    getCategory: boolean;
+    editCategory: boolean;
+    removeCategory: boolean;
+    getListSubcategory: boolean;
   };
   item: Nullable<Category>;
   list: Category[];
+  listSub: Category[];
   totalCount: number;
   error: Nullable<string>;
 }
+
+/**
+ * Check Category Name Exist
+ */
+export type CheckCategoryNameExistPayload = {
+  name: string;
+};
+export interface CheckCategoryNameExistResponse extends BaseResponse<boolean> {}
+
+/**
+ * Create Category
+ */
+export type CreateCategoryPayload = {
+  image: Nullable<File>;
+  name: string;
+  parentId: Nullable<string>;
+};
+export interface CreateCategoryResponse extends BaseResponse<Category> {}
 
 /**
  * Get List Category
@@ -27,19 +50,38 @@ export interface GetListCategoryPayload extends GetListParams<Category> {
 export interface GetListCategoryResponse extends GetListResponseData<Category> {}
 
 /**
- * Create Category
+ * Get Category
  */
-export type CreateCategoryPayload = {
-  image: Nullable<File>;
-  name: string;
-  parent?: string;
-};
-export interface CreateCategoryResponse extends BaseResponse<Category> {}
+export interface GetCategoryPayload {
+  id: string;
+}
+export interface GetCategoryResponse extends BaseResponse<Category> {}
 
 /**
- * Check Category Name Exist
+ * Edit Category
  */
-export type CheckCategoryNameExistPayload = {
+export type EditCategoryInfoPayload = {
+  id: string;
+  image: File | string;
   name: string;
+  parentId: Nullable<string>;
 };
-export interface CheckCategoryNameExistResponse extends BaseResponse<boolean> {}
+export interface EditCategoryInfoResponse extends BaseResponse<Category> {}
+
+/**
+ * Remove Category
+ */
+export type RemoveCategoryPayload = {
+  id: string;
+};
+export interface RemoveCategoryResponse extends BaseResponse<{ id: string }> {}
+
+/**
+ * Get List Subcategory
+ */
+type SubcategoryFieldsSort = Extract<"name" | "createdAt", Category>;
+export interface GetListSubcategoryPayload extends GetListParams<Category> {
+  categoryId: string;
+  sortBy?: Optional<Nullable<SubcategoryFieldsSort>>;
+}
+export interface GetListSubcategoryResponse extends GetListResponseData<Category> {}

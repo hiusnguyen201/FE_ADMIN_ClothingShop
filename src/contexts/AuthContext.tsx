@@ -7,11 +7,13 @@ import {
   LoginPayload,
   LoginResponse,
   LogoutResponse,
+  RefreshTokenResponse,
   VerifyOtpPayload,
   VerifyOtpResponse,
 } from "@/redux/auth/auth.type";
-import { login, logout, verifyOtp } from "@/redux/auth/auth.thunk";
+import { login, logout, refreshToken, verifyOtp } from "@/redux/auth/auth.thunk";
 import { Nullable } from "@/types/common";
+import { setAuthUtils } from "@/redux/api";
 
 type State = {
   isAuthenticated: boolean;
@@ -21,6 +23,7 @@ type State = {
   user: Nullable<User>;
   login: (values: LoginPayload) => Promise<LoginResponse | void>;
   verifyOtp: (values: VerifyOtpPayload) => Promise<VerifyOtpResponse | void>;
+  refreshToken: () => Promise<RefreshTokenResponse | void>;
   logout: () => Promise<LogoutResponse | void>;
   reInitialize: () => Promise<void>;
 };
@@ -33,11 +36,12 @@ const initialState: State = {
   user: null,
   login: () => Promise.resolve(),
   verifyOtp: () => Promise.resolve(),
+  refreshToken: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   reInitialize: () => Promise.resolve(),
 };
 
-type ActionType = "INITIALIZE" | "LOGOUT" | "LOGIN" | "CLEAR" | "ERROR" | "VERIFY_OTP";
+type ActionType = "INITIALIZE" | "LOGOUT" | "LOGIN" | "CLEAR" | "ERROR" | "VERIFY_OTP" | "REFRESH_TOKEN";
 
 type AuthAction = {
   type: ActionType;
@@ -72,6 +76,17 @@ const handlers: Record<ActionType, (state: State, action: AuthAction) => State> 
       isInitialized: true,
       user: action.payload.user,
       is2FactorRequired: true,
+      error: null,
+    };
+  },
+  REFRESH_TOKEN: (state: State, action: AuthAction) => {
+    if (!action?.payload) return state;
+    return {
+      ...state,
+      isAuthenticated: true,
+      isInitialized: true,
+      user: action.payload.user,
+      is2FactorRequired: false,
       error: null,
     };
   },
@@ -156,6 +171,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const refreshTokenAction = async (): Promise<RefreshTokenResponse> => {
+    try {
+      const response: RefreshTokenResponse = await appDispatch(refreshToken()).unwrap();
+      const user = response.data;
+      dispatch({ type: "REFRESH_TOKEN", payload: { ...state, user } });
+      return response;
+    } catch (e: any) {
+      throw Error("Refresh token failed");
+    }
+  };
+
   const logoutAction = async (): Promise<LogoutResponse> => {
     try {
       const response = await appDispatch(logout()).unwrap();
@@ -168,6 +194,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  setAuthUtils({ refreshToken: refreshTokenAction });
+
   return (
     <AuthContext.Provider
       value={{
@@ -176,6 +204,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logout: logoutAction,
         login: loginAction,
         verifyOtp: verifyOtpAction,
+        refreshToken: refreshTokenAction,
       }}
     >
       {children}

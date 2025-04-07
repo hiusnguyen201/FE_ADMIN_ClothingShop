@@ -1,6 +1,14 @@
 import { BaseResponse } from "@/types/response";
 import { getPreviousPathnameHistory } from "@/utils/history";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { RefreshTokenResponse } from "@/redux/auth/auth.type";
+
+type RefreshTokenFn = () => Promise<RefreshTokenResponse | void>;
+let refreshTokenFn: RefreshTokenFn = async () => {};
+
+export const setAuthUtils = (utils: { refreshToken: RefreshTokenFn }) => {
+  refreshTokenFn = utils.refreshToken;
+};
 
 export const apiInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -26,13 +34,9 @@ apiInstance.interceptors.response.use(
       try {
         retry = true;
 
-        const response = await apiInstance.post("/auth/refresh-token");
-        console.log(response);
-        if (response.status === 200) {
+        const response = await refreshTokenFn();
+        if (response && response.code === 200) {
           retry = false;
-
-          window.location.href = getPreviousPathnameHistory() || "/";
-
           return apiInstance(originalRequest);
         }
       } catch (e: any) {

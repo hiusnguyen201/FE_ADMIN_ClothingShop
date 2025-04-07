@@ -14,35 +14,31 @@ import {
   CategoryState,
 } from "@/redux/category/category.type";
 import { ImageFormikField } from "@/components/formik-fields/ImageFormikField";
-
-const MAXIMUM_CATEGORY_IMAGE_SIZE = 2 * 1024 * 1024;
-const ACCEPTED_CATEGORY_IMAGE_TYPE = ["image/jpeg", "image/png"];
-
-const initialValues: CreateCategoryPayload = {
-  image: null,
-  name: "",
-  parent: "",
-};
+import { Category } from "@/types/category";
 
 const createCategorySchema = Yup.object().shape({
-  image: Yup.mixed<File>()
-    .required()
-    .test("fileSize", "Too large", (value) => value.size <= MAXIMUM_CATEGORY_IMAGE_SIZE)
-    .test("fileType", "Unsupported file format", (value) => ACCEPTED_CATEGORY_IMAGE_TYPE.includes(value?.type || "")),
-  name: Yup.string().required(),
-  parent: Yup.string(),
+  image: Yup.mixed<File>().required(),
+  name: Yup.string().required().min(3).max(50),
+  parentId: Yup.string().required().nullable(),
 });
 
 type CreateCategoryDialogFormProps = {
   children?: ReactNode;
   open?: false;
   onOpenChange?: (value: boolean) => void;
+  parent?: Category;
 };
 
-export function CreateCategoryDialogForm({ children, open, onOpenChange }: CreateCategoryDialogFormProps) {
+export function CreateCategoryDialogForm({ children, open, onOpenChange, parent }: CreateCategoryDialogFormProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { loading } = useAppSelector<CategoryState>((selector) => selector.category);
+
+  const initialValues: CreateCategoryPayload = {
+    image: null,
+    name: "",
+    parentId: parent?.id || null,
+  };
 
   const handleSubmit = async (values: CreateCategoryPayload, { resetForm }: FormikHelpers<CreateCategoryPayload>) => {
     try {

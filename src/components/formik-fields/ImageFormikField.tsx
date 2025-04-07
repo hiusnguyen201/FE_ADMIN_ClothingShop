@@ -27,7 +27,7 @@ export function ImageFormikField<TData>({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const { setFieldError, errors, setFieldValue, values } = formikProps;
-  const currentValue: File = values[name] as File;
+  const currentValue: File | string = values[name] as File | string;
   const error: string = errors[name] as string;
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -60,16 +60,21 @@ export function ImageFormikField<TData>({
   };
 
   useEffect(() => {
-    if (currentValue) {
+    if (!currentValue) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    if (currentValue instanceof File) {
       const url = URL.createObjectURL(currentValue);
       setPreviewUrl(url);
 
       return () => {
         URL.revokeObjectURL(url);
       };
-    } else {
-      setPreviewUrl(null);
     }
+
+    setPreviewUrl(currentValue);
   }, [currentValue]);
 
   return (

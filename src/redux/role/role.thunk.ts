@@ -35,6 +35,20 @@ import {
 } from "@/redux/role/role.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
 
+export const checkRoleNameExist = createAsyncThunk<
+  CheckRoleNameExistResponse,
+  CheckRoleNameExistPayload,
+  ThunkApiConfig
+>("role/check-role-name-exist", async (payload, { rejectWithValue }) => {
+  try {
+    const response: CheckRoleNameExistResponse = await checkRoleNameExistService(payload);
+    return response;
+  } catch (e: any) {
+    const message: string = e?.response?.data?.message || e.message || e.toString();
+    return rejectWithValue(message);
+  }
+});
+
 export const createRole = createAsyncThunk<CreateRoleResponse, CreateRolePayload, ThunkApiConfig>(
   "role/create-role",
   async (payload, { rejectWithValue }) => {
@@ -99,20 +113,6 @@ export const removeRole = createAsyncThunk<RemoveRoleResponse, RemoveRolePayload
     }
   }
 );
-
-export const checkRoleNameExist = createAsyncThunk<
-  CheckRoleNameExistResponse,
-  CheckRoleNameExistPayload,
-  ThunkApiConfig
->("role/check-role-name-exist", async (payload, { rejectWithValue }) => {
-  try {
-    const response: CheckRoleNameExistResponse = await checkRoleNameExistService(payload);
-    return response;
-  } catch (e: any) {
-    const message: string = e?.response?.data?.message || e.message || e.toString();
-    return rejectWithValue(message);
-  }
-});
 
 export const getListAssignedRolePermissions = createAsyncThunk<
   GetListAssignedRolePermissionsResponse,

@@ -12,20 +12,20 @@ export type DataTableProps<TData> = {
   columns: ColumnDef<TData, any>[];
   placeholder: string;
   heightPerRow?: number;
-  getSubRows?: (originalRow: TData, index: number) => undefined | TData[];
+  // getSubRows?: (originalRow: TData, index: number) => undefined | TData[];
 };
 
 /**
  * Manual resize
  * @import {https://github.com/TanStack/table/discussions/3192}
  */
-export function DataTable<TData>({ data, columns, placeholder, heightPerRow, getSubRows }: DataTableProps<TData>) {
+export function DataTable<TData>({ data, columns, placeholder, heightPerRow }: DataTableProps<TData>) {
   const { isMobile, open } = useSidebar();
   const table: Table<TData> = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSubRows,
+    // getSubRows,
     defaultColumn: {
       minSize: 0,
       size: Number.MAX_SAFE_INTEGER,
@@ -58,7 +58,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, get
         <TableHeader className="sticky top-0 bg-white border-b">
           {table.getHeaderGroups().map((headerGroup, index) => (
             <TableRow key={headerGroup.id} className="flex w-full">
-              {table.getRowModel().rows[index]?.subRows?.length > 0 && (
+              {/* {table.getRowModel().rows[index]?.subRows.length > 0 && (
                 <TableHead className="flex items-center">
                   <Button
                     variant="ghost"
@@ -73,7 +73,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, get
                     )}
                   </Button>
                 </TableHead>
-              )}
+              )} */}
 
               {headerGroup.headers.map((header) => (
                 <TableHead
@@ -95,7 +95,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, get
             table.getRowModel().rows.map((row) => (
               <Fragment key={row.id}>
                 <TableRow className={cn("flex w-full items-center", heightPerRow ? `h-[${heightPerRow}px]` : "")}>
-                  {row.subRows.length > 0 && row.getCanExpand() && (
+                  {/* {row.subRows.length > 0 && row.getCanExpand() && (
                     <TableCell className="flex items-center">
                       <Button
                         variant="ghost"
@@ -110,7 +110,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, get
                         )}
                       </Button>
                     </TableCell>
-                  )}
+                  )} */}
 
                   {row.getVisibleCells().map((cell) => {
                     return (
@@ -145,6 +145,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, get
                             className="flex-1 truncate flex items-center"
                             style={{
                               maxWidth: cell.column.columnDef.maxSize,
+                              minWidth: cell.column.columnDef.minSize,
                             }}
                           >
                             {cellIndex === 0 && <div style={{ width: (row.depth + 1) * 16 }}></div>}

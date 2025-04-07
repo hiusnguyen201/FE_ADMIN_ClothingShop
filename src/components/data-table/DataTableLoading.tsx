@@ -9,9 +9,9 @@ export type DataTableLoadingProps = {
 };
 
 export function DataTableLoading({ loading, children, className }: DataTableLoadingProps) {
-  return loading ? (
-    <Spinner size="large" />
-  ) : (
-    <div className={cn("relative", loading && "opacity-50", className)}>{children}</div>
+  return (
+    <div className={cn("relative", loading && "opacity-50", className)}>
+      {loading ? <Spinner size="large" /> : children}
+    </div>
   );
 }

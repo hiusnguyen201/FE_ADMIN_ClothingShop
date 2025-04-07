@@ -32,10 +32,7 @@ export const roleColumns: ColumnDef<Role, any>[] = [
   {
     id: "actions",
     maxSize: 64,
-    cell: ({ row }) => {
-      const role = row.original;
-      return <RoleActions role={role} />;
-    },
+    cell: ({ row }) => <RoleActions role={row.original} />,
   },
 ];
 

@@ -48,7 +48,6 @@ export function CategoryListTable({ columns }: { columns: ColumnDef<Category, an
       </div>
 
       <DataTable
-        getSubRows={(row: Category) => row.children}
         data={list}
         placeholder="No categories found. Note: if a category was just created/deleted, it takes some time for it to be indexed."
         columns={columns}

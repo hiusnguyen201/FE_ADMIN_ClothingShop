@@ -1,5 +1,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { loginService, logoutService, sendOtpViaEmailService, verifyOtpService } from "@/redux/auth/auth.service";
+import {
+  loginService,
+  logoutService,
+  refreshTokenService,
+  sendOtpViaEmailService,
+  verifyOtpService,
+} from "@/redux/auth/auth.service";
 import { ThunkApiConfig } from "@/types/thunk-api";
 import {
   LoginResponse,
@@ -9,6 +15,7 @@ import {
   LogoutResponse,
   VerifyOtpResponse,
   VerifyOtpPayload,
+  RefreshTokenResponse,
 } from "@/redux/auth/auth.type";
 
 export const logout = createAsyncThunk<LogoutResponse, void, ThunkApiConfig>(
@@ -42,6 +49,19 @@ export const sendOtpViaEmail = createAsyncThunk<SendOtpViaEmailResponse, SendOtp
   async (payload, { rejectWithValue }) => {
     try {
       const response: SendOtpViaEmailResponse = await sendOtpViaEmailService(payload);
+      return response;
+    } catch (error: any) {
+      const message: string = error.response?.data?.message || error.message || error.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const refreshToken = createAsyncThunk<RefreshTokenResponse, void, ThunkApiConfig>(
+  "auth/refresh-token",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response: RefreshTokenResponse = await refreshTokenService();
       return response;
     } catch (error: any) {
       const message: string = error.response?.data?.message || error.message || error.toString();

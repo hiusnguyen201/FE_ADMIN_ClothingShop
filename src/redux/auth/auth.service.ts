@@ -3,6 +3,7 @@ import {
   LoginPayload,
   LoginResponse,
   LogoutResponse,
+  RefreshTokenResponse,
   SendOtpViaEmailPayload,
   SendOtpViaEmailResponse,
   VerifyOtpPayload,
@@ -15,6 +16,10 @@ export const logoutService = async (): Promise<LogoutResponse> => {
 
 export const loginService = async (payload: LoginPayload): Promise<LoginResponse> => {
   return await apiInstance.post("/auth/login-admin", payload);
+};
+
+export const refreshTokenService = async (): Promise<RefreshTokenResponse> => {
+  return await apiInstance.post("/auth/refresh-token");
 };
 
 export const sendOtpViaEmailService = async (payload: SendOtpViaEmailPayload): Promise<SendOtpViaEmailResponse> => {
