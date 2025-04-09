@@ -8,26 +8,21 @@ import { TabsContent } from "@/components/ui/tabs";
 import { FlexBox } from "@/components/FlexBox";
 import { ContentWrapper } from "@/components/ContentWrapper";
 import { Spinner } from "@/components/spinner";
-import { EditRolePermissionsPage, EditRoleSettingsPage } from "@/pages/roles/tabs";
-import { RoleGuardChildrenProps } from "@/guards/role/RoleExistsGuard";
+import { EditProductSettingsPage } from "@/pages/products/tabs";
+import { ProductGuardChildrenProps } from "@/guards/product/ProductExistsGuard";
 
 enum TABS {
   SETTINGS = "settings",
-  PERMISSIONS = "permissions",
 }
 
 const tabs = [
   {
     value: TABS.SETTINGS,
-    element: EditRoleSettingsPage,
-  },
-  {
-    value: TABS.PERMISSIONS,
-    element: EditRolePermissionsPage,
+    element: EditProductSettingsPage,
   },
 ];
 
-export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenProps) {
+export function DetailsProductPage({ product, checkExistLoading }: ProductGuardChildrenProps) {
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -43,9 +38,9 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
     <ContentWrapper>
       <FlexBox size="large">
         <FlexBox>
-          <Link to={"/roles"} className="flex items-center gap-2 text-sm">
+          <Link to={"/products"} className="flex items-center gap-2 text-sm">
             <ArrowLeft size={16} />
-            <span>Back to Roles</span>
+            <span>Back to Products</span>
           </Link>
           {checkExistLoading && (
             <div className="flex items-center justify-center w-full">
@@ -55,23 +50,23 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
 
           {!checkExistLoading && (
             <Heading
-              title={role?.name || "Role"}
+              title={product?.name || "Product"}
               description={
                 <div className="flex items-center gap-1">
-                  <span>Role ID</span>
-                  <Tag>{role?.id || 1}</Tag>
+                  <span>Product ID</span>
+                  <Tag>{product?.id || 1}</Tag>
                 </div>
               }
             />
           )}
         </FlexBox>
 
-        {!checkExistLoading && role && (
+        {!checkExistLoading && product && (
           <FlexBox size="large">
             <Tabs
               value={activeTab}
               onValueChange={(val) => {
-                navigate(`/roles/${role.id}/${val}`);
+                navigate(`/products/${product.id}/${val}`);
               }}
               className="flex flex-col gap-6 w-full"
             >
@@ -92,7 +87,7 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
               <div>
                 {tabs.map((item) => (
                   <TabsContent key={item.value} value={item.value} className="py-4 mt-0">
-                    {item.element({ role })}
+                    {item.element({ product })}
                   </TabsContent>
                 ))}
               </div>

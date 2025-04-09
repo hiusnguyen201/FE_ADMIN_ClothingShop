@@ -2,13 +2,14 @@ import { FormikProps } from "formik";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 export type InputFormikFieldProps<TData> = {
   name: keyof TData & string;
   label?: string;
   required?: boolean;
   placeholder?: string;
-  type: "email" | "text" | "number" | "password" | "tel" | "url";
+  type: "email" | "text" | "number" | "password" | "tel" | "url" | "textarea";
   className?: string;
   autoFocus?: boolean;
   formikProps: FormikProps<TData>;
@@ -29,6 +30,8 @@ export function InputFormikField<TData>({
   const currentValue: string = values[name] as string;
   const error: string = errors[name] as string;
 
+  const Comp = type === "textarea" ? Textarea : Input;
+
   return (
     <div className={cn("w-full", className)}>
       {label && (
@@ -37,16 +40,17 @@ export function InputFormikField<TData>({
         </Label>
       )}
 
-      <Input
+      <Comp
         id={name}
         disabled={isSubmitting}
         type={type}
         autoFocus={autoFocus}
         placeholder={placeholder}
         name={name}
+        rows={4}
         value={currentValue}
         className={cn(
-          "w-full rounded focus-visible:!outline focus-visible:!outline-1",
+          "w-full rounded focus-visible:!outline focus-visible:!outline-1 focus-visible:outline-offset-0 resize-none",
           error ? "border-red-500 focus:border-red-500" : "focus-visible:!outline-primary focus-visible:!outline-2"
         )}
         onChange={(e) => {

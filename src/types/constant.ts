@@ -9,4 +9,5 @@ export const REGEX_PATTERNS = {
   COMMA_SEPARATED_LIST: /^[a-zA-Z0-9,]+$/,
   IMAGE_URL: /\.(jpg|jpeg|png)$/i,
   OTP: /^\d{6}$/,
+  SKU: /^[A-Z0-9-]+$/,
 };

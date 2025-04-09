@@ -13,8 +13,6 @@ import { UserGuardChildrenProps } from "@/guards/user/UserExistsGuard";
 
 enum TABS {
   SETTINGS = "settings",
-  PERMISSIONS = "permissions",
-  USERS = "users",
 }
 
 const tabs = [

@@ -11,6 +11,8 @@ import { NotFoundPage } from "@/pages/errors";
 import { ListCategoryPage } from "@/pages/categories";
 import { DetailsCategoryPage } from "@/pages/categories/DetailsCategoryPage";
 import { CategoryExistsGuard } from "@/guards/category/CategoryExistsGuard";
+import { ListProductPage, DetailsProductPage } from "@/pages/products";
+import { ProductExistsGuard } from "@/guards/product/ProductExistsGuard";
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -21,6 +23,11 @@ export const privateRoutes: RouteObject[] = [
     ),
     children: [
       { path: "/", element: <DashboardPage /> },
+      { path: "/products", element: <ListProductPage /> },
+      {
+        path: "/products/:productId/settings",
+        element: <ProductExistsGuard children={DetailsProductPage} />,
+      },
       { path: "/categories", element: <ListCategoryPage /> },
       {
         path: "/categories/:categoryId/settings",

@@ -42,7 +42,7 @@ export const categoryColumns: ColumnDef<Category, any>[] = [
     cell: ({ row }) => <Badge variant="outline">Level {row.original.level}</Badge>,
   },
   {
-    id: "subcategory",
+    id: "subCategory",
     header: "Total sub-category",
     minSize: 100,
     cell: ({ row }) => row.original.children.length || 0,

@@ -1,0 +1,31 @@
+import { FlexBox } from "@/components/FlexBox";
+import { AlertBox } from "@/components/AlertBox";
+import { EditProductInfoForm } from "@/components/form/product/EditProductTabs/EditProductInfoForm";
+import { RemoveProductDialogForm } from "@/components/form/product/RemoveProductDialogForm";
+import { Button } from "@/components/ui/button";
+import { Product } from "@/types/product";
+
+export function EditProductSettingsPage({ product }: { product: Product }) {
+  return (
+    <FlexBox size="large">
+      {/* Edit Form */}
+      <EditProductInfoForm product={product} />
+
+      <FlexBox size="small">
+        <h2 className="text-lg font-medium">Danger Zone</h2>
+
+        <AlertBox
+          title="Remove Product"
+          description="Once confirmed, this operation can't be undone!"
+          rightAction={
+            <RemoveProductDialogForm product={product}>
+              <Button variant="destructive" className="capitalize rounded text-white">
+                Remove
+              </Button>
+            </RemoveProductDialogForm>
+          }
+        />
+      </FlexBox>
+    </FlexBox>
+  );
+}

@@ -15,8 +15,8 @@ export type OptionItem = {
   title: string;
 };
 
-export type SelectObjectFormikField<TData> = {
-  name: keyof TData & string;
+export type SelectObjectFormikFieldProps<TData extends Record<string, any>> = {
+  name: string;
   switchable?: boolean;
   label?: string;
   required?: boolean;
@@ -29,7 +29,7 @@ export type SelectObjectFormikField<TData> = {
   onOpenChange?: (value: boolean) => void;
 };
 
-export function SelectObjectFormikField<TData>({
+export function SelectObjectFormikField<TData extends Record<string, any>>({
   name,
   switchable = false,
   label,
@@ -41,7 +41,7 @@ export function SelectObjectFormikField<TData>({
   placeHolder,
   formikProps,
   open,
-}: SelectObjectFormikField<TData>) {
+}: SelectObjectFormikFieldProps<TData>) {
   const { errors, setFieldValue, values, validateField, isSubmitting } = formikProps;
 
   const currentValue: string = values[name] as string;
@@ -60,7 +60,7 @@ export function SelectObjectFormikField<TData>({
           <DropdownMenuTrigger
             disabled={isSubmitting}
             className={cn(
-              "text-start flex items-center justify-between w-full border py-[9px] px-4 rounded",
+              "text-start flex items-center justify-between w-full border py-[9px] px-4 rounded bg-white",
               error && "border-red-500 focus:border-red-500"
             )}
           >
@@ -70,19 +70,17 @@ export function SelectObjectFormikField<TData>({
               </span>
             ) : (
               <span className={cn("capitalize font-normal text-sm pr-1")}>
-                {currentValue
-                  ? options.find((item) => item.value === currentValue)?.title
-                  : placeHolder || `Select a ${label || name}`}
+                {options.find((item) => item.value === currentValue)?.title ??
+                  (placeHolder || `Select a ${label || name}`)}
               </span>
             )}
             <ChevronDown width={20} height={20} />
           </DropdownMenuTrigger>
           {!loading && (
-            <DropdownMenuContent
-              aria-hidden={open ? "true" : "false"}
-              align="start"
-              className="w-[var(--radix-popper-anchor-width)] select-none"
-            >
+            <DropdownMenuContent align="start" className="w-[var(--radix-popper-anchor-width)] select-none">
+              {options.length === 0 && (
+                <DropdownMenuCheckboxItem className="!cursor-default">No select options</DropdownMenuCheckboxItem>
+              )}
               {options.map((item) => (
                 <DropdownMenuCheckboxItem
                   key={item.value}
@@ -93,9 +91,6 @@ export function SelectObjectFormikField<TData>({
                     if (!switchable && currentValue === item.value) return;
                     const val = currentValue === item.value ? null : item.value;
                     setFieldValue(name, val);
-                  }}
-                  onBlur={async () => {
-                    await validateField(name);
                   }}
                 >
                   {item.title}

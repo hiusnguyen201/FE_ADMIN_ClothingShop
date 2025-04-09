@@ -13,6 +13,7 @@ type ImageFormikFieldProps<TData> = {
   maxFileSize?: number;
   formikProps: FormikProps<TData>;
   size?: number;
+  hint?: boolean;
 };
 
 export function ImageFormikField<TData>({
@@ -23,6 +24,7 @@ export function ImageFormikField<TData>({
   formikProps,
   size = 80,
   className,
+  hint = true,
 }: ImageFormikFieldProps<TData>) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -125,11 +127,13 @@ export function ImageFormikField<TData>({
           <input {...getInputProps()} />
         </div>
 
-        <ul className="ml-3 text-sm list-disc text-gray-500">
-          <li>Upload 1:1 image</li>
-          <li>Size: Max {maxFileSize / (1024 * 1024)}MB</li>
-          <li>Format: JPG, JPNG, PNG</li>
-        </ul>
+        {hint && (
+          <ul className="ml-3 text-sm list-disc text-gray-500">
+            <li>Upload 1:1 image</li>
+            <li>Size: Max {maxFileSize / (1024 * 1024)}MB</li>
+            <li>Format: JPG, JPNG, PNG</li>
+          </ul>
+        )}
       </div>
 
       {error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
