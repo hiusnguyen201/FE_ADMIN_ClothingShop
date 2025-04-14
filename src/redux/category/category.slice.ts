@@ -133,7 +133,6 @@ const roleSlice = createSlice({
       .addCase(editCategoryInfo.rejected, (state: Draft<CategoryState>, action: PayloadAction<any>) => {
         state.loading.editCategory = false;
         state.error = action.payload as string;
-        state.item = null;
       });
 
     builder

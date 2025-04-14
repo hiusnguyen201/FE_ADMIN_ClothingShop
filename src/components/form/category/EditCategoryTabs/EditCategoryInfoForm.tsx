@@ -1,11 +1,6 @@
 import * as Yup from "yup";
 import { Category } from "@/types/category";
-import {
-  EditCategoryInfoPayload,
-  EditCategoryInfoResponse,
-  CategoryState,
-  CheckCategoryNameExistResponse,
-} from "@/redux/category/category.type";
+import { EditCategoryInfoPayload, CategoryState, CheckCategoryNameExistResponse } from "@/redux/category/category.type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { checkCategoryNameExist, editCategoryInfo } from "@/redux/category/category.thunk";
 import { FormikHelpers, FormikProps, useFormik } from "formik";
@@ -37,10 +32,8 @@ export function EditCategoryInfoForm({ category }: { category: Category }) {
     { resetForm }: FormikHelpers<EditCategoryInfoPayload>
   ) => {
     try {
-      const response: EditCategoryInfoResponse = await dispatch(editCategoryInfo(values)).unwrap();
-      resetForm({
-        values: { ...values, image: response.data.image, name: response.data.name, parentId: response.data.parent },
-      });
+      await dispatch(editCategoryInfo(values)).unwrap();
+      resetForm();
       toast({ title: "Edit category successful" });
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
@@ -68,6 +61,7 @@ export function EditCategoryInfoForm({ category }: { category: Category }) {
     validateOnBlur: false,
     validate: checkUniqueCategoryName,
     onSubmit: handleSubmit,
+    enableReinitialize: true,
   });
 
   return (

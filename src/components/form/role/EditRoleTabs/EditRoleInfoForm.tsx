@@ -42,7 +42,7 @@ export function EditRoleInfoForm({ role }: { role: Role }) {
   const handleSubmit = async (values: EditRoleInfoPayload, { resetForm }: FormikHelpers<EditRoleInfoPayload>) => {
     try {
       const response: EditRoleInfoResponse = await dispatch(editRoleInfo(values)).unwrap();
-      resetForm({ values: { ...values, ...response.data } });
+      resetForm();
       toast({ title: response.message });
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
@@ -55,6 +55,7 @@ export function EditRoleInfoForm({ role }: { role: Role }) {
     validateOnChange: false,
     validateOnBlur: false,
     onSubmit: handleSubmit,
+    enableReinitialize: true,
   });
 
   return (

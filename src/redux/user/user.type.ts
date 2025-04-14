@@ -58,11 +58,11 @@ export interface GetUserResponse extends BaseResponse<User> {}
  */
 export type EditUserInfoPayload = {
   id: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  gender?: GENDER;
-  roleId?: Nullable<string>;
+  name: string;
+  email: string;
+  phone: string;
+  gender: GENDER;
+  roleId: Nullable<string>;
 };
 export interface EditUserInfoResponse extends BaseResponse<User> {}
 

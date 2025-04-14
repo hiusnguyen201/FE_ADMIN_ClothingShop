@@ -6,7 +6,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { InputFormikField } from "@/components/formik-fields";
 import { toast } from "@/hooks/use-toast";
 import { checkProductNameExist, createProduct } from "@/redux/product/product.thunk";
-import { CheckProductNameExistResponse, CreateProductPayload, ProductState } from "@/redux/product/product.type";
+import { CheckProductNameExistResponse, CreateProductPayload } from "@/redux/product/product.type";
 import { ImageFormikField } from "@/components/formik-fields/ImageFormikField";
 import { OptionState } from "@/redux/option/option.type";
 import { getListOption } from "@/redux/option/option.thunk";
@@ -66,7 +66,6 @@ type CreateProductFormProps = {
 export function CreateProductForm({ children }: CreateProductFormProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading: loadingProduct } = useAppSelector<ProductState>((selector) => selector.product);
   const { loading: loadingOption, list: options } = useAppSelector<OptionState>((selector) => selector.option);
 
   const handleSubmit = async (values: CreateProductPayload, { resetForm }: FormikHelpers<CreateProductPayload>) => {

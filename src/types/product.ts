@@ -1,15 +1,19 @@
 import { Option, OptionValue } from "@/types/option";
 
+export enum PRODUCT_STATUS {
+  INACTIVE = "inactive",
+  ACTIVE = "active",
+}
+
 export type VariantValue = {
   id: string;
   option: Option;
   value: OptionValue;
 };
 
-type SelectedOption = {
-  id: string;
-  name: string;
-  selectedValues: OptionValue[];
+type ProductOption = {
+  option: Option;
+  optionValues: OptionValue[];
 };
 
 type ProductVariant = {
@@ -20,11 +24,6 @@ type ProductVariant = {
   variantValues: VariantValue[];
 };
 
-export enum PRODUCT_STATUS {
-  INACTIVE = "inactive",
-  ACTIVE = "active",
-}
-
 export type Product = {
   id: string;
   thumbnail: string;
@@ -33,6 +32,6 @@ export type Product = {
   status: PRODUCT_STATUS;
   category: string;
   subCategory?: string;
-  options: SelectedOption[];
+  productOptions: ProductOption[];
   productVariants: ProductVariant[];
 };

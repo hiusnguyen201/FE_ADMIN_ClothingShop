@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import { GENDER, User } from "@/types/user";
-import { CheckEmailExistResponse, EditUserInfoPayload, EditUserInfoResponse, UserState } from "@/redux/user/user.type";
+import { CheckEmailExistResponse, EditUserInfoPayload, UserState } from "@/redux/user/user.type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { checkEmailExist, editUserInfo } from "@/redux/user/user.thunk";
 import { FormikHelpers, FormikProps, useFormik } from "formik";
@@ -36,13 +36,13 @@ export function EditUserInfoForm({ user }: { user: User }) {
     email: user.email,
     phone: user.phone,
     gender: user.gender,
-    roleId: user.role,
+    roleId: user.role?.id || null,
   };
 
   const handleSubmit = async (values: EditUserInfoPayload, { resetForm }: FormikHelpers<EditUserInfoPayload>) => {
     try {
-      const response: EditUserInfoResponse = await dispatch(editUserInfo(values)).unwrap();
-      resetForm({ values: { ...values, ...response.data } });
+      await dispatch(editUserInfo(values)).unwrap();
+      resetForm();
       toast({ title: "Edit user successful" });
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
@@ -68,6 +68,7 @@ export function EditUserInfoForm({ user }: { user: User }) {
     validateOnBlur: false,
     validate: checkUniqueEmail,
     onSubmit: handleSubmit,
+    enableReinitialize: true,
   });
 
   useEffect(() => {

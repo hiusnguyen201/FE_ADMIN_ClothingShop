@@ -137,7 +137,6 @@ const roleSlice = createSlice({
       .addCase(editRoleInfo.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
         state.loading.editRole = false;
         state.error = action.payload as string;
-        state.item = null;
       });
 
     builder

@@ -1,11 +1,6 @@
 import * as Yup from "yup";
 import { Product, PRODUCT_STATUS } from "@/types/product";
-import {
-  CheckProductNameExistResponse,
-  EditProductInfoPayload,
-  EditProductInfoResponse,
-  ProductState,
-} from "@/redux/product/product.type";
+import { CheckProductNameExistResponse, EditProductInfoPayload, ProductState } from "@/redux/product/product.type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { checkProductNameExist, editProductInfo } from "@/redux/product/product.thunk";
 import { FormikHelpers, FormikProps, useFormik } from "formik";
@@ -44,8 +39,8 @@ export function EditProductInfoForm({ product }: { product: Product }) {
 
   const handleSubmit = async (values: EditProductInfoPayload, { resetForm }: FormikHelpers<EditProductInfoPayload>) => {
     try {
-      const response: EditProductInfoResponse = await dispatch(editProductInfo(values)).unwrap();
-      resetForm({ values: { ...values, ...response.data } });
+      await dispatch(editProductInfo(values)).unwrap();
+      resetForm();
       toast({ title: "Edit product successful" });
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
@@ -73,6 +68,7 @@ export function EditProductInfoForm({ product }: { product: Product }) {
     validateOnBlur: false,
     validate: checkUniqueName,
     onSubmit: handleSubmit,
+    enableReinitialize: true,
   });
 
   useEffect(() => {
@@ -114,15 +110,15 @@ export function EditProductInfoForm({ product }: { product: Product }) {
       <FlexBox direction="row">
         <LoadingButton
           onClick={() => formik.setFieldValue("status", PRODUCT_STATUS.INACTIVE)}
-          loading={loading.editProduct}
-          disabled={loading.editProduct}
+          loading={loading.editProductInfo}
+          disabled={loading.editProductInfo}
         >
           Save & Inactive
         </LoadingButton>
         <LoadingButton
           onClick={() => formik.setFieldValue("status", PRODUCT_STATUS.ACTIVE)}
-          loading={loading.editProduct}
-          disabled={loading.editProduct || product.productVariants.length === 0}
+          loading={loading.editProductInfo}
+          disabled={loading.editProductInfo || product.productVariants.length === 0}
         >
           Save & Active
         </LoadingButton>

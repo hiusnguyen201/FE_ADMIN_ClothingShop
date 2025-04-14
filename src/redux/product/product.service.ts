@@ -13,6 +13,8 @@ import {
   RemoveProductResponse,
   CheckProductNameExistPayload,
   CheckProductNameExistResponse,
+  EditProductVariantsPayload,
+  EditProductVariantsResponse,
 } from "@/redux/product/product.type";
 
 export const checkProductNameExistService = async (
@@ -39,6 +41,12 @@ export const editProductInfoService = async (payload: EditProductInfoPayload): P
   return await apiInstance.put(`/products/update-product-info/${payload.id}`, payload, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+};
+
+export const editProductVariantsService = async (
+  payload: EditProductVariantsPayload
+): Promise<EditProductVariantsResponse> => {
+  return await apiInstance.put(`/products/update-product-variants/${payload.id}`, payload);
 };
 
 export const removeProductService = async (payload: RemoveProductPayload): Promise<RemoveProductResponse> => {

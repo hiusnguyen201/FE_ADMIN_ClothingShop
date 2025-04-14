@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-import { useFormik, FormikProps } from "formik";
+import { useFormik, FormikProps, FormikHelpers } from "formik";
 import { cn } from "@/lib/utils";
 import { LoadingButton } from "@/components/LoadingButton";
 import { InputFormikField } from "@/components/formik-fields";
@@ -28,10 +28,10 @@ export function LoginForm({ className }: { className?: string }) {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector<AuthState>((selector) => selector.auth);
 
-  const handleSubmit = async (values: LoginPayload) => {
+  const handleSubmit = async (values: LoginPayload, { resetForm }: FormikHelpers<LoginPayload>) => {
     try {
       await login?.(values);
-      formik.resetForm();
+      resetForm();
 
       if (!getRemainingSeconds()) {
         dispatch(sendOtpViaEmail({ email: values.email }));

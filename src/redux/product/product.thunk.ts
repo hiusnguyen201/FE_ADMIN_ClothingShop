@@ -3,6 +3,7 @@ import {
   checkProductNameExistService,
   createProductService,
   editProductInfoService,
+  editProductVariantsService,
   getListProductService,
   getProductService,
   removeProductService,
@@ -14,6 +15,8 @@ import {
   CreateProductResponse,
   EditProductInfoPayload,
   EditProductInfoResponse,
+  EditProductVariantsPayload,
+  EditProductVariantsResponse,
   GetListProductPayload,
   GetListProductResponse,
   GetProductPayload,
@@ -80,7 +83,7 @@ export const editProductInfo = createAsyncThunk<EditProductInfoResponse, EditPro
   "product/edit-product-info",
   async (payload, { rejectWithValue }) => {
     try {
-      const response: GetProductResponse = await editProductInfoService(payload);
+      const response: EditProductInfoResponse = await editProductInfoService(payload);
       return response;
     } catch (e: any) {
       const message: string = e?.response?.data?.message || e.message || e.toString();
@@ -88,6 +91,20 @@ export const editProductInfo = createAsyncThunk<EditProductInfoResponse, EditPro
     }
   }
 );
+
+export const editProductVariants = createAsyncThunk<
+  EditProductVariantsResponse,
+  EditProductVariantsPayload,
+  ThunkApiConfig
+>("product/edit-product-variants", async (payload, { rejectWithValue }) => {
+  try {
+    const response: EditProductVariantsResponse = await editProductVariantsService(payload);
+    return response;
+  } catch (e: any) {
+    const message: string = e?.response?.data?.message || e.message || e.toString();
+    return rejectWithValue(message);
+  }
+});
 
 export const removeProduct = createAsyncThunk<RemoveProductResponse, RemoveProductPayload, ThunkApiConfig>(
   "product/remove-product",

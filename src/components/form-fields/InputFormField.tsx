@@ -4,8 +4,8 @@ import { cn } from "@/lib/utils";
 
 type InputFormFieldProps = {
   name: string;
-  label: string;
-  value: string;
+  label?: string;
+  value: any;
   disabled?: boolean;
   placeholder?: string;
   autoFocus?: boolean;
@@ -14,6 +14,8 @@ type InputFormFieldProps = {
   className?: string;
   error?: string;
   required?: boolean;
+  onBlur?: React.FocusEventHandler<HTMLInputElement> | undefined;
+  min?: number;
 };
 
 export function InputFormField({
@@ -28,6 +30,8 @@ export function InputFormField({
   type,
   className,
   error,
+  onBlur,
+  min,
 }: InputFormFieldProps) {
   return (
     <div className={cn("w-full", className)}>
@@ -44,7 +48,9 @@ export function InputFormField({
         autoFocus={autoFocus}
         placeholder={placeholder}
         name={name}
+        onBlur={onBlur}
         value={value}
+        min={min}
         className={cn(
           "w-full rounded focus-visible:!outline focus-visible:!outline-1",
           error ? "border-red-500 focus:border-red-500" : "focus-visible:!outline-primary focus-visible:!outline-2"

@@ -1,6 +1,6 @@
 import { Nullable, Optional } from "@/types/common";
 import { BaseResponse, GetListParams, GetListResponseData } from "@/types/response";
-import { Product, PRODUCT_STATUS, ProductVariant } from "@/types/product";
+import { Product, PRODUCT_STATUS } from "@/types/product";
 
 /**
  * State
@@ -11,7 +11,8 @@ export interface ProductState {
     createProduct: boolean;
     getListProduct: boolean;
     getProduct: boolean;
-    editProduct: boolean;
+    editProductInfo: boolean;
+    editProductVariants: boolean;
     removeProduct: boolean;
   };
   item: Nullable<Product>;
@@ -76,25 +77,28 @@ export interface EditProductInfoResponse extends BaseResponse<Product> {}
 /**
  * Edit Product Variants
  */
-export type SelectedOption = {
-  option: string;
-  selectedValues: string[];
-};
-export type EditProductVariantsPayload = {
-  options: SelectedOption[];
-};
-export interface EditProductVariantsResponse extends BaseResponse<Product> {}
 
 export type CreateProductVariantValue = {
   option: string;
   optionValue: string;
 };
 export type CreateProductVariant = {
+  key: string;
   quantity: number;
   price: number;
   sku: string;
   variantValues: CreateProductVariantValue[];
 };
+export type SelectedOption = {
+  option: string;
+  selectedValues: string[];
+};
+export type EditProductVariantsPayload = {
+  id: string;
+  options: SelectedOption[];
+  productVariants: CreateProductVariant[];
+};
+export interface EditProductVariantsResponse extends BaseResponse<Product> {}
 
 /**
  * Remove Product

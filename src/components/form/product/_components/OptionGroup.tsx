@@ -15,9 +15,10 @@ interface OptionGroupProps {
   selectedValues: string[];
   onSelectionChange: (selectedValues: string[]) => void;
   className?: string;
+  error?: string;
 }
 
-export function OptionGroup({ option, selectedValues, onSelectionChange, className }: OptionGroupProps) {
+export function OptionGroup({ option, selectedValues, onSelectionChange, className, error }: OptionGroupProps) {
   const [open, setOpen] = useState(false);
 
   const handleToggleValue = (value: string) => {
@@ -65,6 +66,8 @@ export function OptionGroup({ option, selectedValues, onSelectionChange, classNa
             </Command>
           </PopoverContent>
         </Popover>
+
+        {error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
       </div>
 
       <div className="flex flex-wrap gap-2 mt-2">

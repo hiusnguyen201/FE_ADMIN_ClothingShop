@@ -129,7 +129,6 @@ const userSlice = createSlice({
       .addCase(editUserInfo.rejected, (state: Draft<UserState>, action: PayloadAction<any>) => {
         state.loading.editUser = false;
         state.error = action.payload as string;
-        state.item = null;
       });
 
     builder

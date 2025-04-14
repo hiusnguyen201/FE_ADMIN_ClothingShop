@@ -93,7 +93,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, cla
           {data.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <Fragment key={row.id}>
-                <TableRow className={cn("flex w-full items-center", heightPerRow ? `h-[${heightPerRow}px]` : "")}>
+                <TableRow className={cn("flex w-full items-start", heightPerRow ? `h-[${heightPerRow}px]` : "")}>
                   {/* {row.subRows.length > 0 && row.getCanExpand() && (
                     <TableCell className="flex items-center">
                       <Button
@@ -115,7 +115,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, cla
                     return (
                       <TableCell
                         key={cell.id}
-                        className="flex-1 truncate flex items-center gap-2"
+                        className="flex-1 flex items-center gap-2"
                         style={{
                           maxWidth: cell.column.columnDef.maxSize,
                           minWidth: cell.column.columnDef.minSize,
@@ -127,7 +127,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, cla
                   })}
                 </TableRow>
 
-                {row.getIsExpanded() &&
+                {/* {row.getIsExpanded() &&
                   row.subRows.map((subRow) => (
                     <TableRow
                       key={subRow.id}
@@ -141,7 +141,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, cla
                         return (
                           <TableCell
                             key={cell.id}
-                            className="flex-1 truncate flex items-center"
+                            className="flex-1 flex items-center"
                             style={{
                               maxWidth: cell.column.columnDef.maxSize,
                               minWidth: cell.column.columnDef.minSize,
@@ -153,7 +153,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, cla
                         );
                       })}
                     </TableRow>
-                  ))}
+                  ))} */}
               </Fragment>
             ))
           ) : (

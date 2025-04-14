@@ -6,6 +6,7 @@ import {
   GetProductResponse,
   RemoveProductResponse,
   ProductState,
+  EditProductVariantsResponse,
 } from "@/redux/product/product.type";
 import {
   getListProduct,
@@ -14,6 +15,7 @@ import {
   editProductInfo,
   removeProduct,
   checkProductNameExist,
+  editProductVariants,
 } from "@/redux/product/product.thunk";
 
 const initialState: ProductState = {
@@ -22,7 +24,8 @@ const initialState: ProductState = {
     createProduct: false,
     getListProduct: false,
     getProduct: false,
-    editProduct: false,
+    editProductInfo: false,
+    editProductVariants: false,
     removeProduct: false,
   },
   item: null,
@@ -113,23 +116,42 @@ const productSlice = createSlice({
     builder
       // Edit Product Info
       .addCase(editProductInfo.pending, (state: Draft<ProductState>) => {
-        state.loading.editProduct = true;
+        state.loading.editProductInfo = true;
         state.error = null;
       })
       .addCase(
         editProductInfo.fulfilled,
         (state: Draft<ProductState>, action: PayloadAction<EditProductInfoResponse>) => {
           const { data } = action.payload;
-          state.loading.editProduct = false;
+          state.loading.editProductInfo = false;
           state.error = null;
           state.item = data;
           state.list = state.list.map((item) => (item.id === data.id ? data : item));
         }
       )
       .addCase(editProductInfo.rejected, (state: Draft<ProductState>, action: PayloadAction<any>) => {
-        state.loading.editProduct = false;
+        state.loading.editProductInfo = false;
         state.error = action.payload as string;
-        state.item = null;
+      });
+
+    builder
+      // Edit Product Variants
+      .addCase(editProductVariants.pending, (state: Draft<ProductState>) => {
+        state.loading.editProductVariants = true;
+        state.error = null;
+      })
+      .addCase(
+        editProductVariants.fulfilled,
+        (state: Draft<ProductState>, action: PayloadAction<EditProductVariantsResponse>) => {
+          const { data } = action.payload;
+          state.loading.editProductVariants = false;
+          state.error = null;
+          state.item = data;
+        }
+      )
+      .addCase(editProductVariants.rejected, (state: Draft<ProductState>, action: PayloadAction<any>) => {
+        state.loading.editProductVariants = false;
+        state.error = action.payload as string;
       });
 
     builder
