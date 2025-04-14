@@ -8,17 +8,22 @@ import { TabsContent } from "@/components/ui/tabs";
 import { FlexBox } from "@/components/FlexBox";
 import { ContentWrapper } from "@/components/ContentWrapper";
 import { Spinner } from "@/components/spinner";
-import { EditProductSettingsPage } from "@/pages/products/tabs";
+import { EditProductSettingsPage, EditProductVariantsPage } from "@/pages/products/tabs";
 import { ProductGuardChildrenProps } from "@/guards/product/ProductExistsGuard";
 
 enum TABS {
   SETTINGS = "settings",
+  VARIANTS = "variants",
 }
 
 const tabs = [
   {
     value: TABS.SETTINGS,
     element: EditProductSettingsPage,
+  },
+  {
+    value: TABS.VARIANTS,
+    element: EditProductVariantsPage,
   },
 ];
 

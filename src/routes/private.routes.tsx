@@ -28,6 +28,10 @@ export const privateRoutes: RouteObject[] = [
         path: "/products/:productId/settings",
         element: <ProductExistsGuard children={DetailsProductPage} />,
       },
+      {
+        path: "/products/:productId/variants",
+        element: <ProductExistsGuard children={DetailsProductPage} />,
+      },
       { path: "/categories", element: <ListCategoryPage /> },
       {
         path: "/categories/:categoryId/settings",

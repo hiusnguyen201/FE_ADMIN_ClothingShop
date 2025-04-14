@@ -1,6 +1,6 @@
 import { Nullable, Optional } from "@/types/common";
 import { BaseResponse, GetListParams, GetListResponseData } from "@/types/response";
-import { Product, PRODUCT_STATUS } from "@/types/product";
+import { Product, PRODUCT_STATUS, ProductVariant } from "@/types/product";
 
 /**
  * State
@@ -60,7 +60,7 @@ export interface GetProductPayload {
 export interface GetProductResponse extends BaseResponse<Product> {}
 
 /**
- * Edit Product
+ * Edit Product Info
  */
 export type EditProductInfoPayload = {
   id: string;
@@ -72,6 +72,18 @@ export type EditProductInfoPayload = {
   status: PRODUCT_STATUS;
 };
 export interface EditProductInfoResponse extends BaseResponse<Product> {}
+
+/**
+ * Edit Product Variants
+ */
+export interface SelectedOptions {
+  option: string;
+  selectedValues: string[];
+}
+export type EditProductVariantsPayload = {
+  options: SelectedOptions[];
+};
+export interface EditProductVariantsResponse extends BaseResponse<Product> {}
 
 /**
  * Remove Product

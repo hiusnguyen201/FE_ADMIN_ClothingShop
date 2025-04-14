@@ -1,12 +1,18 @@
 import { Option, OptionValue } from "@/types/option";
 
-type VariantValue = {
+export type VariantValue = {
   id: string;
   option: Option;
   value: OptionValue;
 };
 
-type ProductVariant = {
+export type SelectedOption = {
+  id: string;
+  name: string;
+  selectedValues: OptionValue[];
+};
+
+export type ProductVariant = {
   id: string;
   quantity: number;
   price: number;
@@ -27,5 +33,6 @@ export type Product = {
   status: PRODUCT_STATUS;
   category: string;
   subCategory?: string;
-  productVariants: string[];
+  options: SelectedOption[];
+  productVariants: ProductVariant[];
 };
