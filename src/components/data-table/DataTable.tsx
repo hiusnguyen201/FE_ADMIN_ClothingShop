@@ -2,8 +2,6 @@ import { ColumnDef, flexRender, getCoreRowModel, Table, useReactTable } from "@t
 import { Table as TableContainer, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Fragment } from "react/jsx-runtime";
-import { ChevronDown, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useSidebar } from "@/components/ui/sidebar";
 import { useEffect, useState } from "react";
 
@@ -12,6 +10,7 @@ export type DataTableProps<TData> = {
   columns: ColumnDef<TData, any>[];
   placeholder: string;
   heightPerRow?: number;
+  className?: string;
   // getSubRows?: (originalRow: TData, index: number) => undefined | TData[];
 };
 
@@ -19,7 +18,7 @@ export type DataTableProps<TData> = {
  * Manual resize
  * @import {https://github.com/TanStack/table/discussions/3192}
  */
-export function DataTable<TData>({ data, columns, placeholder, heightPerRow }: DataTableProps<TData>) {
+export function DataTable<TData>({ data, columns, placeholder, heightPerRow, className }: DataTableProps<TData>) {
   const { isMobile, open } = useSidebar();
   const table: Table<TData> = useReactTable({
     data,
@@ -49,12 +48,12 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow }: D
 
   return (
     <div
-      className="flex flex-col"
+      className="flex flex-col w-full"
       style={{
         maxWidth: isMobile ? `calc(100vw - 48px - 15px)` : `calc(100vw - 80px - ${sidebarWidth}px - 15px)`,
       }}
     >
-      <TableContainer>
+      <TableContainer className={className}>
         <TableHeader className="sticky top-0 bg-white border-b">
           {table.getHeaderGroups().map((headerGroup, index) => (
             <TableRow key={headerGroup.id} className="flex w-full">

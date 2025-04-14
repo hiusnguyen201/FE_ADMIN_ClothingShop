@@ -30,7 +30,7 @@ export function OptionGroup({ option, selectedValues, onSelectionChange, classNa
 
   return (
     <div className={cn("space-y-2 w-full", className)}>
-      <Label className="text-base font-medium capitalize">{option.name}</Label>
+      <Label className="font-medium capitalize">{option.name}</Label>
 
       <div className="w-full relative">
         <Popover open={open} onOpenChange={setOpen}>

@@ -76,14 +76,25 @@ export interface EditProductInfoResponse extends BaseResponse<Product> {}
 /**
  * Edit Product Variants
  */
-export interface SelectedOptions {
+export type SelectedOption = {
   option: string;
   selectedValues: string[];
-}
+};
 export type EditProductVariantsPayload = {
-  options: SelectedOptions[];
+  options: SelectedOption[];
 };
 export interface EditProductVariantsResponse extends BaseResponse<Product> {}
+
+export type CreateProductVariantValue = {
+  option: string;
+  optionValue: string;
+};
+export type CreateProductVariant = {
+  quantity: number;
+  price: number;
+  sku: string;
+  variantValues: CreateProductVariantValue[];
+};
 
 /**
  * Remove Product

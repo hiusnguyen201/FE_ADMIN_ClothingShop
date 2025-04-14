@@ -6,13 +6,13 @@ export type VariantValue = {
   value: OptionValue;
 };
 
-export type SelectedOption = {
+type SelectedOption = {
   id: string;
   name: string;
   selectedValues: OptionValue[];
 };
 
-export type ProductVariant = {
+type ProductVariant = {
   id: string;
   quantity: number;
   price: number;
