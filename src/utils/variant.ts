@@ -1,13 +1,12 @@
 import { CreateProductVariant, CreateProductVariantValue, SelectedOption } from "@/redux/product/product.type";
 
 export function generateVariantsFromSelectedOptions(selectedOptions: SelectedOption[]): CreateProductVariant[] {
-  const variants: CreateProductVariant[] = [];
-  if (selectedOptions.length === 0) return variants;
+  const newVariants: CreateProductVariant[] = [];
+  if (selectedOptions.length === 0) return newVariants;
 
   const backtrack = (depth = 0, current: CreateProductVariantValue[] = []) => {
     if (depth === selectedOptions.length) {
-      variants.push({
-        key: JSON.stringify([...current]),
+      newVariants.push({
         quantity: 0,
         price: 0,
         sku: "",
@@ -31,5 +30,5 @@ export function generateVariantsFromSelectedOptions(selectedOptions: SelectedOpt
 
   backtrack();
 
-  return variants;
+  return newVariants;
 }

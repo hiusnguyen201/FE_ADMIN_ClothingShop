@@ -95,7 +95,7 @@ export function getProductVariantsColumns({
             value={row.original.sku}
             onValueChange={(value) => {
               setError("");
-              onProductVariantsChange(row.index, "sku", value);
+              onProductVariantsChange(row.index, "sku", !value ? null : value);
             }}
             error={error}
             onBlur={(e) => {

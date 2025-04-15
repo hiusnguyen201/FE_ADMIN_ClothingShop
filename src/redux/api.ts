@@ -41,6 +41,7 @@ apiInstance.interceptors.response.use(
         }
       } catch (e: any) {
         retry = false;
+        window.location.href = "/login";
         return Promise.reject(e);
       }
     }

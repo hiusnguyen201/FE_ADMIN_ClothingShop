@@ -30,10 +30,9 @@ const editProductVariantsSchema = Yup.object({
   productVariants: Yup.array()
     .of(
       Yup.object({
-        key: Yup.string().required(),
         quantity: Yup.number().required().min(0).max(10000000),
         price: Yup.number().required().min(1000).max(100000000),
-        sku: Yup.string().min(8).max(16).optional(),
+        sku: Yup.string().min(8).max(16).nullable(),
         variantValues: Yup.array()
           .of(
             Yup.object({
@@ -54,23 +53,25 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
   const { loading: loadingOption, list: options } = useAppSelector<OptionState>((selector) => selector.option);
   const { loading: loadingProduct } = useAppSelector<ProductState>((selector) => selector.product);
 
-  const initialValues: EditProductVariantsPayload = {
-    id: product.id,
-    options: product.productOptions.map((opt) => ({
-      option: opt.option.name,
-      selectedValues: opt.optionValues.map((item) => item.valueName),
-    })),
-    productVariants: product.productVariants.map((variant) => ({
-      key: JSON.stringify(variant.variantValues),
-      price: variant.price,
-      quantity: variant.quantity,
-      sku: variant.sku,
-      variantValues: variant.variantValues.map((val) => ({
-        option: val.option.name,
-        optionValue: val.value.valueName,
+  const initialValues = useMemo(
+    () => ({
+      id: product.id,
+      options: product.productOptions.map((opt) => ({
+        option: opt.option.name,
+        selectedValues: opt.optionValues.map((item) => item.valueName),
       })),
-    })),
-  };
+      productVariants: product.productVariants.map((variant) => ({
+        price: variant.price,
+        quantity: variant.quantity,
+        sku: variant?.sku || "",
+        variantValues: variant.variantValues.map((val) => ({
+          option: val.option.name,
+          optionValue: val.optionValue.valueName,
+        })),
+      })),
+    }),
+    [product]
+  );
 
   useEffect(() => {
     (async () => {
@@ -84,10 +85,9 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
     validateOnChange: false,
     validateOnBlur: false,
     enableReinitialize: true,
-    onSubmit: async (values: EditProductVariantsPayload, { resetForm }: FormikHelpers<EditProductVariantsPayload>) => {
+    onSubmit: async (values: EditProductVariantsPayload) => {
       try {
         await dispatch(editProductVariants(values)).unwrap();
-        resetForm();
         toast({ title: "Edit product successful" });
       } catch (error: any) {
         toast({ variant: "destructive", title: error });
@@ -102,14 +102,29 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
       getProductVariantsColumns({
         selectedOption: values.options,
         onProductVariantsChange: (index, key, value) => {
-          setFieldValue(`productVariants[${index}][${key}]`, value, true);
+          setFieldValue(`productVariants[${index}][${key}]`, value);
         },
       }),
     [values.options]
   );
 
   useEffect(() => {
-    setFieldValue("productVariants", generateVariantsFromSelectedOptions(values.options));
+    const generated = generateVariantsFromSelectedOptions(values.options);
+
+    const merged = generated.map((variant) => {
+      const existing = values.productVariants.find(
+        (v) => JSON.stringify(v.variantValues) === JSON.stringify(variant.variantValues)
+      );
+
+      return {
+        ...variant,
+        price: existing?.price ?? variant.price,
+        quantity: existing?.quantity ?? variant.quantity,
+        sku: existing?.sku ?? "",
+      };
+    });
+
+    setFieldValue("productVariants", merged);
   }, [values.options]);
 
   return (

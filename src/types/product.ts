@@ -8,7 +8,7 @@ export enum PRODUCT_STATUS {
 export type VariantValue = {
   id: string;
   option: Option;
-  value: OptionValue;
+  optionValue: OptionValue;
 };
 
 type ProductOption = {

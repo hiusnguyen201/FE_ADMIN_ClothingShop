@@ -83,10 +83,9 @@ export type CreateProductVariantValue = {
   optionValue: string;
 };
 export type CreateProductVariant = {
-  key: string;
   quantity: number;
   price: number;
-  sku: string;
+  sku: Nullable<string>;
   variantValues: CreateProductVariantValue[];
 };
 export type SelectedOption = {

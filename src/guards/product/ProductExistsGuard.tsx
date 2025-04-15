@@ -30,7 +30,7 @@ export function ProductExistsGuard({ children }: ProductExistsGuardProps) {
 
   useEffect(() => {
     initialize();
-  }, [productId]);
+  }, [productId, dispatch]);
 
   return children({ product: item, checkExistLoading: loading.getProduct });
 }
