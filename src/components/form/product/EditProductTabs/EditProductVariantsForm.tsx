@@ -1,11 +1,11 @@
 import * as Yup from "yup";
-import { Fragment, useEffect, useMemo } from "react";
+import { Fragment, useEffect, useMemo, useRef } from "react";
 import { getListOption } from "@/redux/option/option.thunk";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { Product } from "@/types/product";
 import { OptionState } from "@/redux/option/option.type";
 import { OptionGroup } from "@/components/form/product/_components/OptionGroup";
-import { FormikHelpers, useFormik } from "formik";
+import { useFormik } from "formik";
 import { CreateProductVariant, EditProductVariantsPayload, ProductState } from "@/redux/product/product.type";
 import { FlexBox } from "@/components/FlexBox";
 import { DataTable } from "@/components/data-table";
@@ -16,6 +16,10 @@ import { ColumnDef } from "@tanstack/react-table";
 import { LoadingButton } from "@/components/LoadingButton";
 import { toast } from "@/hooks/use-toast";
 import { editProductVariants } from "@/redux/product/product.thunk";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { InputFormField } from "@/components/form-fields/InputFormField";
+import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const editProductVariantsSchema = Yup.object({
   options: Yup.array()
@@ -49,29 +53,30 @@ const editProductVariantsSchema = Yup.object({
 });
 
 export function EditProductVariantsForm({ product }: { product: Product }) {
+  const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
+  const priceRef = useRef<HTMLInputElement>(null);
+  const quantityRef = useRef<HTMLInputElement>(null);
+  const skuRef = useRef<HTMLInputElement>(null);
   const { loading: loadingOption, list: options } = useAppSelector<OptionState>((selector) => selector.option);
   const { loading: loadingProduct } = useAppSelector<ProductState>((selector) => selector.product);
 
-  const initialValues = useMemo(
-    () => ({
-      id: product.id,
-      options: product.productOptions.map((opt) => ({
-        option: opt.option.name,
-        selectedValues: opt.optionValues.map((item) => item.valueName),
+  const initialValues = {
+    id: product.id,
+    options: product.productOptions.map((opt) => ({
+      option: opt.option.name,
+      selectedValues: opt.optionValues.map((item) => item.valueName),
+    })),
+    productVariants: product.productVariants.map((variant) => ({
+      price: variant.price,
+      quantity: variant.quantity,
+      sku: variant?.sku || "",
+      variantValues: variant.variantValues.map((val) => ({
+        option: val.option.name,
+        optionValue: val.optionValue.valueName,
       })),
-      productVariants: product.productVariants.map((variant) => ({
-        price: variant.price,
-        quantity: variant.quantity,
-        sku: variant?.sku || "",
-        variantValues: variant.variantValues.map((val) => ({
-          option: val.option.name,
-          optionValue: val.optionValue.valueName,
-        })),
-      })),
-    }),
-    [product]
-  );
+    })),
+  };
 
   useEffect(() => {
     (async () => {
@@ -127,6 +132,19 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
     setFieldValue("productVariants", merged);
   }, [values.options]);
 
+  const handleApplyToAll = () => {
+    if (!priceRef.current || !quantityRef.current || !skuRef.current) return;
+
+    const price = +priceRef.current.value;
+    const quantity = +quantityRef.current.value;
+    const sku = skuRef.current.value;
+
+    setFieldValue(
+      `productVariants`,
+      values.productVariants.map((v) => ({ ...v, price, quantity, sku }))
+    );
+  };
+
   return (
     <FlexBox size="large" onSubmit={handleSubmit} component="form">
       <FlexBox>
@@ -178,13 +196,22 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
         )}
       </FlexBox>
 
+      <Separator />
+
       {values.options.length > 0 && (
         <FlexBox size="small">
           <Label>Variation List</Label>
+          <FlexBox direction={isMobile ? "column" : "row"} size="small">
+            <InputFormField ref={priceRef} name="price" type="number" min={0} placeholder="Price" />
+            <InputFormField ref={quantityRef} name="quantity" type="number" min={0} placeholder="Quantity" />
+            <InputFormField ref={skuRef} name="sku" type="text" placeholder="SKU" />
+            <Button type="button" className={isMobile ? "w-full" : ""} onClick={handleApplyToAll}>
+              Apply To All
+            </Button>
+          </FlexBox>
           <DataTable className="border" columns={columns} data={values.productVariants} placeholder="No variants" />
         </FlexBox>
       )}
-
       <LoadingButton loading={loadingProduct.editProductVariants} disabled={loadingProduct.editProductVariants}>
         Save variants
       </LoadingButton>

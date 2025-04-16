@@ -5,15 +5,14 @@ import { getListPermission } from "@/redux/permission/permission.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
 import { PermissionState } from "@/redux/permission/permission.type";
-import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
-import { Permission } from "@/types/permission";
 import { usePermissionTableFilters } from "./usePermissionTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { convertToSearchParams } from "@/utils/object";
 import { useSearchParams } from "react-router-dom";
+import { permissionColumns } from "./permission-columns";
 
-export function PermissionListTable({ columns }: { columns: ColumnDef<Permission, any>[] }) {
+export function PermissionListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading } = useAppSelector<PermissionState>((state) => state.permission);
@@ -50,7 +49,7 @@ export function PermissionListTable({ columns }: { columns: ColumnDef<Permission
       <DataTable
         data={list}
         placeholder="No permissions found. Note: if a permission was just created/deleted, it takes some time for it to be indexed."
-        columns={columns}
+        columns={permissionColumns}
       />
 
       <DataTablePagination

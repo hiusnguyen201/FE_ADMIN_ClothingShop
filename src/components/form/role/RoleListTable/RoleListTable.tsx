@@ -1,19 +1,18 @@
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { useEffect } from "react";
-import { Role } from "@/types/role";
 import { DataTable } from "@/components/data-table";
 import { getListRole } from "@/redux/role/role.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
 import { RoleState } from "@/redux/role/role.type";
-import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
 import { useRoleTableFilters } from "./useRoleTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { convertToSearchParams } from "@/utils/object";
 import { useSearchParams } from "react-router-dom";
+import { roleColumns } from "./role-columns";
 
-export function RoleListTable({ columns }: { columns: ColumnDef<Role, any>[] }) {
+export function RoleListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading } = useAppSelector<RoleState>((state) => state.role);
@@ -48,7 +47,7 @@ export function RoleListTable({ columns }: { columns: ColumnDef<Role, any>[] }) 
       <DataTable
         data={list}
         placeholder="No roles found. Note: if a role was just created/deleted, it takes some time for it to be indexed."
-        columns={columns}
+        columns={roleColumns}
         heightPerRow={77}
       />
 

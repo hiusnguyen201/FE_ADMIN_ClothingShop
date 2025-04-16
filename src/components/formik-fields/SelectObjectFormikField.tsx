@@ -1,14 +1,12 @@
 import { FormikProps } from "formik";
-import { ChevronDown } from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Spinner } from "@/components/spinner";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { useRef, useState } from "react";
+import { SearchFormField } from "../form-fields/SearchFormFIeld";
 
 export type OptionItem = {
   value: string | number;
@@ -26,7 +24,13 @@ export type SelectObjectFormikFieldProps<TData extends Record<string, any>> = {
   formikProps: FormikProps<TData>;
   open?: boolean;
   loading?: boolean;
+  disabled?: boolean;
   onOpenChange?: (value: boolean) => void;
+  searchable?: boolean;
+  description?: string;
+  onSearchClick?: (value: string) => void;
+  searchValue?: string;
+  onSelectChange?: (value: string | null) => void;
 };
 
 export function SelectObjectFormikField<TData extends Record<string, any>>({
@@ -40,7 +44,13 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
   onOpenChange,
   placeHolder,
   formikProps,
+  disabled = false,
   open,
+  searchable = false,
+  description,
+  onSearchClick,
+  onSelectChange,
+  searchValue,
 }: SelectObjectFormikFieldProps<TData>) {
   const { errors, setFieldValue, values, validateField, isSubmitting } = formikProps;
 
@@ -48,57 +58,71 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
   const error: string = errors[name] as string;
 
   return (
-    <div className={cn("w-full", isSubmitting && "opacity-50", className)}>
+    <div className={cn("w-full h-full", isSubmitting && "opacity-50", className)}>
       {label && (
         <Label className={cn("select-none mb-2 block items-center", error && "text-red-500")}>
           {label} {required && <span>*</span>}
         </Label>
       )}
 
-      <div className="flex font-normal bg-transparent text-base md:text-sm w-full gap-5">
-        <DropdownMenu open={open} onOpenChange={onOpenChange}>
-          <DropdownMenuTrigger
-            disabled={isSubmitting}
+      <div className="flex font-normal bg-transparent text-base md:text-sm w-full gap-5 h-full">
+        <Popover open={open} onOpenChange={onOpenChange}>
+          <PopoverTrigger
+            asChild
+            disabled={isSubmitting || disabled}
             className={cn(
               "text-start flex items-center justify-between w-full border py-[9px] px-4 rounded bg-white",
+              disabled && "opacity-60",
               error && "border-red-500 focus:border-red-500"
             )}
           >
-            {loading ? (
-              <span className="block w-full">
-                <Spinner size="small" />
-              </span>
-            ) : (
-              <span className={cn("capitalize font-normal text-sm pr-1")}>
-                {options.find((item) => item.value === currentValue)?.title ??
-                  (placeHolder || `Select a ${label || name}`)}
-              </span>
-            )}
-            <ChevronDown width={20} height={20} />
-          </DropdownMenuTrigger>
+            <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+              {options.find((item) => item.value === currentValue)?.title ?? (placeHolder || `Select ${label || name}`)}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
           {!loading && (
-            <DropdownMenuContent align="start" className="w-[var(--radix-popper-anchor-width)] select-none">
-              {options.length === 0 && (
-                <DropdownMenuCheckboxItem className="!cursor-default">No select options</DropdownMenuCheckboxItem>
-              )}
-              {options.map((item) => (
-                <DropdownMenuCheckboxItem
-                  key={item.value}
-                  className="capitalize cursor-pointer font-normal hover:bg-gray-100 min-h-10"
-                  checked={currentValue === item.value}
-                  disabled={!switchable && currentValue === item.value}
-                  onCheckedChange={() => {
-                    if (!switchable && currentValue === item.value) return;
-                    const val = currentValue === item.value ? null : item.value;
-                    setFieldValue(name, val);
-                  }}
-                >
-                  {item.title}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
+            <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]" align="start">
+              <Command className="max-h-[312px]">
+                {searchable && (
+                  <SearchFormField
+                    className="focus-within:ring-0 rounded-none border-b border-t-0 border-x-0"
+                    name={name}
+                    value={searchValue}
+                    onSearchClick={onSearchClick}
+                    placeholder={placeHolder}
+                  />
+                )}
+
+                <CommandList>
+                  <CommandEmpty>No select options.</CommandEmpty>
+                  <CommandGroup>
+                    {options.map((opt) => {
+                      const isSelected = currentValue === opt.value;
+                      return (
+                        <CommandItem
+                          key={opt.value}
+                          value={opt.value.toString()}
+                          onSelect={() => {
+                            if (!switchable && currentValue === opt.value) return;
+                            const val = currentValue === opt.value ? null : opt.value;
+                            setFieldValue(name, val);
+                            onSelectChange?.(val ? val.toString() : null);
+                          }}
+                          className="cursor-pointer"
+                        >
+                          <span>{opt.title}</span>
+                          {isSelected && <Check className="ml-auto h-4 w-4" />}
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                  {description && <CommandGroup className="py-[6px] px-2 text-sm">{description}</CommandGroup>}
+                </CommandList>
+              </Command>
+            </PopoverContent>
           )}
-        </DropdownMenu>
+        </Popover>
       </div>
 
       {error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}

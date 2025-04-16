@@ -1,19 +1,18 @@
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { useEffect } from "react";
-import { Product } from "@/types/product";
 import { DataTable } from "@/components/data-table";
 import { getListProduct } from "@/redux/product/product.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
 import { ProductState } from "@/redux/product/product.type";
-import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
 import { useProductTableFilters } from "./useProductTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useSearchParams } from "react-router-dom";
 import { convertToSearchParams } from "@/utils/object";
+import { productColumns } from "./product-columns";
 
-export function ProductListTable({ columns }: { columns: ColumnDef<Product, any>[] }) {
+export function ProductListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading } = useAppSelector<ProductState>((state) => state.product);
@@ -50,7 +49,7 @@ export function ProductListTable({ columns }: { columns: ColumnDef<Product, any>
       <DataTable
         data={list}
         placeholder="No products found. Note: if a product was just created/deleted, it takes some time for it to be indexed."
-        columns={columns}
+        columns={productColumns}
         heightPerRow={77}
       />
 

@@ -49,13 +49,15 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, cla
   return (
     <div
       className="flex flex-col w-full"
-      style={{
-        maxWidth: isMobile ? `calc(100vw - 48px - 15px)` : `calc(100vw - 80px - ${sidebarWidth}px - 15px)`,
-      }}
+      style={
+        {
+          // maxWidth: isMobile ? `calc(100vw - 48px - 15px)` : `calc(100vw - 80px - ${sidebarWidth}px - 15px)`,
+        }
+      }
     >
       <TableContainer className={className}>
         <TableHeader className="sticky top-0 bg-white border-b">
-          {table.getHeaderGroups().map((headerGroup, index) => (
+          {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="flex w-full">
               {/* {table.getRowModel().rows[index]?.subRows.length > 0 && (
                 <TableHead className="flex items-center">
@@ -93,7 +95,7 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, cla
           {data.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <Fragment key={row.id}>
-                <TableRow className={cn("flex w-full items-start", heightPerRow ? `h-[${heightPerRow}px]` : "")}>
+                <TableRow className={cn("flex w-full items-center", heightPerRow ? `h-[${heightPerRow}px]` : "")}>
                   {/* {row.subRows.length > 0 && row.getCanExpand() && (
                     <TableCell className="flex items-center">
                       <Button

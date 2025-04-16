@@ -1,19 +1,18 @@
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { useEffect } from "react";
-import { User } from "@/types/user";
 import { DataTable } from "@/components/data-table";
 import { getListUser } from "@/redux/user/user.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
 import { UserState } from "@/redux/user/user.type";
-import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
 import { useUserTableFilters } from "./useUserTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useSearchParams } from "react-router-dom";
 import { convertToSearchParams } from "@/utils/object";
+import { userColumns } from "./user-columns";
 
-export function UserListTable({ columns }: { columns: ColumnDef<User, any>[] }) {
+export function UserListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading } = useAppSelector<UserState>((state) => state.user);
@@ -48,7 +47,7 @@ export function UserListTable({ columns }: { columns: ColumnDef<User, any>[] }) 
       <DataTable
         data={list}
         placeholder="No users found. Note: if a user was just created/deleted, it takes some time for it to be indexed."
-        columns={columns}
+        columns={userColumns}
         heightPerRow={77}
       />
 

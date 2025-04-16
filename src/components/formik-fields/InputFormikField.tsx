@@ -47,7 +47,7 @@ export function InputFormikField<TData>({
         autoFocus={autoFocus}
         placeholder={placeholder}
         name={name}
-        rows={4}
+        rows={6}
         value={currentValue}
         className={cn(
           "w-full rounded focus-visible:!outline focus-visible:!outline-1 focus-visible:outline-offset-0 resize-none",

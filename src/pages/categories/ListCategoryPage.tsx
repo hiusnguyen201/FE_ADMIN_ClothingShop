@@ -1,7 +1,6 @@
 import { ContentWrapper } from "@/components/ContentWrapper";
 import { Heading } from "@/components/Heading";
 import { CategoryListTable } from "@/components/form/category/CategoryListTable";
-import { categoryColumns } from "./category-columns";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CreateCategoryDialogForm } from "@/components/form/category/CreateCategoryForm";
@@ -22,7 +21,7 @@ export function ListCategoryPage() {
         }
       />
 
-      <CategoryListTable columns={categoryColumns} />
+      <CategoryListTable />
     </ContentWrapper>
   );
 }

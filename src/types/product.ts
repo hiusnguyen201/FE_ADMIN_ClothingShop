@@ -1,8 +1,11 @@
 import { Option, OptionValue } from "@/types/option";
+import { Category } from "@/types/category";
+import { Nullable } from "@/types/common";
 
 export enum PRODUCT_STATUS {
   INACTIVE = "inactive",
   ACTIVE = "active",
+  DRAFT = "draft",
 }
 
 export type VariantValue = {
@@ -16,7 +19,7 @@ type ProductOption = {
   optionValues: OptionValue[];
 };
 
-type ProductVariant = {
+export type ProductVariant = {
   id: string;
   quantity: number;
   price: number;
@@ -30,8 +33,8 @@ export type Product = {
   name: string;
   description: string;
   status: PRODUCT_STATUS;
-  category: string;
-  subCategory?: string;
+  category: Category;
+  subCategory: Nullable<Category>;
   productOptions: ProductOption[];
   productVariants: ProductVariant[];
 };

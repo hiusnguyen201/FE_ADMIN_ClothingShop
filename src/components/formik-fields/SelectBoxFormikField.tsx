@@ -11,6 +11,7 @@ export type SelectBoxFormikFieldProps<TData> = {
   options: string[];
   className?: string;
   formikProps: FormikProps<TData>;
+  direction?: "column" | "row";
 };
 
 export function SelectBoxFormikField<TData extends { [key: string]: any }>({
@@ -20,6 +21,7 @@ export function SelectBoxFormikField<TData extends { [key: string]: any }>({
   type,
   className,
   options,
+  direction = "row",
   formikProps,
 }: SelectBoxFormikFieldProps<TData>) {
   const { handleChange, handleBlur, setFieldError, validateField, errors, values, isSubmitting } = formikProps;
@@ -35,9 +37,18 @@ export function SelectBoxFormikField<TData extends { [key: string]: any }>({
         </Label>
       )}
 
-      <div className="flex font-normal bg-transparent text-base md:text-sm w-full gap-5">
+      <div
+        className={cn(
+          "flex font-normal bg-transparent text-base md:text-sm w-full gap-1",
+          direction === "column" ? "flex-col" : "flex-row"
+        )}
+      >
         {options.map((item: string) => (
-          <Label className="flex gap-1 items-center cursor-pointer -ml-1 p-1" key={item} htmlFor={item}>
+          <Label
+            className="inline-flex gap-2 items-center text-base cursor-pointer -ml-1 p-1"
+            key={item}
+            htmlFor={item}
+          >
             <Input
               tabIndex={-1}
               id={item}
@@ -46,7 +57,10 @@ export function SelectBoxFormikField<TData extends { [key: string]: any }>({
               name={name}
               value={item}
               checked={currentValue === item}
-              className={cn("cursor-pointer transform scale-110", error && "border-red-500 focus:border-red-500")}
+              className={cn(
+                "cursor-pointer w-auto h-auto transform scale-110",
+                error && "border-red-500 focus:border-red-500"
+              )}
               onChange={(e) => {
                 handleChange(e);
                 setFieldError(name, undefined);

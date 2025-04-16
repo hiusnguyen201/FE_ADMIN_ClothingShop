@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { ImageFormikField } from "@/components/formik-fields/ImageFormikField";
 import { getListCategory } from "@/redux/category/category.thunk";
 import { Category } from "@/types/category";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const editProductInfoSchema = Yup.object().shape({
   name: Yup.string().required().min(3).max(50),
@@ -23,6 +24,7 @@ const editProductInfoSchema = Yup.object().shape({
 });
 
 export function EditProductInfoForm({ product }: { product: Product }) {
+  const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector<ProductState>((selector) => selector.product);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -79,49 +81,64 @@ export function EditProductInfoForm({ product }: { product: Product }) {
   }, []);
 
   return (
-    <FlexBox size="large" onSubmit={formik.handleSubmit} component="form" className="max-w-[600px]">
-      <FlexBox>
-        <ImageFormikField size={120} name="thumbnail" label="Promotion Image" required formikProps={formik} />
-
-        <InputFormikField name="name" type="text" label="Name" required formikProps={formik} />
-
-        <InputFormikField name="description" type="textarea" label="Description" required formikProps={formik} />
-
-        <SelectObjectFormikField
-          label="Category"
-          name="category"
-          options={categories.map((item) => ({ value: item.id, title: item.name }))}
+    <FlexBox size="large" onSubmit={formik.handleSubmit} component="form">
+      <FlexBox direction={isMobile ? "column" : "row"} className="justify-between flex-wrap" size="large">
+        <ImageFormikField
+          hintDirection={isMobile ? "right" : "bottom"}
+          size={isMobile ? 120 : 240}
+          name="thumbnail"
+          label="Promotion Image"
           required
           formikProps={formik}
         />
 
-        <SelectObjectFormikField
-          label="Subcategory"
-          name="subCategory"
-          options={
-            categories
-              .find((item) => item.id === formik.values.category)
-              ?.children.map((item) => ({ value: item.id, title: item.name })) ?? []
-          }
-          formikProps={formik}
-        />
-      </FlexBox>
+        <FlexBox className="max-w-[600px]">
+          <InputFormikField name="name" type="text" label="Name" required formikProps={formik} />
 
-      <FlexBox direction="row">
-        <LoadingButton
-          onClick={() => formik.setFieldValue("status", PRODUCT_STATUS.INACTIVE)}
-          loading={loading.editProductInfo}
-          disabled={loading.editProductInfo}
-        >
-          Save & Inactive
-        </LoadingButton>
-        <LoadingButton
-          onClick={() => formik.setFieldValue("status", PRODUCT_STATUS.ACTIVE)}
-          loading={loading.editProductInfo}
-          disabled={loading.editProductInfo || product.productVariants.length === 0}
-        >
-          Save & Active
-        </LoadingButton>
+          <InputFormikField name="description" type="textarea" label="Description" required formikProps={formik} />
+
+          <SelectObjectFormikField
+            label="Category"
+            name="category"
+            options={categories.map((item) => ({ value: item.id, title: item.name }))}
+            required
+            formikProps={formik}
+          />
+
+          <SelectObjectFormikField
+            label="Subcategory"
+            name="subCategory"
+            options={
+              categories
+                .find((item) => item.id === formik.values.category)
+                ?.children.map((item) => ({ value: item.id, title: item.name })) ?? []
+            }
+            formikProps={formik}
+          />
+
+          <FlexBox direction="row">
+            <LoadingButton
+              onClick={() => {
+                formik.setFieldValue("status", PRODUCT_STATUS.INACTIVE);
+              }}
+              loading={loading.editProductInfo}
+              disabled={loading.editProductInfo}
+            >
+              Save & Inactive
+            </LoadingButton>
+            {product.productVariants.length > 0 && (
+              <LoadingButton
+                onClick={() => {
+                  formik.setFieldValue("status", PRODUCT_STATUS.ACTIVE);
+                }}
+                loading={loading.editProductInfo}
+                disabled={loading.editProductInfo || product.productVariants.length === 0}
+              >
+                Save & Active
+              </LoadingButton>
+            )}
+          </FlexBox>
+        </FlexBox>
       </FlexBox>
     </FlexBox>
   );

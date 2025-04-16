@@ -3,7 +3,6 @@ import { ContentWrapper } from "@/components/ContentWrapper";
 import { Heading } from "@/components/Heading";
 import { ProductListTable } from "@/components/form/product/ProductListTable";
 import { Button } from "@/components/ui/button";
-import { productColumns } from "./product-columns";
 import { CreateProductDialogForm } from "@/components/form/product/CreateProductDialogForm";
 
 export function ListProductPage() {
@@ -22,7 +21,7 @@ export function ListProductPage() {
         }
       />
 
-      <ProductListTable columns={productColumns} />
+      <ProductListTable />
     </ContentWrapper>
   );
 }

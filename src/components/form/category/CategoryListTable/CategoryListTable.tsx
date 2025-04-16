@@ -4,16 +4,15 @@ import { getListCategory } from "@/redux/category/category.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
 import { CategoryState } from "@/redux/category/category.type";
-import { ColumnDef } from "@tanstack/react-table";
 import { toast } from "@/hooks/use-toast";
-import { Category } from "@/types/category";
 import { useCategoryTableFilters } from "./useCategoryTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { convertToSearchParams } from "@/utils/object";
+import { categoryColumns } from "./category-columns";
 
-export function CategoryListTable({ columns }: { columns: ColumnDef<Category, any>[] }) {
+export function CategoryListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading } = useAppSelector<CategoryState>((state) => state.category);
@@ -50,7 +49,7 @@ export function CategoryListTable({ columns }: { columns: ColumnDef<Category, an
       <DataTable
         data={list}
         placeholder="No categories found. Note: if a category was just created/deleted, it takes some time for it to be indexed."
-        columns={columns}
+        columns={categoryColumns}
       />
 
       <DataTablePagination

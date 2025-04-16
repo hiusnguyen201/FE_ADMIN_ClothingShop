@@ -18,7 +18,7 @@ export const SideBar = forwardRef((_, ref: LegacyRef<HTMLElement>) => {
         </SidebarContent>
 
         {!isMobile && (
-          <SidebarFooter className="p-0">
+          <SidebarFooter className="p-0 bg-white">
             <Button
               variant="ghost"
               size="icon"

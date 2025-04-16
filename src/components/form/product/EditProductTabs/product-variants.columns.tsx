@@ -31,6 +31,7 @@ export function getProductVariantsColumns({
     })),
     {
       id: "price",
+      minSize: 150,
       header: "Price",
       cell: ({ row }: CellContext<CreateProductVariant, unknown>) => {
         const [error, setError] = useState("");
@@ -59,6 +60,7 @@ export function getProductVariantsColumns({
     {
       id: "quantity",
       header: "Quantity",
+      minSize: 150,
       cell: ({ row }) => {
         const [error, setError] = useState("");
         return (
@@ -86,6 +88,7 @@ export function getProductVariantsColumns({
     {
       id: "sku",
       header: "SKU",
+      minSize: 200,
       cell: ({ row }) => {
         const [error, setError] = useState("");
         return (

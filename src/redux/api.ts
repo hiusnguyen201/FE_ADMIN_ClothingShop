@@ -1,5 +1,4 @@
 import { BaseResponse } from "@/types/response";
-import { getPreviousPathnameHistory } from "@/utils/history";
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { RefreshTokenResponse } from "@/redux/auth/auth.type";
 
@@ -18,7 +17,6 @@ export const apiInstance = axios.create({
   },
 });
 
-let retry = false;
 apiInstance.interceptors.response.use(
   (response: AxiosResponse) => response.data,
   async (error: AxiosError) => {
@@ -26,22 +24,22 @@ apiInstance.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    const originalRequest: AxiosRequestConfig = error.config;
-
+    const originalRequest: AxiosRequestConfig & { _retry?: boolean } = error.config;
     const responseData = error.response?.data as BaseResponse<null>;
 
-    if (error.response?.status === 401 && responseData.codeMessage === "INVALID_TOKEN" && !retry) {
+    if (error.response?.status === 401 && responseData.codeMessage === "INVALID_TOKEN" && !originalRequest._retry) {
       try {
-        retry = true;
+        originalRequest._retry = true;
 
         const response = await refreshTokenFn();
         if (response && response.code === 200) {
-          retry = false;
+          originalRequest._retry = false;
           return apiInstance(originalRequest);
+        } else {
+          originalRequest._retry = false;
+          return Promise.reject(error);
         }
       } catch (e: any) {
-        retry = false;
-        window.location.href = "/login";
         return Promise.reject(e);
       }
     }

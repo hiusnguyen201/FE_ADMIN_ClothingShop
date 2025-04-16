@@ -4,7 +4,6 @@ import { Heading } from "@/components/Heading";
 import { CreateUserDialogForm } from "@/components/form/user/CreateUserDialogForm";
 import { UserListTable } from "@/components/form/user/UserListTable";
 import { Button } from "@/components/ui/button";
-import { userColumns } from "./user-columns";
 
 export function ListUserPage() {
   return (
@@ -22,7 +21,7 @@ export function ListUserPage() {
         }
       />
 
-      <UserListTable columns={userColumns} />
+      <UserListTable />
     </ContentWrapper>
   );
 }

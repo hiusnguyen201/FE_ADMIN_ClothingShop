@@ -57,13 +57,13 @@ export function CreateDialogForm<T extends FormikValues>({
 
   const [internalOpen, setInternalOpen] = useState<boolean>(false);
 
-  const dialogOpen = isControlled ? open! : internalOpen;
+  const dialogOpen = isControlled ? open : internalOpen;
 
   const setDialogOpen = (value: boolean) => {
     if (loading) return;
 
     if (isControlled) {
-      onOpenChange!(value);
+      onOpenChange(value);
     } else {
       setInternalOpen(value);
     }

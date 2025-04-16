@@ -12,8 +12,9 @@ type ImageFormikFieldProps<TData> = {
   className?: string;
   maxFileSize?: number;
   formikProps: FormikProps<TData>;
-  size?: number;
+  size?: number | string;
   hint?: boolean;
+  hintDirection?: "right" | "bottom";
 };
 
 export function ImageFormikField<TData>({
@@ -25,6 +26,7 @@ export function ImageFormikField<TData>({
   size = 80,
   className,
   hint = true,
+  hintDirection = "right",
 }: ImageFormikFieldProps<TData>) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -80,7 +82,7 @@ export function ImageFormikField<TData>({
   }, [currentValue]);
 
   return (
-    <section className={cn("w-full", className)}>
+    <section className={cn("w-full", `w-[${size}px]`, className)}>
       {label && (
         <Label className={cn("select-none mb-2 block", error && "text-red-500")} htmlFor={name}>
           {label} {required && <span>*</span>}
@@ -127,7 +129,7 @@ export function ImageFormikField<TData>({
           <input {...getInputProps()} />
         </div>
 
-        {hint && (
+        {hint && hintDirection === "right" && (
           <ul className="ml-3 text-sm list-disc text-gray-500">
             <li>Upload 1:1 image</li>
             <li>Size: Max {maxFileSize / (1024 * 1024)}MB</li>
@@ -137,6 +139,14 @@ export function ImageFormikField<TData>({
       </div>
 
       {error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
+
+      {hint && hintDirection === "bottom" && (
+        <ul className="ml-5 mt-3 text-sm list-disc text-gray-500">
+          <li>Upload 1:1 image</li>
+          <li>Size: Max {maxFileSize / (1024 * 1024)}MB</li>
+          <li>Format: JPG, JPNG, PNG</li>
+        </ul>
+      )}
     </section>
   );
 }

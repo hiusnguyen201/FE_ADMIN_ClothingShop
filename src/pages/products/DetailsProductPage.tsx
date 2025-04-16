@@ -10,11 +10,31 @@ import { ContentWrapper } from "@/components/ContentWrapper";
 import { Spinner } from "@/components/spinner";
 import { EditProductSettingsPage, EditProductVariantsPage } from "@/pages/products/tabs";
 import { ProductGuardChildrenProps } from "@/guards/product/ProductExistsGuard";
+import { BoxStatusMessage } from "@/components/BoxStatusMessage";
+import { PRODUCT_STATUS } from "@/types/product";
 
 enum TABS {
   SETTINGS = "settings",
   VARIANTS = "variants",
 }
+
+const productStatusMessage: Record<PRODUCT_STATUS, any> = {
+  [PRODUCT_STATUS.ACTIVE]: {
+    status: "success",
+    title: "Active",
+    description: "This product is currently active and available for purchase.",
+  },
+  [PRODUCT_STATUS.INACTIVE]: {
+    status: "error",
+    title: "Deactivate",
+    description: "This product has been deactivated and is not available for purchase.",
+  },
+  [PRODUCT_STATUS.DRAFT]: {
+    status: "warning",
+    title: "Draft",
+    description: "This product is in draft mode and not visible to customers.",
+  },
+};
 
 const tabs = [
   {
@@ -43,6 +63,14 @@ export function DetailsProductPage({ product, checkExistLoading }: ProductGuardC
     <ContentWrapper>
       <FlexBox size="large">
         <FlexBox>
+          {product && (
+            <BoxStatusMessage
+              status={productStatusMessage[product.status].status}
+              title={productStatusMessage[product.status].title}
+              description={productStatusMessage[product.status].description}
+            />
+          )}
+
           <Link to={"/products"} className="flex items-center gap-2 text-sm">
             <ArrowLeft size={16} />
             <span>Back to Products</span>
@@ -52,7 +80,6 @@ export function DetailsProductPage({ product, checkExistLoading }: ProductGuardC
               <Spinner />
             </div>
           )}
-
           {!checkExistLoading && (
             <Heading
               title={product?.name || "Product"}

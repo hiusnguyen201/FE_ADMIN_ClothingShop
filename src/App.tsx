@@ -15,7 +15,7 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <div className="max-h-screen">
+    <div className="max-h-screen overflow-auto">
       {isInitialized ? <Router /> : <LoadingScreen />}
       <Toaster />
     </div>
