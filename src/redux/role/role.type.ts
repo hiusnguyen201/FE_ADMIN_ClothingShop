@@ -19,9 +19,12 @@ export interface RoleState {
     addRolePermissions: boolean;
     removeRolePermission: boolean;
   };
+  newItem: Nullable<Role>;
   item: Nullable<Role>;
   list: Role[];
   totalCount: number;
+  initializedList: boolean;
+  initializedListRolePermission: boolean;
   error: Nullable<string>;
   assignedRolePermissions: Permission[];
   unassignedRolePermissions: Permission[];

@@ -1,92 +1,70 @@
 import * as Yup from "yup";
-import { FormikHelpers, useFormik } from "formik";
+import { FormikHelpers, FormikProps, useFormik } from "formik";
 import { useNavigate } from "react-router-dom";
-import { ReactNode, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { InputFormikField } from "@/components/formik-fields";
+import { CreateDialogForm } from "@/components/dialog-form";
+import { InputFormikField, SelectObjectFormikField } from "@/components/formik-fields";
 import { toast } from "@/hooks/use-toast";
 import { checkProductNameExist, createProduct } from "@/redux/product/product.thunk";
-import { CheckProductNameExistResponse, CreateProductPayload } from "@/redux/product/product.type";
+import {
+  CheckProductNameExistResponse,
+  CreateProductPayload,
+  CreateProductResponse,
+  ProductState,
+} from "@/redux/product/product.type";
 import { ImageFormikField } from "@/components/formik-fields/ImageFormikField";
-import { OptionState } from "@/redux/option/option.type";
-import { getListOption } from "@/redux/option/option.thunk";
-import { Option } from "@/types/option";
+import { Category } from "@/types/category";
+import { getListCategory } from "@/redux/category/category.thunk";
+import { FlexBox } from "@/components/FlexBox";
+import { LoadingButton } from "@/components/LoadingButton";
+import { TextEditorFormikField } from "@/components/formik-fields/TextEditorFormikField";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const initialValues: CreateProductPayload = {
-  thumbnail: null,
   name: "",
   description: "",
   category: "",
   subCategory: null,
+  thumbnail: null,
 };
-
-const variantValueSchema = Yup.object().shape({
-  option: Yup.string().required(),
-  optionValue: Yup.string().required(),
-});
-
-const productVariantSchema = Yup.object().shape({
-  quantity: Yup.number().required().min(0),
-  price: Yup.number().required().min(1000),
-  sku: Yup.string().required().min(8).max(16),
-  variantValues: Yup.array(variantValueSchema).required(),
-});
-
-const optionsSchema = Yup.object().shape({
-  id: Yup.string().required(),
-  values: Yup.array(Yup.string().required()).required(),
-});
 
 const createProductSchema = Yup.object().shape({
-  name: Yup.string().required().min(3).max(100),
-  thumbnail: Yup.mixed<File>().required(),
-  price: Yup.number().required().min(1000),
-  description: Yup.string().required().min(30).max(3000),
+  name: Yup.string().required().min(3).max(50),
+  description: Yup.string().required(),
   category: Yup.string().required(),
   subCategory: Yup.string().nullable().default(null),
-  options: Yup.array(optionsSchema).required().min(1, "At least one option is required"),
-  productVariants: Yup.array(productVariantSchema).required(),
+  thumbnail: Yup.mixed<File>().required(),
 });
 
-export type ChildrenCreateProductFormProps = {
-  values: CreateProductPayload;
-  selectOptions: Option[];
-  renderInputFieldName: () => ReactNode;
-  renderInputFieldDescription: () => ReactNode;
-  renderInputFieldThumbnail: () => ReactNode;
-  renderSelectFieldOption: () => ReactNode;
-};
-
-type CreateProductFormProps = {
-  children: (props: ChildrenCreateProductFormProps) => ReactNode;
-  open?: false;
-  onOpenChange?: (value: boolean) => void;
-};
-
-export function CreateProductForm({ children }: CreateProductFormProps) {
+export function CreateProductForm() {
+  const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading: loadingOption, list: options } = useAppSelector<OptionState>((selector) => selector.option);
+  const { loading } = useAppSelector<ProductState>((selector) => selector.product);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   const handleSubmit = async (values: CreateProductPayload, { resetForm }: FormikHelpers<CreateProductPayload>) => {
     try {
-      await dispatch(createProduct(values)).unwrap();
+      const response: CreateProductResponse = await dispatch(createProduct(values)).unwrap();
       resetForm();
-      toast({ title: "Add new product successful" });
-      navigate(`/products`);
+      const { data: product, message } = response;
+      toast({ title: message });
+      navigate(`/products/${product.id}/settings`);
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
   };
 
-  const validateProductName = async (values: CreateProductPayload) => {
+  const checkUniqueName = async (values: CreateProductPayload) => {
     const errors: { [key: string]: string } = {};
 
     const response: CheckProductNameExistResponse = await dispatch(
       checkProductNameExist({ name: values.name })
     ).unwrap();
+
     if (response.data) {
-      errors.name = "name already exists";
+      errors.name = "Product name already exists";
     }
 
     return errors;
@@ -94,35 +72,74 @@ export function CreateProductForm({ children }: CreateProductFormProps) {
 
   useEffect(() => {
     (async () => {
-      await dispatch(getListOption());
+      const response = await dispatch(getListCategory({ page: 1, limit: 100 })).unwrap();
+      setCategories(response.data.list);
     })();
   }, []);
 
-  const formik = useFormik({
+  const formik: FormikProps<CreateProductPayload> = useFormik({
     initialValues,
     validationSchema: createProductSchema,
-    validate: validateProductName,
-    onSubmit: handleSubmit,
-    validateOnBlur: false,
     validateOnChange: false,
+    validateOnBlur: false,
+    validate: checkUniqueName,
+    onSubmit: handleSubmit,
+    enableReinitialize: true,
   });
 
   return (
-    <form onSubmit={formik.handleSubmit}>
-      {children({
-        values: formik.values,
-        selectOptions: options,
-        renderInputFieldName: () => (
-          <InputFormikField name="name" type="text" label="Name" required formikProps={formik} />
-        ),
-        renderInputFieldThumbnail: () => (
-          <ImageFormikField size={120} name="thumbnail" label="Thumbnail" required formikProps={formik} />
-        ),
-        renderInputFieldDescription: () => (
-          <InputFormikField name="description" type="textarea" label="Description" required formikProps={formik} />
-        ),
-        renderSelectFieldOption: () => <></>,
-      })}
-    </form>
+    <FlexBox>
+      <FlexBox direction={isMobile ? "column" : "row"} className="justify-between">
+        <ImageFormikField
+          size={isMobile ? 120 : 212}
+          name="thumbnail"
+          label="Promotion Image"
+          hintDirection={isMobile ? "right" : "bottom"}
+          required
+          formikProps={formik}
+        />
+
+        <FlexBox className="md:max-w-[600px]">
+          <InputFormikField
+            name="name"
+            placeholder="Enter name..."
+            type="text"
+            label="Name"
+            required
+            formikProps={formik}
+          />
+
+          <SelectObjectFormikField
+            label="Category"
+            name="category"
+            options={categories.map((item) => ({ value: item.id, title: item.name }))}
+            required
+            formikProps={formik}
+          />
+
+          <SelectObjectFormikField
+            label="Subcategory"
+            name="subCategory"
+            options={
+              categories
+                .find((item) => item.id === formik.values.category)
+                ?.children.map((item) => ({ value: item.id, title: item.name })) ?? []
+            }
+            formikProps={formik}
+          />
+        </FlexBox>
+      </FlexBox>
+
+      <TextEditorFormikField name="description" label="Description" required formikProps={formik} />
+
+      <LoadingButton
+        onClick={() => formik.handleSubmit()}
+        loading={loading.createProduct}
+        disabled={loading.createProduct}
+        className="min-w-[120px]"
+      >
+        Add new
+      </LoadingButton>
+    </FlexBox>
   );
 }

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { GetListOrderPayload } from "@/redux/order/order.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
+import { useDebouncedCallback } from "use-debounce";
+import { ORDER_STATUS } from "@/types/order";
 
 const initialFilters: GetListOrderPayload = {
   page: 1,
@@ -8,6 +10,7 @@ const initialFilters: GetListOrderPayload = {
   keyword: "",
   sortBy: null,
   sortOrder: null,
+  status: null,
 };
 
 export function useOrderTableFilters(props?: { searchParams?: URLSearchParams }) {
@@ -21,9 +24,13 @@ export function useOrderTableFilters(props?: { searchParams?: URLSearchParams })
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
-  const handleKeywordChange = (keyword: string) => {
-    setFilters((prev) => ({ ...prev, keyword, page: 1 }));
+  const handleStatusChange = (status: string) => {
+    setFilters((prev) => ({ ...prev, status: status === "all" ? undefined : (status as ORDER_STATUS), page: 1 }));
   };
 
-  return { filters, handlePageChange, handleLimitChange, handleKeywordChange };
+  const handleKeywordChange = useDebouncedCallback((keyword: string) => {
+    setFilters((prev) => ({ ...prev, keyword, page: 1 }));
+  }, 500);
+
+  return { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleStatusChange };
 }

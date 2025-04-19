@@ -13,8 +13,10 @@ export interface CustomerState {
     editCustomer: boolean;
     removeCustomer: boolean;
   };
+  newItem: Nullable<Customer>;
   item: Nullable<Customer>;
   list: Customer[];
+  initializedList: boolean;
   totalCount: number;
   error: Nullable<string>;
 }

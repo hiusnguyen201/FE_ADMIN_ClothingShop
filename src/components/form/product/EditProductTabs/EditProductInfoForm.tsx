@@ -13,13 +13,14 @@ import { ImageFormikField } from "@/components/formik-fields/ImageFormikField";
 import { getListCategory } from "@/redux/category/category.thunk";
 import { Category } from "@/types/category";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { TextEditorFormikField } from "@/components/formik-fields/TextEditorFormikField";
 
 const editProductInfoSchema = Yup.object().shape({
+  thumbnail: Yup.mixed<File>().required(),
   name: Yup.string().required().min(3).max(50),
-  description: Yup.string().required().min(30).max(3000),
+  description: Yup.string().required(),
   category: Yup.string().required(),
   subCategory: Yup.string().nullable().default(null),
-  thumbnail: Yup.mixed<File>().required(),
   status: Yup.string().oneOf(Object.values(PRODUCT_STATUS)).required(),
 });
 
@@ -34,8 +35,8 @@ export function EditProductInfoForm({ product }: { product: Product }) {
     thumbnail: product.thumbnail,
     name: product.name,
     description: product.description,
-    category: product.category,
-    subCategory: product.subCategory,
+    category: product.category.id,
+    subCategory: product.subCategory?.id,
     status: product.status,
   };
 
@@ -82,20 +83,18 @@ export function EditProductInfoForm({ product }: { product: Product }) {
 
   return (
     <FlexBox size="large" onSubmit={formik.handleSubmit} component="form">
-      <FlexBox direction={isMobile ? "column" : "row"} className="justify-between flex-wrap" size="large">
+      <FlexBox direction={isMobile ? "column" : "row"} className="justify-between" size="large">
         <ImageFormikField
           hintDirection={isMobile ? "right" : "bottom"}
-          size={isMobile ? 120 : 240}
+          size={isMobile ? 120 : 212}
           name="thumbnail"
           label="Promotion Image"
           required
           formikProps={formik}
         />
 
-        <FlexBox className="max-w-[600px]">
+        <FlexBox className="md:md:max-w-[600px]">
           <InputFormikField name="name" type="text" label="Name" required formikProps={formik} />
-
-          <InputFormikField name="description" type="textarea" label="Description" required formikProps={formik} />
 
           <SelectObjectFormikField
             label="Category"
@@ -115,30 +114,32 @@ export function EditProductInfoForm({ product }: { product: Product }) {
             }
             formikProps={formik}
           />
-
-          <FlexBox direction="row">
-            <LoadingButton
-              onClick={() => {
-                formik.setFieldValue("status", PRODUCT_STATUS.INACTIVE);
-              }}
-              loading={loading.editProductInfo}
-              disabled={loading.editProductInfo}
-            >
-              Save & Inactive
-            </LoadingButton>
-            {product.productVariants.length > 0 && (
-              <LoadingButton
-                onClick={() => {
-                  formik.setFieldValue("status", PRODUCT_STATUS.ACTIVE);
-                }}
-                loading={loading.editProductInfo}
-                disabled={loading.editProductInfo || product.productVariants.length === 0}
-              >
-                Save & Active
-              </LoadingButton>
-            )}
-          </FlexBox>
         </FlexBox>
+      </FlexBox>
+
+      <TextEditorFormikField label="Description" name="description" required formikProps={formik} />
+
+      <FlexBox direction="row">
+        <LoadingButton
+          onClick={() => {
+            formik.setFieldValue("status", PRODUCT_STATUS.INACTIVE);
+          }}
+          loading={loading.editProductInfo && formik.values.status === PRODUCT_STATUS.INACTIVE}
+          disabled={loading.editProductInfo}
+        >
+          Save & Inactive
+        </LoadingButton>
+        {product.productVariants.length > 0 && (
+          <LoadingButton
+            onClick={() => {
+              formik.setFieldValue("status", PRODUCT_STATUS.ACTIVE);
+            }}
+            loading={loading.editProductInfo && formik.values.status === PRODUCT_STATUS.ACTIVE}
+            disabled={loading.editProductInfo || product.productVariants.length === 0}
+          >
+            Save & Active
+          </LoadingButton>
+        )}
       </FlexBox>
     </FlexBox>
   );

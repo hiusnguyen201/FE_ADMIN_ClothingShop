@@ -65,7 +65,7 @@ export function EditCategoryInfoForm({ category }: { category: Category }) {
   });
 
   return (
-    <FlexBox size="large" onSubmit={formik.handleSubmit} component="form" className="max-w-[600px]">
+    <FlexBox size="large" onSubmit={formik.handleSubmit} component="form" className="md:max-w-[600px]">
       <FlexBox>
         <ImageFormikField size={120} name="image" label="Image" required formikProps={formik} />
 

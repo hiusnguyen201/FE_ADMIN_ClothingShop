@@ -31,7 +31,6 @@ export function RemoveProductDialogForm({ product, children, open, onOpenChange 
 
   return (
     <AlertDialog
-      variant="destructive"
       open={open}
       trigger={children}
       onOpenChange={onOpenChange}

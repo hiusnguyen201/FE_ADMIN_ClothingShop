@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type SearchFormFieldProps = {
   value?: string;
@@ -10,27 +10,28 @@ type SearchFormFieldProps = {
   className?: string;
   disabled?: boolean;
   type?: "click" | "change";
-  onSearchClick?: (value: string) => void;
+  onSearchChange?: (value: string) => void;
   onValueChange?: (value: string) => void;
 };
 
 export function SearchFormField({
   value,
-  type = "click",
+  type = "change",
   name,
   placeholder,
   className,
   disabled = false,
-  onSearchClick,
+  onSearchChange,
   onValueChange,
 }: SearchFormFieldProps) {
   const [search, setSearchValue] = useState<string>(value || "");
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocus, setIsFocus] = useState(false);
 
   const handleSearch = () => {
     if (type === "change") return;
-    if (onSearchClick && !disabled) {
-      onSearchClick(search);
+    if (onSearchChange && !disabled) {
+      onSearchChange(search);
     }
   };
 
@@ -41,6 +42,12 @@ export function SearchFormField({
       inputRef.current.focus();
     }
   };
+
+  useEffect(() => {
+    if (isFocus) {
+      inputRef?.current?.focus();
+    }
+  }, [disabled]);
 
   return (
     <div
@@ -60,6 +67,12 @@ export function SearchFormField({
         disabled={disabled}
         type="search"
         name={name}
+        onFocus={() => {
+          setIsFocus(true);
+        }}
+        onBlur={() => {
+          setIsFocus(false);
+        }}
         placeholder={placeholder}
         className="py-[6px] pr-3 pl-0 border-none h-[34px] rounded-none"
         value={search}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { GetListUserPayload } from "@/redux/user/user.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
+import { useDebouncedCallback } from "use-debounce";
 
 const initialFilters: GetListUserPayload = {
   page: 1,
@@ -21,9 +22,9 @@ export function useUserTableFilters(props?: { searchParams?: URLSearchParams }) 
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
-  const handleKeywordChange = (keyword: string) => {
+  const handleKeywordChange = useDebouncedCallback((keyword: string) => {
     setFilters((prev) => ({ ...prev, keyword, page: 1 }));
-  };
+  }, 500);
 
   return { filters, handlePageChange, handleLimitChange, handleKeywordChange };
 }

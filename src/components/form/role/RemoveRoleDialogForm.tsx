@@ -31,7 +31,6 @@ export function RemoveRoleDialogForm({ role, children, open, onOpenChange }: Rem
 
   return (
     <AlertDialog
-      variant="destructive"
       open={open}
       trigger={children}
       onOpenChange={onOpenChange}

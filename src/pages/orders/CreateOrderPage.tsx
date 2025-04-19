@@ -1,27 +1,18 @@
 import { ContentWrapper } from "@/components/ContentWrapper";
-import { CreateCustomerDialogForm } from "@/components/form/customer/CreateCustomerDialogForm";
 import { CreateOrderForm } from "@/components/form/order/CreateOrderForm";
 import { Heading } from "@/components/Heading";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function CreateOrderPage() {
-  const [open, setOpen] = useState(false);
-
   return (
     <ContentWrapper>
-      <Heading
-        title="Create Order"
-        actionRight={
-          <CreateCustomerDialogForm open={open} onOpenChange={setOpen} finishRedirect={false}>
-            <Button onClick={() => setOpen(true)}>
-              <Plus size={14} />
-              Create Customer
-            </Button>
-          </CreateCustomerDialogForm>
-        }
-      />
+      <Link to={"/orders"} className="flex items-center gap-2 text-sm">
+        <ArrowLeft size={16} />
+        <span>Back to orders</span>
+      </Link>
+
+      <Heading title="Create Order" />
 
       <CreateOrderForm />
     </ContentWrapper>

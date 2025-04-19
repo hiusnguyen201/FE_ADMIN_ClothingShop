@@ -2,8 +2,8 @@ import { ColumnDef, flexRender, getCoreRowModel, Table, useReactTable } from "@t
 import { Table as TableContainer, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Fragment } from "react/jsx-runtime";
-import { useSidebar } from "@/components/ui/sidebar";
-import { useEffect, useState } from "react";
+import { Spinner } from "@/components/spinner";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export type DataTableProps<TData> = {
   data: TData[];
@@ -11,6 +11,7 @@ export type DataTableProps<TData> = {
   placeholder: string;
   heightPerRow?: number;
   className?: string;
+  loading?: boolean;
   // getSubRows?: (originalRow: TData, index: number) => undefined | TData[];
 };
 
@@ -18,8 +19,15 @@ export type DataTableProps<TData> = {
  * Manual resize
  * @import {https://github.com/TanStack/table/discussions/3192}
  */
-export function DataTable<TData>({ data, columns, placeholder, heightPerRow, className }: DataTableProps<TData>) {
-  const { isMobile, open } = useSidebar();
+export function DataTable<TData>({
+  data,
+  columns,
+  placeholder,
+  heightPerRow,
+  className,
+  loading = false,
+}: DataTableProps<TData>) {
+  const isMobile = useIsMobile();
   const table: Table<TData> = useReactTable({
     data,
     columns,
@@ -32,29 +40,13 @@ export function DataTable<TData>({ data, columns, placeholder, heightPerRow, cla
     },
   });
 
-  const [sidebarWidth, setSideBarWidth] = useState<number>(open ? 256 : 40);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setSideBarWidth(+(sessionStorage.getItem("sidebarWidth") || 0));
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
-    <div
-      className="flex flex-col w-full"
-      style={
-        {
-          // maxWidth: isMobile ? `calc(100vw - 48px - 15px)` : `calc(100vw - 80px - ${sidebarWidth}px - 15px)`,
-        }
-      }
-    >
+    <div className="overflow-x-auto flex flex-col w-full relative">
+      {loading && (
+        <div className="opacity-50 top-0 left-0 z-50 h-full absolute bg-white flex items-center w-full justify-center">
+          <Spinner size="large" />
+        </div>
+      )}
       <TableContainer className={className}>
         <TableHeader className="sticky top-0 bg-white border-b">
           {table.getHeaderGroups().map((headerGroup) => (

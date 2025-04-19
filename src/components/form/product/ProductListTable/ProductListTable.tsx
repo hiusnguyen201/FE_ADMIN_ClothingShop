@@ -15,7 +15,7 @@ import { productColumns } from "./product-columns";
 export function ProductListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading } = useAppSelector<ProductState>((state) => state.product);
+  const { list, totalCount, loading, initializedList } = useAppSelector<ProductState>((state) => state.product);
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useProductTableFilters({
     searchParams,
   });
@@ -29,25 +29,26 @@ export function ProductListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(searchParams));
+    setSearchParams(convertToSearchParams(filters));
     handleGetProductList();
   }, [filters, dispatch]);
 
   return (
-    <DataTableLoading loading={loading.getListProduct} className="flex flex-col gap-6 w-full">
+    <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
       <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListProduct}
           className="col-span-3 sm:col-span-2"
           value={filters.keyword}
-          onSearchClick={(value) => handleKeywordChange(value)}
+          onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
         />
       </div>
 
       <DataTable
         data={list}
+        loading={loading.getListProduct}
         placeholder="No products found. Note: if a product was just created/deleted, it takes some time for it to be indexed."
         columns={productColumns}
         heightPerRow={77}

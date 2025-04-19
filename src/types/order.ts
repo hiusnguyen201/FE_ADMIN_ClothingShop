@@ -7,11 +7,9 @@ export enum ORDER_STATUS {
   PENDING = "pending",
   PENDING_PAYMENT = "pending payment",
   CONFIRMED = "confirmed",
-  PROCESSING = "processing",
-  WAIT_FOR_PICKUP = "wait for pickup",
   SHIPPING = "shipping",
   COMPLETED = "completed",
-  CANCEL = "cancel",
+  CANCELLED = "cancelled",
 }
 
 export type OrderStatusHistory = {
@@ -22,6 +20,8 @@ export type OrderStatusHistory = {
   trackingNumber: string;
   shippingCarrier: "GHN";
   expectedShipDate: Date;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type OrderItem = {
@@ -31,12 +31,12 @@ export type OrderItem = {
   quantity: number;
   unitPrice: number;
   totalPrice: number;
-  isFixed: boolean;
-  discount: number;
 };
 
 export type Order = {
   id: string;
+  orderDate: Date;
+
   customerName: string;
   customerEmail: string;
   customerPhone: string;
@@ -45,13 +45,15 @@ export type Order = {
   provinceName: string;
   districtName: string;
   wardName: string;
-  shippingAddress: string;
+  address: string;
 
   code: string;
   quantity: number;
   subTotal: number;
   total: number;
   shippingFee: number;
+
+  notes: string;
 
   orderStatusHistory: OrderStatusHistory[];
   orderDetails: OrderItem[];

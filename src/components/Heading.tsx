@@ -17,7 +17,7 @@ export function Heading({ title, description, actionRight, className }: HeadingP
       <div className="flex justify-between items-center w-full">
         {title && (
           <h1 className="text-3xl font-medium truncate flex items-center gap-3">
-            <TruncatedTextWithTooltip className="max-w-[600px]">{title}</TruncatedTextWithTooltip>
+            <TruncatedTextWithTooltip className="md:max-w-[600px]">{title}</TruncatedTextWithTooltip>
           </h1>
         )}
 

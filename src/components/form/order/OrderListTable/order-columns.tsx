@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Clipboard, Mail, MoreHorizontal, Phone, Trash } from "lucide-react";
+import { Clipboard, MoreHorizontal, Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import {
   DropdownMenu,
@@ -12,90 +12,83 @@ import {
 import { Button } from "@/components/ui/button";
 import { Order } from "@/types/order";
 import { RemoveOrderDialogForm } from "@/components/form/order/RemoveOrderDialogForm";
-import { FlexBox } from "@/components/FlexBox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tag } from "@/components/Tag";
 import { formatDateString } from "@/utils/date";
-import { TooltipWrapper } from "@/components/TooltipWrapper";
-import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
+import { Badge } from "@/components/ui/badge";
+import { formatCurrencyVND } from "@/utils/string";
 
 export const orderColumns: ColumnDef<Order, any>[] = [
   {
-    accessorKey: "name",
-    header: "Name",
-    minSize: 300,
-    cell: ({ row }) => {
-      const order = row.original;
-
-      return (
-        <FlexBox size="small" direction="row" className="items-center">
-          <Avatar className="h-10 w-10 rounded-lg">
-            {order.avatar && <AvatarImage src={order.avatar} alt={order.name} />}
-            <AvatarFallback className="rounded-full capitalize">{order.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <FlexBox className="gap-0">
-            <TruncatedTextWithTooltip className="max-w-[300px]">
-              <Link className="text-blue-500" to={"/orders/" + order.id + "/settings"}>
-                {order.name}
-              </Link>
-            </TruncatedTextWithTooltip>
-            <TruncatedTextWithTooltip className="max-w-[300px]">{order.email}</TruncatedTextWithTooltip>
-          </FlexBox>
-        </FlexBox>
-      );
-    },
+    accessorKey: "code",
+    header: "Code",
+    minSize: 70,
+    maxSize: 70,
+    cell: ({ row }) => (
+      <Link to={"/orders/" + row.original.code}>
+        <Tag>#{row.original.code}</Tag>
+      </Link>
+    ),
   },
   {
-    accessorKey: "role",
-    header: "Role",
-    minSize: 150,
-    maxSize: 150,
-    cell: ({ row }) => {
-      const order = row.original;
-      return <TruncatedTextWithTooltip>{order.role?.name}</TruncatedTextWithTooltip>;
-    },
-  },
-  {
-    accessorKey: "gender",
-    header: "Gender",
+    accessorKey: "date",
+    header: "Date",
     minSize: 100,
-    maxSize: 100,
-    cell: ({ row }) => {
-      const order = row.original;
-      return <span className="capitalize">{order.gender}</span>;
-    },
+    cell: ({ row }) => formatDateString(row.original.orderDate),
   },
   {
-    accessorKey: "contact",
-    header: "Contact",
-    minSize: 150,
-    maxSize: 150,
+    accessorKey: "customer",
+    header: "Customer",
+    minSize: 200,
     cell: ({ row }) => {
-      const order = row.original;
+      const customer = row.original.customer;
       return (
-        <div className="flex items-center">
-          <a href={`tel:${order.phone}`}>
-            <TooltipWrapper content={order.phone}>
-              <Phone />
-            </TooltipWrapper>
-          </a>
-          <a href={`mailto:${order.email}`}>
-            <TooltipWrapper content={order.email}>
-              <Mail />
-            </TooltipWrapper>
-          </a>
+        <div>
+          <Link to={"/customers/" + customer.id + "/settings"} className="font-medium text-blue-500">
+            {customer.name}
+          </Link>
+          <div className="text-xs text-muted-foreground truncate max-w-[150px]">{customer.email}</div>
+          <div className="text-xs text-muted-foreground">{customer.phone}</div>
         </div>
       );
     },
   },
   {
-    accessorKey: "lastLogin",
-    header: "Last Login",
+    accessorKey: "location",
+    header: "Location",
+    minSize: 250,
+    cell: ({ row }) => {
+      return (
+        <div>
+          <div className="truncate max-w-[200px]">{row.original.address}</div>
+          <div className="text-xs text-muted-foreground truncate max-w-[200px]">
+            {row.original.wardName}, {row.original.districtName}
+          </div>
+          <div className="text-xs text-muted-foreground">{row.original.provinceName}</div>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    minSize: 120,
+    maxSize: 120,
+    cell: ({ row }) => {
+      const history = row.original.orderStatusHistory;
+      return <StatusBadge status={history[history.length - 1].status} />;
+    },
+  },
+  {
+    accessorKey: "total",
+    header: "Total",
     minSize: 100,
     maxSize: 100,
-    cell: ({ row }) => {
-      const order = row.original;
-      return order.lastLoginAt ? formatDateString(order.lastLoginAt) : "never";
-    },
+    cell: ({ row }) => (
+      <div className="text-right font-medium">
+        {formatCurrencyVND(row.original.total)}
+        <div className="text-xs text-muted-foreground">{row.original.quantity} items</div>
+      </div>
+    ),
   },
   {
     id: "actions",
@@ -109,11 +102,12 @@ export const orderColumns: ColumnDef<Order, any>[] = [
 ];
 
 export function OrderActions({ order }: { order: Order }) {
-  const [open, setOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
           <Button size="icon" className="w-8 h-8" variant="outline">
             <MoreHorizontal />
@@ -121,12 +115,11 @@ export function OrderActions({ order }: { order: Order }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          aria-hidden={open ? "true" : "false"}
           side="bottom"
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
         >
-          <Link to={`/orders/${order.id}/settings`}>
+          <Link to={`/orders/${order.id}`}>
             <DropdownMenuItem>
               <Clipboard /> View Details
             </DropdownMenuItem>
@@ -135,7 +128,11 @@ export function OrderActions({ order }: { order: Order }) {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => setOpen(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              setMenuOpen(false);
+              setIsDialogOpen(true);
+            }}
             className="text-destructive focus:text-destructive focus:bg-destructive/10"
           >
             <Trash /> Remove
@@ -143,7 +140,37 @@ export function OrderActions({ order }: { order: Order }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveOrderDialogForm order={order} open={open} onOpenChange={setOpen} />
+      <RemoveOrderDialogForm order={order} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  let variant: "default" | "secondary" | "destructive" | "outline" = "outline";
+
+  switch (status.toLowerCase()) {
+    case "pending":
+      variant = "outline";
+      break;
+    case "confirm":
+      variant = "secondary";
+      break;
+    case "shipped":
+      variant = "default";
+      break;
+    case "completed":
+      variant = "default";
+      break;
+    case "cancelled":
+      variant = "destructive";
+      break;
+    default:
+      variant = "outline";
+  }
+
+  return (
+    <Badge variant={variant} className="capitalize">
+      {status}
+    </Badge>
   );
 }

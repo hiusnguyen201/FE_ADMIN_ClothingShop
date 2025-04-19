@@ -14,15 +14,15 @@ export type OrderExistsGuardProps = {
 };
 
 export function OrderExistsGuard({ children }: OrderExistsGuardProps) {
-  const { orderId } = useParams();
-  if (!orderId) return <Navigate to="/orders" />;
+  const { orderCode } = useParams();
+  if (!orderCode) return <Navigate to="/orders" />;
 
   const dispatch = useAppDispatch();
   const { item, loading } = useAppSelector<OrderState>((selector) => selector.order);
 
   const initialize = async () => {
     try {
-      await dispatch(getOrder({ id: orderId })).unwrap();
+      await dispatch(getOrder({ id: orderCode })).unwrap();
     } catch (error: any) {
       toast({ title: error, variant: "destructive" });
     }
@@ -30,7 +30,7 @@ export function OrderExistsGuard({ children }: OrderExistsGuardProps) {
 
   useEffect(() => {
     initialize();
-  }, [orderId]);
+  }, [orderCode]);
 
   return children({ order: item, checkExistLoading: loading.getOrder });
 }

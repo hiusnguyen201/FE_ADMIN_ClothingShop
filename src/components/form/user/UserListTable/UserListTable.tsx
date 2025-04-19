@@ -15,7 +15,7 @@ import { userColumns } from "./user-columns";
 export function UserListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading } = useAppSelector<UserState>((state) => state.user);
+  const { list, totalCount, loading, initializedList } = useAppSelector<UserState>((state) => state.user);
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useUserTableFilters({ searchParams });
 
   const handleGetUserList = async () => {
@@ -27,19 +27,19 @@ export function UserListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(searchParams));
+    setSearchParams(convertToSearchParams(filters));
     handleGetUserList();
   }, [filters, dispatch]);
 
   return (
-    <DataTableLoading loading={loading.getListUser} className="flex flex-col gap-6 w-full">
+    <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
       <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListUser}
           className="col-span-3 sm:col-span-2"
           value={filters.keyword}
-          onSearchClick={(value) => handleKeywordChange(value)}
+          onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
         />
       </div>

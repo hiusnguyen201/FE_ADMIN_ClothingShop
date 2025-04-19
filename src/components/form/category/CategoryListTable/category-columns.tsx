@@ -55,11 +55,12 @@ export const categoryColumns: ColumnDef<Category, any>[] = [
 ];
 
 export function CategoryActions({ category }: { category: Category }) {
-  const [open, setOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
           <Button size="icon" className="w-8 h-8" variant="outline">
             <MoreHorizontal />
@@ -67,7 +68,6 @@ export function CategoryActions({ category }: { category: Category }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          aria-hidden={open ? "true" : "false"}
           side="bottom"
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
@@ -81,7 +81,11 @@ export function CategoryActions({ category }: { category: Category }) {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => setOpen(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              setMenuOpen(false);
+              setIsDialogOpen(true);
+            }}
             className="text-destructive focus:text-destructive focus:bg-destructive/10"
           >
             <Trash /> Remove
@@ -89,7 +93,7 @@ export function CategoryActions({ category }: { category: Category }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveCategoryDialogForm category={category} open={open} onOpenChange={setOpen} />
+      <RemoveCategoryDialogForm category={category} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
   );
 }

@@ -1,6 +1,8 @@
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SelectFormField } from "@/components/form-fields";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 
 export const LIMIT_PER_PAGE: number[] = [10, 25, 50, 100];
 
@@ -21,6 +23,7 @@ export function DataTablePagination({
   onLimitChange,
   onPageChange,
 }: DataTablePaginationProps) {
+  const isMobile = useIsMobile();
   const totalPages: number = Math.max(Math.ceil(totalCount / limit), 1);
   const isFirst: boolean = page !== 1;
   const isLast: boolean = page !== totalPages;
@@ -28,9 +31,10 @@ export function DataTablePagination({
 
   return (
     <div className="text-sm font-small">
-      <div className="flex items-center justify-between mb-5">
+      <div className={cn("flex gap-5 items-center justify-between mb-5")}>
         <div className="flex items-center justify-start gap-1">
-          <p className="whitespace-nowrap">Rows per page</p>
+          {!isMobile && <p className="whitespace-nowrap">Rows per page</p>}
+
           <SelectFormField
             disabled={loading}
             switchable={false}
@@ -44,7 +48,56 @@ export function DataTablePagination({
           />
         </div>
 
-        <div className="flex items-center justify-end gap-1">
+        <div className="flex items-center sm:justify-end justify-center">
+          <div className="inline-flex items-center justify-center gap-1">
+            {/* First */}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                onPageChange(1);
+              }}
+              disabled={!isFirst || loading}
+            >
+              <ChevronsLeft />
+            </Button>
+            {/* Previous */}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                onPageChange(page - 1);
+              }}
+              disabled={!isFirst || loading}
+            >
+              <ChevronLeft />
+            </Button>
+            {/* Next */}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                onPageChange(page + 1);
+              }}
+              disabled={!isLast || loading}
+            >
+              <ChevronRight />
+            </Button>
+            {/* Last */}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                onPageChange(totalPages);
+              }}
+              disabled={!isLast || loading}
+            >
+              <ChevronsRight />
+            </Button>
+          </div>
+        </div>
+
+        {/* <div className="flex items-center justify-end gap-1">
           <span>Page</span>
           <SelectFormField
             disabled={loading}
@@ -59,56 +112,7 @@ export function DataTablePagination({
           />
           <span>of</span>
           <span>{totalPages || 1}</span>
-        </div>
-      </div>
-
-      <div className="flex items-center sm:justify-end justify-center">
-        <div className="inline-flex items-center justify-center gap-1">
-          {/* First */}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              onPageChange(1);
-            }}
-            disabled={!isFirst || loading}
-          >
-            <ChevronsLeft />
-          </Button>
-          {/* Previous */}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              onPageChange(page - 1);
-            }}
-            disabled={!isFirst || loading}
-          >
-            <ChevronLeft />
-          </Button>
-          {/* Next */}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              onPageChange(page + 1);
-            }}
-            disabled={!isLast || loading}
-          >
-            <ChevronRight />
-          </Button>
-          {/* Last */}
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => {
-              onPageChange(totalPages);
-            }}
-            disabled={!isLast || loading}
-          >
-            <ChevronsRight />
-          </Button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

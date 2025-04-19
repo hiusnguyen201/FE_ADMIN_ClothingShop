@@ -37,7 +37,10 @@ const initialState: RoleState = {
     addRolePermissions: false,
     removeRolePermission: false,
   },
+  newItem: null,
   item: null,
+  initializedListRolePermission: false,
+  initializedList: false,
   list: [],
   totalCount: 0,
   error: null,
@@ -75,12 +78,12 @@ const roleSlice = createSlice({
         const { data } = action.payload;
         state.loading.createRole = false;
         state.error = null;
-        state.item = data;
+        state.newItem = data;
       })
       .addCase(createRole.rejected, (state, action: PayloadAction<any>) => {
         state.loading.createRole = false;
         state.error = action.payload;
-        state.item = null;
+        state.newItem = null;
       });
 
     builder
@@ -95,12 +98,14 @@ const roleSlice = createSlice({
         state.error = null;
         state.list = data.list;
         state.totalCount = data.totalCount;
+        state.initializedList = true;
       })
       .addCase(getListRole.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
         state.loading.getListRole = false;
         state.error = action.payload as string;
         state.list = [];
         state.totalCount = 0;
+        state.initializedList = true;
       });
 
     builder
@@ -169,12 +174,14 @@ const roleSlice = createSlice({
           state.loading.getListAssignedRolePermissions = false;
           state.error = null;
           state.assignedRolePermissions = data.list;
+          state.initializedListRolePermission = true;
         }
       )
       .addCase(getListAssignedRolePermissions.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
         state.loading.getListAssignedRolePermissions = false;
         state.error = action.payload as string;
         state.assignedRolePermissions = [];
+        state.initializedListRolePermission = true;
       });
 
     builder

@@ -28,7 +28,7 @@ export const userColumns: ColumnDef<User, any>[] = [
 
       return (
         <FlexBox size="small" direction="row" className="items-center">
-          <Avatar className="h-10 w-10 rounded-lg">
+          <Avatar className="h-10 w-10 rounded-full border">
             {user.avatar && <AvatarImage src={user.avatar} alt={user.name} />}
             <AvatarFallback className="rounded-full capitalize">{user.name.charAt(0)}</AvatarFallback>
           </Avatar>
@@ -109,11 +109,12 @@ export const userColumns: ColumnDef<User, any>[] = [
 ];
 
 export function UserActions({ user }: { user: User }) {
-  const [open, setOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
           <Button size="icon" className="w-8 h-8" variant="outline">
             <MoreHorizontal />
@@ -121,7 +122,6 @@ export function UserActions({ user }: { user: User }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          aria-hidden={open ? "true" : "false"}
           side="bottom"
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
@@ -135,7 +135,11 @@ export function UserActions({ user }: { user: User }) {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => setOpen(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              setMenuOpen(false);
+              setIsDialogOpen(true);
+            }}
             className="text-destructive focus:text-destructive focus:bg-destructive/10"
           >
             <Trash /> Remove
@@ -143,7 +147,7 @@ export function UserActions({ user }: { user: User }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveUserDialogForm user={user} open={open} onOpenChange={setOpen} />
+      <RemoveUserDialogForm user={user} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
   );
 }

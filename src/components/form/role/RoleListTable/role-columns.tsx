@@ -37,11 +37,12 @@ export const roleColumns: ColumnDef<Role, any>[] = [
 ];
 
 export function RoleActions({ role }: { role: Role }) {
-  const [open, setOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
           <Button size="icon" className="w-8 h-8" variant="outline">
             <MoreHorizontal />
@@ -49,7 +50,6 @@ export function RoleActions({ role }: { role: Role }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          aria-hidden={open ? "true" : "false"}
           side="bottom"
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
@@ -63,7 +63,11 @@ export function RoleActions({ role }: { role: Role }) {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => setOpen(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              setMenuOpen(false);
+              setIsDialogOpen(true);
+            }}
             className="text-destructive focus:text-destructive focus:bg-destructive/10"
           >
             <Trash /> Remove
@@ -71,7 +75,7 @@ export function RoleActions({ role }: { role: Role }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveRoleDialogForm role={role} open={open} onOpenChange={setOpen} />
+      <RemoveRoleDialogForm role={role} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
   );
 }

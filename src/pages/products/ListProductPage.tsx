@@ -3,7 +3,7 @@ import { ContentWrapper } from "@/components/ContentWrapper";
 import { Heading } from "@/components/Heading";
 import { ProductListTable } from "@/components/form/product/ProductListTable";
 import { Button } from "@/components/ui/button";
-import { CreateProductDialogForm } from "@/components/form/product/CreateProductDialogForm";
+import { Link } from "react-router-dom";
 
 export function ListProductPage() {
   return (
@@ -12,12 +12,12 @@ export function ListProductPage() {
         title="Products"
         description="An easy to use UI to help administrators manage product."
         actionRight={
-          <CreateProductDialogForm>
+          <Link to={"/products/new"}>
             <Button>
               <Plus size={14} />
               Add New Product
             </Button>
-          </CreateProductDialogForm>
+          </Link>
         }
       />
 

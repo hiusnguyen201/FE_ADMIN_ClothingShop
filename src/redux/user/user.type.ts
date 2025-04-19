@@ -17,8 +17,10 @@ export interface UserState {
     getListUserPermissions: boolean;
     editListUserPermissions: boolean;
   };
+  newItem: Nullable<User>;
   item: Nullable<User>;
   list: User[];
+  initializedList: boolean;
   totalCount: number;
   error: Nullable<string>;
   listUserPermissions: Permission[];

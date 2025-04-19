@@ -31,12 +31,11 @@ export function RemoveOrderDialogForm({ order, children, open, onOpenChange }: R
 
   return (
     <AlertDialog
-      variant="destructive"
       open={open}
       trigger={children}
       onOpenChange={onOpenChange}
       title="Remove Order"
-      description={`Are you sure you want to delete order "${order.name}"?`}
+      description={`Are you sure you want to delete order "${order.code}"?`}
       onConfirm={handleRemove}
       loading={loading.removeOrder}
       cancelText="Cancel"

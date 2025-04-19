@@ -2,11 +2,14 @@ import { FormikProps } from "formik";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { useRef, useState } from "react";
-import { SearchFormField } from "../form-fields/SearchFormFIeld";
+import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
+import { Spinner } from "@/components/spinner";
+import { CommandPagination } from "@/components/CommandPagination";
+import { useEffect, useMemo, useState } from "react";
+import { normalizeVietnamese } from "@/utils/string";
 
 export type OptionItem = {
   value: string | number;
@@ -27,17 +30,23 @@ export type SelectObjectFormikFieldProps<TData extends Record<string, any>> = {
   disabled?: boolean;
   onOpenChange?: (value: boolean) => void;
   searchable?: boolean;
-  description?: string;
-  onSearchClick?: (value: string) => void;
   searchValue?: string;
   onSelectChange?: (value: string | null) => void;
+  onSearchChange?: (value: string) => void;
+  pagination?: boolean;
+  onPageChange?: (page: number) => void;
+  page?: number;
+  totalPages?: number;
+  limit?: number;
+  totalCount?: number;
+  searchInForm?: boolean;
 };
 
 export function SelectObjectFormikField<TData extends Record<string, any>>({
   name,
   switchable = false,
   label,
-  loading,
+  loading = false,
   required = false,
   className,
   options,
@@ -47,26 +56,65 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
   disabled = false,
   open,
   searchable = false,
-  description,
-  onSearchClick,
   onSelectChange,
+  onSearchChange,
   searchValue,
+  pagination,
+  onPageChange,
+  page,
+  limit,
+  totalCount,
+  searchInForm,
 }: SelectObjectFormikFieldProps<TData>) {
-  const { errors, setFieldValue, values, validateField, isSubmitting } = formikProps;
+  const isControlled = typeof open === "boolean" && typeof onOpenChange === "function";
+
+  const [internalOpen, setInternalOpen] = useState<boolean>(false);
+  const dialogOpen = isControlled ? open! : internalOpen;
+
+  const { errors, setFieldValue, values, validateField, setFieldError, isSubmitting, setFieldTouched, touched } =
+    formikProps;
 
   const currentValue: string = values[name] as string;
   const error: string = errors[name] as string;
 
+  const setDialogOpen = async (open: boolean) => {
+    if (open) {
+      setFieldError(name, undefined);
+    }
+
+    if (isControlled) {
+      onOpenChange!(open);
+    } else {
+      setInternalOpen(open);
+    }
+  };
+
+  useEffect(() => {
+    if (touched[name]) {
+      validateField(name);
+    }
+  }, [currentValue]);
+
+  const [searchInFormValue, setSearchInFormValue] = useState<string>("");
+
+  const filterOptions = useMemo(() => {
+    return searchInForm
+      ? options.filter((item) => {
+          return normalizeVietnamese(item.title).includes(normalizeVietnamese(searchInFormValue));
+        })
+      : options;
+  }, [options, searchInFormValue]);
+
   return (
-    <div className={cn("w-full h-full", isSubmitting && "opacity-50", className)}>
+    <div className={cn("w-full", isSubmitting && "opacity-50", className)}>
       {label && (
         <Label className={cn("select-none mb-2 block items-center", error && "text-red-500")}>
           {label} {required && <span>*</span>}
         </Label>
       )}
 
-      <div className="flex font-normal bg-transparent text-base md:text-sm w-full gap-5 h-full">
-        <Popover open={open} onOpenChange={onOpenChange}>
+      <div className="flex font-normal bg-transparent text-base md:text-sm w-full gap-5">
+        <Popover open={dialogOpen} onOpenChange={setDialogOpen}>
           <PopoverTrigger
             asChild
             disabled={isSubmitting || disabled}
@@ -81,23 +129,29 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          {!loading && (
-            <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]" align="start">
-              <Command className="max-h-[312px]">
-                {searchable && (
-                  <SearchFormField
-                    className="focus-within:ring-0 rounded-none border-b border-t-0 border-x-0"
-                    name={name}
-                    value={searchValue}
-                    onSearchClick={onSearchClick}
-                    placeholder={placeHolder}
-                  />
-                )}
+          <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]" align="start">
+            <Command className="max-h-[312px]">
+              {searchable && (
+                <SearchFormField
+                  className="focus-within:ring-0 rounded-none border-b border-t-0 border-x-0"
+                  name={name}
+                  type="change"
+                  value={searchInForm ? searchInFormValue : searchValue ?? ""}
+                  onValueChange={(value) => {
+                    onSearchChange?.(value);
+                    if (searchInForm) {
+                      setSearchInFormValue(value);
+                    }
+                  }}
+                  placeholder={placeHolder}
+                />
+              )}
 
-                <CommandList>
-                  <CommandEmpty>No select options.</CommandEmpty>
+              <CommandList>
+                <CommandEmpty>{loading ? <Spinner /> : <span>No select options.</span>}</CommandEmpty>
+                {!loading && (
                   <CommandGroup>
-                    {options.map((opt) => {
+                    {filterOptions.map((opt) => {
                       const isSelected = currentValue === opt.value;
                       return (
                         <CommandItem
@@ -107,7 +161,11 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
                             if (!switchable && currentValue === opt.value) return;
                             const val = currentValue === opt.value ? null : opt.value;
                             setFieldValue(name, val);
+                            setFieldTouched(name);
                             onSelectChange?.(val ? val.toString() : null);
+                            if (val) {
+                              setDialogOpen(false);
+                            }
                           }}
                           className="cursor-pointer"
                         >
@@ -117,11 +175,19 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
                       );
                     })}
                   </CommandGroup>
-                  {description && <CommandGroup className="py-[6px] px-2 text-sm">{description}</CommandGroup>}
-                </CommandList>
-              </Command>
-            </PopoverContent>
-          )}
+                )}
+              </CommandList>
+              {pagination && (
+                <CommandPagination
+                  page={page ?? 1}
+                  totalPages={Math.max(1, Math.ceil((totalCount ?? 0) / (limit ?? 10)))}
+                  onPageChange={(page) => {
+                    onPageChange?.(page);
+                  }}
+                />
+              )}
+            </Command>
+          </PopoverContent>
         </Popover>
       </div>
 
@@ -129,26 +195,3 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
     </div>
   );
 }
-
-// 'button' |
-//   'checkbox' |
-//   'color' |
-//   'date' |
-//   'datetime-local' |
-//   'email' |
-//   'file' |
-//   'hidden' |
-//   'image' |
-//   'month' |
-//   'number' |
-//   'password' |
-//   'radio' |
-//   'range' |
-//   'reset' |
-//   'search' |
-//   'submit' |
-//   'tel' |
-//   'text' |
-//   'time' |
-//   'url' |
-//   'week';

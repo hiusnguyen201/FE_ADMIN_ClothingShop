@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 export type TruncatedTextWithTooltipProps = {
   children?: string | ReactNode;
   className?: string;
+  lineClamp?: number;
 };
 
-export const TruncatedTextWithTooltip = ({ children, className }: TruncatedTextWithTooltipProps) => {
+export const TruncatedTextWithTooltip = ({ children, className, lineClamp = 1 }: TruncatedTextWithTooltipProps) => {
   const textRef: LegacyRef<HTMLButtonElement> = useRef(null);
   const [isTruncated, setIsTruncated] = useState(false);
 
@@ -30,7 +31,22 @@ export const TruncatedTextWithTooltip = ({ children, className }: TruncatedTextW
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger
-          className={cn("truncate w-full text-start", isTruncated ? "cursor-pointer" : "cursor-default", className)}
+          style={
+            lineClamp > 1
+              ? {
+                  display: "-webkit-box",
+                  WebkitLineClamp: lineClamp,
+                  WebkitBoxOrient: "vertical",
+                  overflow: "hidden",
+                }
+              : {}
+          }
+          className={cn(
+            "w-full max-w-full text-start",
+            isTruncated ? "cursor-pointer" : "cursor-default",
+            lineClamp === 1 ? "truncate" : "",
+            className
+          )}
           ref={textRef}
         >
           {children}

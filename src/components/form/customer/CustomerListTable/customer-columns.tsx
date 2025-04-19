@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Clipboard, Mail, MoreHorizontal, Phone, Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -28,7 +28,7 @@ export const customerColumns: ColumnDef<Customer, any>[] = [
 
       return (
         <FlexBox size="small" direction="row" className="items-center">
-          <Avatar className="h-10 w-10 rounded-lg">
+          <Avatar className="h-10 w-10 rounded-full border">
             {customer.avatar && <AvatarImage src={customer.avatar} alt={customer.name} />}
             <AvatarFallback className="rounded-full capitalize">{customer.name.charAt(0)}</AvatarFallback>
           </Avatar>
@@ -99,11 +99,12 @@ export const customerColumns: ColumnDef<Customer, any>[] = [
 ];
 
 export function CustomerActions({ customer }: { customer: Customer }) {
-  const [open, setOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
           <Button size="icon" className="w-8 h-8" variant="outline">
             <MoreHorizontal />
@@ -111,7 +112,6 @@ export function CustomerActions({ customer }: { customer: Customer }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          aria-hidden={open ? "true" : "false"}
           side="bottom"
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
@@ -125,15 +125,18 @@ export function CustomerActions({ customer }: { customer: Customer }) {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => setOpen(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              setMenuOpen(false);
+              setIsDialogOpen(true);
+            }}
             className="text-destructive focus:text-destructive focus:bg-destructive/10"
           >
             <Trash /> Remove
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <RemoveCustomerDialogForm customer={customer} open={open} onOpenChange={setOpen} />
+      <RemoveCustomerDialogForm customer={customer} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
   );
 }

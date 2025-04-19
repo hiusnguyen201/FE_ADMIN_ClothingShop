@@ -10,6 +10,7 @@ export interface PermissionState {
     getListPermission: boolean;
   };
   item: Nullable<Permission>;
+  initializedList: boolean;
   list: Permission[];
   totalCount: number;
   error: Nullable<string>;

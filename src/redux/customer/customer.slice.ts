@@ -23,7 +23,9 @@ const initialState: CustomerState = {
     editCustomer: false,
     removeCustomer: false,
   },
+  newItem: null,
   item: null,
+  initializedList: false,
   list: [],
   totalCount: 0,
   error: null,
@@ -44,12 +46,12 @@ const customerSlice = createSlice({
         const { data } = action.payload;
         state.loading.createCustomer = false;
         state.error = null;
-        state.item = data;
+        state.newItem = data;
       })
       .addCase(createCustomer.rejected, (state, action: PayloadAction<any>) => {
         state.loading.createCustomer = false;
         state.error = action.payload;
-        state.item = null;
+        state.newItem = null;
       });
 
     builder
@@ -65,6 +67,7 @@ const customerSlice = createSlice({
           state.loading.getListCustomer = false;
           state.error = null;
           state.list = data.list;
+          state.initializedList = true;
           state.totalCount = data.totalCount;
         }
       )
@@ -73,6 +76,7 @@ const customerSlice = createSlice({
         state.error = action.payload as string;
         state.list = [];
         state.totalCount = 0;
+        state.initializedList = true;
       });
 
     builder

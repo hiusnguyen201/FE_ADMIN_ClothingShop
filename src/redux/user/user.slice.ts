@@ -30,7 +30,9 @@ const initialState: UserState = {
     getListUserPermissions: false,
     editListUserPermissions: false,
   },
+  newItem: null,
   item: null,
+  initializedList: false,
   list: [],
   totalCount: 0,
   error: null,
@@ -67,12 +69,12 @@ const userSlice = createSlice({
         const { data } = action.payload;
         state.loading.createUser = false;
         state.error = null;
-        state.item = data;
+        state.newItem = data;
       })
       .addCase(createUser.rejected, (state, action: PayloadAction<any>) => {
         state.loading.createUser = false;
         state.error = action.payload;
-        state.item = null;
+        state.newItem = null;
       });
 
     builder
@@ -87,12 +89,14 @@ const userSlice = createSlice({
         state.error = null;
         state.list = data.list;
         state.totalCount = data.totalCount;
+        state.initializedList = true;
       })
       .addCase(getListUser.rejected, (state: Draft<UserState>, action: PayloadAction<any>) => {
         state.loading.getListUser = false;
         state.error = action.payload as string;
         state.list = [];
         state.totalCount = 0;
+        state.initializedList = true;
       });
 
     builder

@@ -28,7 +28,9 @@ const initialState: ProductState = {
     editProductVariants: false,
     removeProduct: false,
   },
+  newItem: null,
   item: null,
+  initializedList: false,
   list: [],
   totalCount: 0,
   error: null,
@@ -64,12 +66,12 @@ const productSlice = createSlice({
         const { data } = action.payload;
         state.loading.createProduct = false;
         state.error = null;
-        state.item = data;
+        state.newItem = data;
       })
       .addCase(createProduct.rejected, (state, action: PayloadAction<any>) => {
         state.loading.createProduct = false;
         state.error = action.payload;
-        state.item = null;
+        state.newItem = null;
       });
 
     builder
@@ -86,6 +88,7 @@ const productSlice = createSlice({
           state.error = null;
           state.list = data.list;
           state.totalCount = data.totalCount;
+          state.initializedList = true;
         }
       )
       .addCase(getListProduct.rejected, (state: Draft<ProductState>, action: PayloadAction<any>) => {
@@ -93,6 +96,7 @@ const productSlice = createSlice({
         state.error = action.payload as string;
         state.list = [];
         state.totalCount = 0;
+        state.initializedList = true;
       });
 
     builder

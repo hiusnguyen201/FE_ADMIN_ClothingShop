@@ -15,8 +15,10 @@ import { ListProductPage, DetailsProductPage } from "@/pages/products";
 import { ProductExistsGuard } from "@/guards/product/ProductExistsGuard";
 import { DetailsCustomerPage, ListCustomerPage } from "@/pages/customers";
 import { CustomerExistsGuard } from "@/guards/customer/CustomerExistsGuard";
-import { ListOrderPage } from "@/pages/orders";
+import { DetailsOrderPage, ListOrderPage } from "@/pages/orders";
 import { CreateOrderPage } from "@/pages/orders/CreateOrderPage";
+import { CreateProductPage } from "@/pages/products/CreateProductPage";
+import { OrderExistsGuard } from "@/guards/order/OrderExistsGuard";
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -28,6 +30,7 @@ export const privateRoutes: RouteObject[] = [
     children: [
       { path: "/", element: <DashboardPage /> },
       { path: "/products", element: <ListProductPage /> },
+      { path: "/products/new", element: <CreateProductPage /> },
       {
         path: "/products/:productId/settings",
         element: <ProductExistsGuard children={DetailsProductPage} />,
@@ -57,10 +60,10 @@ export const privateRoutes: RouteObject[] = [
       },
       { path: "/orders", element: <ListOrderPage /> },
       { path: "/orders/create", element: <CreateOrderPage /> },
-      // {
-      //   path: "/orders/:orderId/settings",
-      //   element: <UserExistsGuard children={DetailsUserPage} />,
-      // },
+      {
+        path: "/orders/:orderCode",
+        element: <OrderExistsGuard children={DetailsOrderPage} />,
+      },
       { path: "/roles", element: <ListRolePage /> },
       {
         path: "/roles/:roleId/settings",

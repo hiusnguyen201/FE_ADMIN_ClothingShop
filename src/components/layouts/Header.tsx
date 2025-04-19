@@ -1,24 +1,15 @@
 import { NavUser } from "@/components/layouts/NavUser";
-import { Button } from "@/components/ui/button";
-import { useSidebar } from "@/components/ui/sidebar";
-import { PanelLeft } from "lucide-react";
+import { Wallet } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Header() {
-  const { toggleSidebar, isMobile } = useSidebar();
-
   return (
-    <header className="px-2 border-b flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-      <div>
-        {isMobile && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="border-t  w-full p-4 h-auto justify-end"
-            onClick={toggleSidebar}
-          >
-            <PanelLeft />
-          </Button>
-        )}
+    <header className="bg-black z-50 left-0 right-0 fixed top-0 w-full px-2 border-b flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+      <div className="flex items-center">
+        <Link to={"/"} className="flex h-12 items-center gap-2 text-white px-6">
+          <Wallet className="h-6 w-6" />
+          <span className="font-bold">Vaultify</span>
+        </Link>
       </div>
 
       <div>

@@ -15,39 +15,38 @@ import { customerColumns } from "./customer-columns";
 export function CustomerListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading } = useAppSelector<CustomerState>((state) => state.customer);
+  const { list, totalCount, loading, initializedList } = useAppSelector<CustomerState>((state) => state.customer);
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useCustomerTableFilters({
     searchParams,
   });
 
-  const handleGetCustomerList = async () => {
-    try {
-      await dispatch(getListCustomer(filters)).unwrap();
-    } catch (error: any) {
-      toast({ title: error, variant: "destructive" });
-    }
-  };
-
   useEffect(() => {
-    setSearchParams(convertToSearchParams(searchParams));
-    handleGetCustomerList();
+    setSearchParams(convertToSearchParams(filters));
+    (async () => {
+      try {
+        await dispatch(getListCustomer(filters)).unwrap();
+      } catch (error: any) {
+        toast({ title: error, variant: "destructive" });
+      }
+    })();
   }, [filters, dispatch]);
 
   return (
-    <DataTableLoading loading={loading.getListCustomer} className="flex flex-col gap-6 w-full">
+    <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
       <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListCustomer}
           className="col-span-3 sm:col-span-2"
           value={filters.keyword}
-          onSearchClick={(value) => handleKeywordChange(value)}
+          onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
         />
       </div>
 
       <DataTable
         data={list}
+        loading={loading.getListCustomer}
         placeholder="No customers found. Note: if a customer was just created/deleted, it takes some time for it to be indexed."
         columns={customerColumns}
         heightPerRow={77}

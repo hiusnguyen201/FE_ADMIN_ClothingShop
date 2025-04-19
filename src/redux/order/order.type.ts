@@ -1,7 +1,8 @@
 import { Nullable, Optional } from "@/types/common";
 import { BaseResponse, GetListParams, GetListResponseData } from "@/types/response";
-import { Order } from "@/types/order";
-import { PAYMENT_METHOD } from "@/types/payment";
+import { Order, ORDER_STATUS } from "@/types/order";
+import { ONLINE_PAYMENT_METHOD } from "@/types/payment";
+import { ProductVariant } from "@/types/product";
 
 /**
  * State
@@ -14,7 +15,9 @@ export interface OrderState {
     editOrder: boolean;
     removeOrder: boolean;
   };
+  newItem: Nullable<Order>;
   item: Nullable<Order>;
+  initializedList: boolean;
   list: Order[];
   totalCount: number;
   error: Nullable<string>;
@@ -23,10 +26,6 @@ export interface OrderState {
 /**
  * Create Order
  */
-type CreateOrderItemPayload = {
-  variantId: string;
-  quantity: number;
-};
 
 export type CreateOrderPayload = {
   // Customer info
@@ -39,13 +38,15 @@ export type CreateOrderPayload = {
   provinceCode: string;
   districtCode: string;
   wardCode: string;
-  shippingAddress: string;
+  address: string;
 
   // Items
-  productVariants: CreateOrderItemPayload[];
+  productVariants: (ProductVariant & { product: { id: string; name: string; thumbnail: string } })[];
 
   // Payment
-  paymentMethod: PAYMENT_METHOD;
+  paymentMethod: ONLINE_PAYMENT_METHOD;
+
+  selectedProductId: string;
 };
 export interface CreateOrderResponse extends BaseResponse<Order> {}
 
@@ -54,7 +55,8 @@ export interface CreateOrderResponse extends BaseResponse<Order> {}
  */
 type OrderFieldsSort = Extract<"name" | "email" | "createdAt", Order>;
 export interface GetListOrderPayload extends GetListParams<Order> {
-  sortBy: Optional<Nullable<OrderFieldsSort>>;
+  sortBy?: Optional<Nullable<OrderFieldsSort>>;
+  status?: Optional<Nullable<ORDER_STATUS>>;
 }
 export interface GetListOrderResponse extends GetListResponseData<Order> {}
 

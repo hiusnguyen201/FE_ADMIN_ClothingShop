@@ -38,6 +38,7 @@ export function ImageFormikField<TData>({
     maxFiles: 1,
     maxSize: maxFileSize,
     accept: {
+      "image/webp": [".webpg"],
       "image/jpeg": [".jpg", ".jpeg"],
       "image/png": [".png"],
     },
@@ -144,7 +145,7 @@ export function ImageFormikField<TData>({
         <ul className="ml-5 mt-3 text-sm list-disc text-gray-500">
           <li>Upload 1:1 image</li>
           <li>Size: Max {maxFileSize / (1024 * 1024)}MB</li>
-          <li>Format: JPG, JPNG, PNG</li>
+          <li>Format: JPG, JPNG, PNG, WEBP</li>
         </ul>
       )}
     </section>

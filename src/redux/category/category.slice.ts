@@ -28,7 +28,10 @@ const initialState: CategoryState = {
     removeCategory: false,
     getListSubcategory: false,
   },
+  newItem: null,
   item: null,
+  initializedList: false,
+  initializedSubList: false,
   list: [],
   listSub: [],
   totalCount: 0,
@@ -65,12 +68,12 @@ const roleSlice = createSlice({
         const { data } = action.payload;
         state.loading.createCategory = false;
         state.error = null;
-        state.item = data;
+        state.newItem = data;
       })
       .addCase(createCategory.rejected, (state, action: PayloadAction<any>) => {
         state.loading.createCategory = false;
         state.error = action.payload;
-        state.item = null;
+        state.newItem = null;
       });
 
     builder
@@ -84,6 +87,7 @@ const roleSlice = createSlice({
         (state: Draft<CategoryState>, action: PayloadAction<GetListCategoryResponse>) => {
           const { data } = action.payload;
           state.loading.getListCategory = false;
+          state.initializedList = true;
           state.error = null;
           state.list = data.list;
           state.totalCount = data.totalCount;
@@ -93,6 +97,7 @@ const roleSlice = createSlice({
         state.loading.getListCategory = false;
         state.error = action.payload as string;
         state.list = [];
+        state.initializedList = true;
         state.totalCount = 0;
       });
 
@@ -169,12 +174,14 @@ const roleSlice = createSlice({
           state.loading.getListSubcategory = false;
           state.error = null;
           state.listSub = data.list;
+          state.initializedSubList = true;
         }
       )
       .addCase(getListSubcategory.rejected, (state: Draft<CategoryState>, action: PayloadAction<any>) => {
         state.loading.getListSubcategory = false;
         state.error = action.payload as string;
         state.listSub = [];
+        state.initializedSubList = true;
       });
   },
 });

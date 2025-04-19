@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { GetListCustomerPayload } from "@/redux/customer/customer.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
+import { useDebouncedCallback } from "use-debounce";
 
 const initialFilters: GetListCustomerPayload = {
   page: 1,
@@ -21,9 +22,9 @@ export function useCustomerTableFilters(props?: { searchParams?: URLSearchParams
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
-  const handleKeywordChange = (keyword: string) => {
+  const handleKeywordChange = useDebouncedCallback((keyword: string) => {
     setFilters((prev) => ({ ...prev, keyword, page: 1 }));
-  };
+  }, 500);
 
   return { filters, handlePageChange, handleLimitChange, handleKeywordChange };
 }

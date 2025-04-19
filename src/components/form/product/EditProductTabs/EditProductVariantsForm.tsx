@@ -36,7 +36,7 @@ const editProductVariantsSchema = Yup.object({
       Yup.object({
         quantity: Yup.number().required().min(0).max(10000000),
         price: Yup.number().required().min(1000).max(100000000),
-        sku: Yup.string().min(8).max(16).nullable(),
+        sku: Yup.string().min(8).max(16).required(),
         variantValues: Yup.array()
           .of(
             Yup.object({
@@ -149,8 +149,9 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
     <FlexBox size="large" onSubmit={handleSubmit} component="form">
       <FlexBox>
         <OptionGroup
+          loading={loadingOption.getListOption}
           error={typeof errors.options === "string" ? errors.options : undefined}
-          className="flex-1 max-w-[600px]"
+          className="flex-1 md:max-w-[600px]"
           option={{
             id: "variants",
             name: "Variants",
@@ -174,6 +175,7 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
               const option = options.find((item) => item.name === opt.option);
               return option ? (
                 <OptionGroup
+                  loading={loadingOption.getListOption}
                   error={
                     Array.isArray(errors.options) && typeof errors.options[index] === "object"
                       ? (errors.options[index] as any).selectedValues

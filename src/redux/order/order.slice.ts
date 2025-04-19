@@ -17,7 +17,9 @@ const initialState: OrderState = {
     editOrder: false,
     removeOrder: false,
   },
+  newItem: null,
   item: null,
+  initializedList: false,
   list: [],
   totalCount: 0,
   error: null,
@@ -38,12 +40,12 @@ const orderSlice = createSlice({
         const { data } = action.payload;
         state.loading.createOrder = false;
         state.error = null;
-        state.item = data;
+        state.newItem = data;
       })
       .addCase(createOrder.rejected, (state, action: PayloadAction<any>) => {
         state.loading.createOrder = false;
         state.error = action.payload;
-        state.item = null;
+        state.newItem = null;
       });
 
     builder
@@ -58,12 +60,14 @@ const orderSlice = createSlice({
         state.error = null;
         state.list = data.list;
         state.totalCount = data.totalCount;
+        state.initializedList = true;
       })
       .addCase(getListOrder.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
         state.loading.getListOrder = false;
         state.error = action.payload as string;
         state.list = [];
         state.totalCount = 0;
+        state.initializedList = true;
       });
 
     builder

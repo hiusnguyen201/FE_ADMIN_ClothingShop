@@ -23,21 +23,17 @@ apiInstance.interceptors.response.use(
     if (!error.config) {
       return Promise.reject(error);
     }
-
     const originalRequest: AxiosRequestConfig & { _retry?: boolean } = error.config;
     const responseData = error.response?.data as BaseResponse<null>;
+    originalRequest._retry = false;
 
     if (error.response?.status === 401 && responseData.codeMessage === "INVALID_TOKEN" && !originalRequest._retry) {
       try {
         originalRequest._retry = true;
-
         const response = await refreshTokenFn();
         if (response && response.code === 200) {
           originalRequest._retry = false;
           return apiInstance(originalRequest);
-        } else {
-          originalRequest._retry = false;
-          return Promise.reject(error);
         }
       } catch (e: any) {
         return Promise.reject(e);

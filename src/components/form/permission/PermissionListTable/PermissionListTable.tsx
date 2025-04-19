@@ -15,7 +15,7 @@ import { permissionColumns } from "./permission-columns";
 export function PermissionListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading } = useAppSelector<PermissionState>((state) => state.permission);
+  const { list, totalCount, loading, initializedList } = useAppSelector<PermissionState>((state) => state.permission);
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = usePermissionTableFilters({
     searchParams,
   });
@@ -29,25 +29,26 @@ export function PermissionListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(searchParams));
+    setSearchParams(convertToSearchParams(filters));
     handleGetPermissionList();
   }, [filters, dispatch]);
 
   return (
-    <DataTableLoading loading={loading.getListPermission} className="flex flex-col gap-6 w-full">
+    <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
       <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListPermission}
           className="col-span-3 sm:col-span-2"
           value={filters.keyword}
-          onSearchClick={(value) => handleKeywordChange(value)}
+          onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
         />
       </div>
 
       <DataTable
         data={list}
+        loading={loading.getListPermission}
         placeholder="No permissions found. Note: if a permission was just created/deleted, it takes some time for it to be indexed."
         columns={permissionColumns}
       />

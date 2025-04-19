@@ -9,6 +9,7 @@ import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, Command
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Spinner } from "@/components/spinner";
 
 interface OptionGroupProps {
   option: Option;
@@ -16,9 +17,17 @@ interface OptionGroupProps {
   onSelectionChange: (selectedValues: string[]) => void;
   className?: string;
   error?: string;
+  loading?: boolean;
 }
 
-export function OptionGroup({ option, selectedValues, onSelectionChange, className, error }: OptionGroupProps) {
+export function OptionGroup({
+  option,
+  selectedValues,
+  onSelectionChange,
+  className,
+  error,
+  loading = false,
+}: OptionGroupProps) {
   const [open, setOpen] = useState(false);
 
   const handleToggleValue = (value: string) => {
@@ -45,23 +54,25 @@ export function OptionGroup({ option, selectedValues, onSelectionChange, classNa
             <Command className="max-h-[312px]">
               <CommandInput placeholder={`Search ${option.name}...`} />
               <CommandList>
-                <CommandEmpty>No {option.name} values found.</CommandEmpty>
-                <CommandGroup>
-                  {option.optionValues.map((optionValue) => {
-                    const isSelected = selectedValues.includes(optionValue.valueName);
-                    return (
-                      <CommandItem
-                        key={optionValue.id}
-                        value={optionValue.valueName}
-                        className="cursor-pointer"
-                        onSelect={() => handleToggleValue(optionValue.valueName)}
-                      >
-                        <span>{optionValue.valueName}</span>
-                        {isSelected && <Check className="ml-auto h-4 w-4" />}
-                      </CommandItem>
-                    );
-                  })}
-                </CommandGroup>
+                <CommandEmpty>{loading ? <Spinner /> : <span>No {option.name} values found.</span>}</CommandEmpty>
+                {!loading && (
+                  <CommandGroup>
+                    {option.optionValues.map((optionValue) => {
+                      const isSelected = selectedValues.includes(optionValue.valueName);
+                      return (
+                        <CommandItem
+                          key={optionValue.id}
+                          value={optionValue.valueName}
+                          className="cursor-pointer"
+                          onSelect={() => handleToggleValue(optionValue.valueName)}
+                        >
+                          <span>{optionValue.valueName}</span>
+                          {isSelected && <Check className="ml-auto h-4 w-4" />}
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                )}
               </CommandList>
             </Command>
           </PopoverContent>

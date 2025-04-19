@@ -24,7 +24,7 @@ export function LoadingButton({
 }: LoadingButtonProps) {
   return (
     <Button
-      className={cn("rounded text-sm font-medium min-w-16 flex items-center gap-1", className)}
+      className={cn("rounded text-sm font-medium min-w-[120px] flex items-center gap-1", className)}
       variant={variant}
       onClick={onClick}
       disabled={disabled}

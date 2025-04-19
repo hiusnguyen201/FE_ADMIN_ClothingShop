@@ -31,7 +31,6 @@ export function RemoveUserDialogForm({ user, children, open, onOpenChange }: Rem
 
   return (
     <AlertDialog
-      variant="destructive"
       open={open}
       trigger={children}
       onOpenChange={onOpenChange}

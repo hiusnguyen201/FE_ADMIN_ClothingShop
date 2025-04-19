@@ -15,8 +15,11 @@ export interface CategoryState {
     removeCategory: boolean;
     getListSubcategory: boolean;
   };
+  newItem: Nullable<Category>;
   item: Nullable<Category>;
   list: Category[];
+  initializedList: boolean;
+  initializedSubList: boolean;
   listSub: Category[];
   totalCount: number;
   error: Nullable<string>;

@@ -16,7 +16,7 @@ export function SubcategoryListTable({
   columns: ColumnDef<Category, any>[];
 }) {
   const dispatch = useAppDispatch();
-  const { listSub, loading } = useAppSelector<CategoryState>((state) => state.category);
+  const { listSub, loading, initializedSubList } = useAppSelector<CategoryState>((state) => state.category);
 
   const handleGetListSubcategory = async () => {
     try {
@@ -31,8 +31,9 @@ export function SubcategoryListTable({
   }, [dispatch]);
 
   return (
-    <DataTableLoading loading={loading.getListSubcategory} className="flex flex-col gap-6 w-full">
+    <DataTableLoading initialized={initializedSubList} className="flex flex-col gap-6 w-full">
       <DataTable
+        loading={loading.getListSubcategory}
         data={listSub}
         placeholder="No categories found. Note: if a category was just created/deleted, it takes some time for it to be indexed."
         columns={columns}

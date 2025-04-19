@@ -10,7 +10,7 @@ import { Role } from "@/types/role";
 type RemoveRolePermissionDialogFormProps = {
   role: Role;
   permission: Permission;
-  children?: ReactNode;
+  children: ReactNode;
   open?: boolean;
   onOpenChange?: (value: boolean) => void;
 };
@@ -38,7 +38,6 @@ export function RemoveRolePermissionDialogForm({
 
   return (
     <AlertDialog
-      variant="destructive"
       open={open}
       trigger={children}
       onOpenChange={onOpenChange}

@@ -10,13 +10,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Product } from "@/types/product";
+import { Product, PRODUCT_STATUS } from "@/types/product";
 // import { RemoveProductDialogForm } from "@/components/form/product/RemoveProductDialogForm";
 import { FlexBox } from "@/components/FlexBox";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
-import { Tag } from "@/components/Tag";
 import { RemoveProductDialogForm } from "@/components/form/product/RemoveProductDialogForm";
+import { Badge } from "@/components/ui/badge";
+import { formatCurrencyVND } from "@/utils/string";
 
 export const productColumns: ColumnDef<Product, any>[] = [
   {
@@ -25,19 +26,75 @@ export const productColumns: ColumnDef<Product, any>[] = [
     minSize: 300,
     cell: ({ row }) => (
       <FlexBox size="small" direction="row" className="items-center">
-        <Avatar className="h-20 w-20 rounded border">
+        <Avatar className="h-16 w-16 rounded border">
           <AvatarImage className="object-contain" src={row.original.thumbnail} alt={row.original.name} />
           <AvatarFallback className="rounded-full capitalize">{row.original.name.charAt(0)}</AvatarFallback>
         </Avatar>
-        <FlexBox className="gap-1">
-          <Tag className="capitalize">{row.original.status}</Tag>
-          <TruncatedTextWithTooltip className="max-w-[300px]">
-            <Link className="text-blue-500" to={"/products/" + row.original.id + "/settings"}>
-              {row.original.name}
-            </Link>
-          </TruncatedTextWithTooltip>
-        </FlexBox>
+        <TruncatedTextWithTooltip lineClamp={2} className="max-w-[300px]">
+          <Link className="text-blue-500 w-full" to={"/products/" + row.original.id + "/settings"}>
+            {row.original.name}
+          </Link>
+        </TruncatedTextWithTooltip>
       </FlexBox>
+    ),
+  },
+  {
+    accessorKey: "category",
+    header: "Category",
+    minSize: 150,
+    maxSize: 150,
+    cell: ({ row }) => (
+      <div>
+        <div>{row.original.category.name}</div>
+        {row.original.subCategory && (
+          <div className="text-xs text-muted-foreground">{row.original.subCategory?.name}</div>
+        )}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    minSize: 120,
+    maxSize: 150,
+    cell: ({ row }) => {
+      // ASC prices
+      const prices = row.original.productVariants.map((item) => item.price).sort((a, b) => a - b);
+      return (
+        <div>
+          {formatCurrencyVND(prices[0])} ~ {formatCurrencyVND(prices[prices.length - 1])}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "stock",
+    header: "Stock",
+    minSize: 120,
+    maxSize: 120,
+    cell: ({ row }) => {
+      const stock = row.original.productVariants.reduce((prev, curr) => prev + curr.quantity, 0);
+      return (
+        <div className="flex items-center">
+          {stock > 0 ? (
+            <span className="text-green-600">{stock}</span>
+          ) : (
+            <span className="text-red-600">Out of stock</span>
+          )}
+          <span className="text-xs text-muted-foreground ml-1">({row.original.productVariants.length} variants)</span>
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    minSize: 100,
+    maxSize: 120,
+    cell: ({ row }) => (
+      <Badge className="capitalize" variant={row.original.status === PRODUCT_STATUS.ACTIVE ? "default" : "outline"}>
+        {row.original.status}
+      </Badge>
     ),
   },
   {
@@ -52,11 +109,12 @@ export const productColumns: ColumnDef<Product, any>[] = [
 ];
 
 export function ProductActions({ product }: { product: Product }) {
-  const [open, setOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setMenuOpen}>
         <DropdownMenuTrigger asChild>
           <Button size="icon" className="w-8 h-8" variant="outline">
             <MoreHorizontal />
@@ -64,7 +122,6 @@ export function ProductActions({ product }: { product: Product }) {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent
-          aria-hidden={open ? "true" : "false"}
           side="bottom"
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
@@ -78,7 +135,11 @@ export function ProductActions({ product }: { product: Product }) {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
-            onClick={() => setOpen(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              setMenuOpen(false);
+              setIsDialogOpen(true);
+            }}
             className="text-destructive focus:text-destructive focus:bg-destructive/10"
           >
             <Trash /> Remove
@@ -86,7 +147,7 @@ export function ProductActions({ product }: { product: Product }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveProductDialogForm product={product} open={open} onOpenChange={setOpen} />
+      <RemoveProductDialogForm product={product} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
   );
 }

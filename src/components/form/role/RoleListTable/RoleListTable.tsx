@@ -15,7 +15,7 @@ import { roleColumns } from "./role-columns";
 export function RoleListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading } = useAppSelector<RoleState>((state) => state.role);
+  const { list, totalCount, loading, initializedList } = useAppSelector<RoleState>((state) => state.role);
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useRoleTableFilters({ searchParams });
 
   const handleGetRoleList = async () => {
@@ -27,25 +27,26 @@ export function RoleListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(searchParams));
+    setSearchParams(convertToSearchParams(filters));
     handleGetRoleList();
   }, [filters, dispatch]);
 
   return (
-    <DataTableLoading loading={loading.getListRole} className="flex flex-col gap-6 w-full">
+    <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
       <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListRole}
           className="col-span-3 sm:col-span-2"
           value={filters.keyword}
-          onSearchClick={(value) => handleKeywordChange(value)}
+          onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
         />
       </div>
 
       <DataTable
         data={list}
+        loading={loading.getListRole}
         placeholder="No roles found. Note: if a role was just created/deleted, it takes some time for it to be indexed."
         columns={roleColumns}
         heightPerRow={77}

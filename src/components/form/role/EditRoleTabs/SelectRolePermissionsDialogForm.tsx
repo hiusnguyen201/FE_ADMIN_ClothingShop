@@ -124,12 +124,7 @@ export function SelectRolePermissionsDialogForm({
               >
                 None
               </Button>
-              <SearchFormField
-                type="change"
-                name="search"
-                placeholder="Filter Permissions"
-                onValueChange={(value) => setSearch(value)}
-              />
+              <SearchFormField name="search" placeholder="Filter Permissions" onValueChange={setSearch} />
             </div>
           </div>
 

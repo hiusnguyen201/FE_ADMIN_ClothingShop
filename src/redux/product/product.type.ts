@@ -15,8 +15,10 @@ export interface ProductState {
     editProductVariants: boolean;
     removeProduct: boolean;
   };
+  newItem: Nullable<Product>;
   item: Nullable<Product>;
   list: Product[];
+  initializedList: boolean;
   totalCount: number;
   error: Nullable<string>;
 }
@@ -49,6 +51,8 @@ export interface CreateProductResponse extends BaseResponse<Product> {}
 type ProductFieldsSort = Extract<"name" | "email" | "createdAt", Product>;
 export interface GetListProductPayload extends GetListParams<Product> {
   sortBy?: Optional<Nullable<ProductFieldsSort>>;
+  status?: Optional<Nullable<PRODUCT_STATUS>>;
+  category?: Optional<Nullable<string>>;
 }
 export interface GetListProductResponse extends GetListResponseData<Product> {}
 

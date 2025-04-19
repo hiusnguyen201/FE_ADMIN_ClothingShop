@@ -10,6 +10,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useRolePermissionsTableFilters } from "./useRolePermissionsTableFilters";
 import { useSearchParams } from "react-router-dom";
 import { convertToSearchParams } from "@/utils/object";
+import { RoleState } from "@/redux/role/role.type";
 
 export function RolePermissionsListTable({
   role,
@@ -20,7 +21,11 @@ export function RolePermissionsListTable({
 }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { assignedRolePermissions, loading: roleLoading } = useAppSelector((state) => state.role);
+  const {
+    assignedRolePermissions,
+    loading: roleLoading,
+    initializedListRolePermission,
+  } = useAppSelector<RoleState>((state) => state.role);
   const { filters } = useRolePermissionsTableFilters({ searchParams, roleId: role.id });
 
   const fetchPermissions = useCallback(async () => {
@@ -32,14 +37,15 @@ export function RolePermissionsListTable({
   }, [filters]);
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(searchParams));
+    setSearchParams(convertToSearchParams(filters));
     fetchPermissions();
   }, [filters]);
 
   return (
     <FlexBox className="w-full items-center">
-      <DataTableLoading loading={roleLoading.getListAssignedRolePermissions} className="flex flex-col gap-6 w-full">
+      <DataTableLoading initialized={initializedListRolePermission} className="flex flex-col gap-6 w-full">
         <DataTable
+          loading={roleLoading.getListAssignedRolePermissions}
           data={assignedRolePermissions.map((permission) => ({ role, permission }))}
           placeholder="No roles found. Note: if a role was just created/deleted, it takes some time for it to be indexed."
           columns={columns}

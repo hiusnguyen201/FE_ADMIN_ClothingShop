@@ -38,7 +38,6 @@ export function RemoveCategoryDialogForm({
 
   return (
     <AlertDialog
-      variant="destructive"
       open={open}
       trigger={children}
       onOpenChange={onOpenChange}
