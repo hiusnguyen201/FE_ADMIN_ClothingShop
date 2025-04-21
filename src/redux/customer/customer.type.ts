@@ -19,6 +19,7 @@ export interface CustomerState {
   initializedList: boolean;
   totalCount: number;
   error: Nullable<string>;
+  removedCustomerIds: string[];
 }
 
 /**

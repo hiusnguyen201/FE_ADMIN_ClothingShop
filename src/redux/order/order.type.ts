@@ -26,6 +26,7 @@ export interface OrderState {
   list: Order[];
   totalCount: number;
   error: Nullable<string>;
+  removedOrderIds: string[];
 }
 
 /**

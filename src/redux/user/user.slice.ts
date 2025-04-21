@@ -37,6 +37,7 @@ const initialState: UserState = {
   totalCount: 0,
   error: null,
   listUserPermissions: [],
+  deletedUserIds: [],
 };
 
 const userSlice = createSlice({
@@ -145,7 +146,7 @@ const userSlice = createSlice({
         const { data } = action.payload;
         state.loading.removeUser = false;
         state.error = null;
-        state.list = state.list.filter((item) => item.id !== data.id);
+        state.removedUserIds.push(data.id);
       })
       .addCase(removeUser.rejected, (state: Draft<UserState>, action: PayloadAction<any>) => {
         state.loading.removeUser = false;

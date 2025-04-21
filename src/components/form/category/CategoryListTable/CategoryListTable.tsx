@@ -15,7 +15,9 @@ import { categoryColumns } from "./category-columns";
 export function CategoryListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, initializedList } = useAppSelector<CategoryState>((state) => state.category);
+  const { list, totalCount, loading, initializedList, removedCategoryIds } = useAppSelector<CategoryState>(
+    (state) => state.category
+  );
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useCategoryTableFilters({
     searchParams,
   });
@@ -31,7 +33,7 @@ export function CategoryListTable() {
   useEffect(() => {
     setSearchParams(convertToSearchParams(filters));
     handleGetCategoryList();
-  }, [filters]);
+  }, [filters, dispatch, removedCategoryIds]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">

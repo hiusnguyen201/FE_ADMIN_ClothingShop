@@ -26,7 +26,7 @@ export type User = {
   phone: string;
   gender: GENDER;
   status: USER_STATUS;
-  role: Nullable<UserRole>;
+  role: Nullable<string | UserRole>;
   verifiedAt: Nullable<Date>;
   lastLoginAt: Nullable<Date>;
 };

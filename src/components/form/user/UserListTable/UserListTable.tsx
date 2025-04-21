@@ -15,7 +15,9 @@ import { userColumns } from "./user-columns";
 export function UserListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, initializedList } = useAppSelector<UserState>((state) => state.user);
+  const { list, totalCount, loading, initializedList, removedUserIds } = useAppSelector<UserState>(
+    (state) => state.user
+  );
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useUserTableFilters({ searchParams });
 
   const handleGetUserList = async () => {
@@ -29,7 +31,7 @@ export function UserListTable() {
   useEffect(() => {
     setSearchParams(convertToSearchParams(filters));
     handleGetUserList();
-  }, [filters, dispatch]);
+  }, [filters, dispatch, removedUserIds]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">

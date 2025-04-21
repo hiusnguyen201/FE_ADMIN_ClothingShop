@@ -15,7 +15,9 @@ import { roleColumns } from "./role-columns";
 export function RoleListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, initializedList } = useAppSelector<RoleState>((state) => state.role);
+  const { list, totalCount, loading, initializedList, removedRoleIds } = useAppSelector<RoleState>(
+    (state) => state.role
+  );
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useRoleTableFilters({ searchParams });
 
   const handleGetRoleList = async () => {
@@ -29,7 +31,7 @@ export function RoleListTable() {
   useEffect(() => {
     setSearchParams(convertToSearchParams(filters));
     handleGetRoleList();
-  }, [filters, dispatch]);
+  }, [filters, dispatch, removedRoleIds]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">

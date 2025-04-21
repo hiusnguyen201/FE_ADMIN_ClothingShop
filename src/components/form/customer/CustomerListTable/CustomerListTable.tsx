@@ -15,7 +15,9 @@ import { customerColumns } from "./customer-columns";
 export function CustomerListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, initializedList } = useAppSelector<CustomerState>((state) => state.customer);
+  const { list, totalCount, loading, initializedList, removedCustomerIds } = useAppSelector<CustomerState>(
+    (state) => state.customer
+  );
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useCustomerTableFilters({
     searchParams,
   });
@@ -29,7 +31,7 @@ export function CustomerListTable() {
         toast({ title: error, variant: "destructive" });
       }
     })();
-  }, [filters, dispatch]);
+  }, [filters, dispatch, removedCustomerIds]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">

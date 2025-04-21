@@ -36,7 +36,7 @@ export function EditUserInfoForm({ user }: { user: User }) {
     email: user.email,
     phone: user.phone,
     gender: user.gender,
-    roleId: user.role?.id || null,
+    roleId: (user.role as string) || null,
   };
 
   const handleSubmit = async (values: EditUserInfoPayload, { resetForm }: FormikHelpers<EditUserInfoPayload>) => {

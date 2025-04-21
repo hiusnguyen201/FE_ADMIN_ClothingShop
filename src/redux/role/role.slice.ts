@@ -46,6 +46,7 @@ const initialState: RoleState = {
   error: null,
   assignedRolePermissions: [],
   unassignedRolePermissions: [],
+  removedRoleIds: [],
 };
 
 const roleSlice = createSlice({
@@ -154,7 +155,7 @@ const roleSlice = createSlice({
         const { data } = action.payload;
         state.loading.removeRole = false;
         state.error = null;
-        state.list = state.list.filter((item) => item.id !== data.id);
+        state.removedRoleIds.push(data.id);
       })
       .addCase(removeRole.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
         state.loading.removeRole = false;

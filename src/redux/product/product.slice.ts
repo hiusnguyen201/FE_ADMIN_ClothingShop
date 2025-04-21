@@ -34,6 +34,7 @@ const initialState: ProductState = {
   list: [],
   totalCount: 0,
   error: null,
+  removedProductIds: [],
 };
 
 const productSlice = createSlice({
@@ -168,7 +169,7 @@ const productSlice = createSlice({
         const { data } = action.payload;
         state.loading.removeProduct = false;
         state.error = null;
-        state.list = state.list.filter((item) => item.id !== data.id);
+        state.removedProductIds.push(data.id);
       })
       .addCase(removeProduct.rejected, (state: Draft<ProductState>, action: PayloadAction<any>) => {
         state.loading.removeProduct = false;

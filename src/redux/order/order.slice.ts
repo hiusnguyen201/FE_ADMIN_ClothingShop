@@ -42,6 +42,7 @@ const initialState: OrderState = {
   list: [],
   totalCount: 0,
   error: null,
+  removedOrderIds: [],
 };
 
 const orderSlice = createSlice({
@@ -135,7 +136,7 @@ const orderSlice = createSlice({
         const { data } = action.payload;
         state.loading.removeOrder = false;
         state.error = null;
-        state.list = state.list.filter((item) => item.id !== data.id);
+        state.removedOrderIds.push(data.id);
       })
       .addCase(removeOrder.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
         state.loading.removeOrder = false;

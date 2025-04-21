@@ -24,6 +24,7 @@ export interface UserState {
   totalCount: number;
   error: Nullable<string>;
   listUserPermissions: Permission[];
+  removedUserIds: string[];
 }
 
 /**

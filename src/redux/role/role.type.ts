@@ -28,6 +28,7 @@ export interface RoleState {
   error: Nullable<string>;
   assignedRolePermissions: Permission[];
   unassignedRolePermissions: Permission[];
+  removedRoleIds: string[];
 }
 
 /**

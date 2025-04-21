@@ -15,7 +15,9 @@ import { productColumns } from "./product-columns";
 export function ProductListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, initializedList } = useAppSelector<ProductState>((state) => state.product);
+  const { list, totalCount, loading, initializedList, removedProductIds } = useAppSelector<ProductState>(
+    (state) => state.product
+  );
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useProductTableFilters({
     searchParams,
   });
@@ -31,7 +33,7 @@ export function ProductListTable() {
   useEffect(() => {
     setSearchParams(convertToSearchParams(filters));
     handleGetProductList();
-  }, [filters, dispatch]);
+  }, [filters, dispatch, removedProductIds]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">

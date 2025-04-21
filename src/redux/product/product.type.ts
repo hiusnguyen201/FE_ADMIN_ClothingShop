@@ -21,6 +21,7 @@ export interface ProductState {
   initializedList: boolean;
   totalCount: number;
   error: Nullable<string>;
+  removedProductIds: string[];
 }
 
 /**

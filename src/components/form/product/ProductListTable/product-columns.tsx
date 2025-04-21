@@ -58,6 +58,10 @@ export const productColumns: ColumnDef<Product, any>[] = [
     minSize: 120,
     maxSize: 150,
     cell: ({ row }) => {
+      if (row.original.productVariants.length === 0) return <div>-</div>;
+      if (row.original.productVariants.length === 1)
+        return <div> {formatCurrencyVND(row.original.productVariants[0].price)}</div>;
+
       // ASC prices
       const prices = row.original.productVariants.map((item) => item.price).sort((a, b) => a - b);
       return (
@@ -73,6 +77,8 @@ export const productColumns: ColumnDef<Product, any>[] = [
     minSize: 120,
     maxSize: 120,
     cell: ({ row }) => {
+      if (row.original.productVariants.length === 0) return <div>-</div>;
+
       const stock = row.original.productVariants.reduce((prev, curr) => prev + curr.quantity, 0);
       return (
         <div className="flex items-center">
@@ -132,18 +138,21 @@ export function ProductActions({ product }: { product: Product }) {
             </DropdownMenuItem>
           </Link>
 
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.preventDefault();
-              setMenuOpen(false);
-              setIsDialogOpen(true);
-            }}
-            className="text-destructive focus:text-destructive focus:bg-destructive/10"
-          >
-            <Trash /> Remove
-          </DropdownMenuItem>
+          {product.status === PRODUCT_STATUS.INACTIVE && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  setIsDialogOpen(true);
+                }}
+                className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              >
+                <Trash /> Remove
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 

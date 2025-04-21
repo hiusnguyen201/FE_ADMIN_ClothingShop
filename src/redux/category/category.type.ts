@@ -23,6 +23,7 @@ export interface CategoryState {
   listSub: Category[];
   totalCount: number;
   error: Nullable<string>;
+  removedCategoryIds: string[];
 }
 
 /**

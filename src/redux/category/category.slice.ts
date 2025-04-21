@@ -36,6 +36,7 @@ const initialState: CategoryState = {
   listSub: [],
   totalCount: 0,
   error: null,
+  removedCategoryIds: [],
 };
 
 const roleSlice = createSlice({
@@ -152,8 +153,7 @@ const roleSlice = createSlice({
           const { data } = action.payload;
           state.loading.removeCategory = false;
           state.error = null;
-          state.list = state.list.filter((item) => item.id !== data.id);
-          state.listSub = state.listSub.filter((item) => item.id !== data.id);
+          state.removedCategoryIds.push(data.id);
         }
       )
       .addCase(removeCategory.rejected, (state: Draft<CategoryState>, action: PayloadAction<any>) => {

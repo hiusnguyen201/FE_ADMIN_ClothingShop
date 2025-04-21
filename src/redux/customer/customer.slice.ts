@@ -29,6 +29,7 @@ const initialState: CustomerState = {
   list: [],
   totalCount: 0,
   error: null,
+  removedCustomerIds: [],
 };
 
 const customerSlice = createSlice({
@@ -130,7 +131,7 @@ const customerSlice = createSlice({
           const { data } = action.payload;
           state.loading.removeCustomer = false;
           state.error = null;
-          state.list = state.list.filter((item) => item.id !== data.id);
+          state.removedCustomerIds.push(data.id);
         }
       )
       .addCase(removeCustomer.rejected, (state: Draft<CustomerState>, action: PayloadAction<any>) => {
