@@ -1,12 +1,12 @@
 import { Customer } from "@/types/customer";
-import { User } from "@/types/user";
 import { Payment } from "@/types/payment";
 import { Product, ProductVariant } from "@/types/product";
 
 export enum ORDER_STATUS {
   PENDING = "pending",
-  PENDING_PAYMENT = "pending payment",
   CONFIRMED = "confirmed",
+  PROCESSING = "processing",
+  READY_TO_PICK = "ready to pick",
   SHIPPING = "shipping",
   COMPLETED = "completed",
   CANCELLED = "cancelled",
@@ -15,12 +15,6 @@ export enum ORDER_STATUS {
 export type OrderStatusHistory = {
   id: string;
   status: ORDER_STATUS;
-  changedAt: Date;
-  assignedTo: User;
-  trackingNumber: string;
-  shippingCarrier: "GHN";
-  expectedShipDate: Date;
-  createdAt: Date;
   updatedAt: Date;
 };
 
@@ -46,6 +40,8 @@ export type Order = {
   districtName: string;
   wardName: string;
   address: string;
+
+  trackingNumber: string;
 
   code: string;
   quantity: number;

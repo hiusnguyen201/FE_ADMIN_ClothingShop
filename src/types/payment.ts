@@ -13,9 +13,16 @@ export enum ONLINE_PAYMENT_METHOD {
   MOMO = "momo",
 }
 
+export enum PAYMENT_STATUS {
+  PENDING = "pending",
+  PAID = "paid",
+  CANCELLED = "cancelled",
+}
+
 export type Payment = {
   id: string;
   qrCodeUrl: string;
+  status: string;
   paymentUrl: string;
   paymentMethod: ONLINE_PAYMENT_METHOD;
   amountPaid: number;

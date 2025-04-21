@@ -52,7 +52,7 @@ export function ShippingInformationCard({ formikProps }: { formikProps: FormikPr
             name="provinceCode"
             className="w-full"
             placeHolder="Select province"
-            options={division.provinces.map((item) => ({ title: item.name, value: item.code }))}
+            options={division.provinces.map((item) => ({ title: item.ProvinceName, value: item.ProvinceID }))}
             formikProps={formikProps}
           />
 
@@ -64,7 +64,7 @@ export function ShippingInformationCard({ formikProps }: { formikProps: FormikPr
             name="districtCode"
             className="w-full"
             placeHolder="Select district"
-            options={division.districts.map((item) => ({ title: item.name, value: item.code }))}
+            options={division.districts.map((item) => ({ title: item.DistrictName, value: item.DistrictID }))}
             formikProps={formikProps}
           />
 
@@ -76,7 +76,7 @@ export function ShippingInformationCard({ formikProps }: { formikProps: FormikPr
             name="wardCode"
             className="w-full"
             placeHolder="Select ward"
-            options={division.wards.map((item) => ({ title: item.name, value: item.code }))}
+            options={division.wards.map((item) => ({ title: item.WardName, value: item.WardCode }))}
             formikProps={formikProps}
           />
 

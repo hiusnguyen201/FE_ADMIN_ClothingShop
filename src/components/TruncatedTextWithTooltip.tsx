@@ -9,7 +9,7 @@ export type TruncatedTextWithTooltipProps = {
 };
 
 export const TruncatedTextWithTooltip = ({ children, className, lineClamp = 1 }: TruncatedTextWithTooltipProps) => {
-  const textRef: LegacyRef<HTMLButtonElement> = useRef(null);
+  const textRef: LegacyRef<HTMLDivElement> = useRef(null);
   const [isTruncated, setIsTruncated] = useState(false);
 
   useEffect(() => {
@@ -27,32 +27,35 @@ export const TruncatedTextWithTooltip = ({ children, className, lineClamp = 1 }:
     };
   }, []);
 
+  const textStyles =
+    lineClamp > 1
+      ? {
+          display: "-webkit-box",
+          WebkitLineClamp: lineClamp,
+          WebkitBoxOrient: "vertical" as const,
+          overflow: "hidden",
+        }
+      : {};
+
   return (
     <TooltipProvider delayDuration={300}>
       <Tooltip>
-        <TooltipTrigger
-          style={
-            lineClamp > 1
-              ? {
-                  display: "-webkit-box",
-                  WebkitLineClamp: lineClamp,
-                  WebkitBoxOrient: "vertical",
-                  overflow: "hidden",
-                }
-              : {}
-          }
-          className={cn(
-            "w-full max-w-full text-start",
-            isTruncated ? "cursor-pointer" : "cursor-default",
-            lineClamp === 1 ? "truncate" : "",
-            className
-          )}
-          ref={textRef}
-        >
-          {children}
+        <TooltipTrigger asChild>
+          <div
+            ref={textRef}
+            style={textStyles}
+            className={cn(
+              "w-full max-w-full flex-1 min-w-0 text-start",
+              isTruncated ? "cursor-pointer" : "cursor-default",
+              lineClamp === 1 ? "truncate" : "",
+              className
+            )}
+          >
+            {children}
+          </div>
         </TooltipTrigger>
         {isTruncated && (
-          <TooltipContent className="p-2">
+          <TooltipContent className="p-2 max-w-sm break-words">
             <p>{children}</p>
           </TooltipContent>
         )}

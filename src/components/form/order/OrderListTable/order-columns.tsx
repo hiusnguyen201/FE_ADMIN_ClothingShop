@@ -12,10 +12,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Order } from "@/types/order";
 import { RemoveOrderDialogForm } from "@/components/form/order/RemoveOrderDialogForm";
-import { Tag } from "@/components/Tag";
 import { formatDateString } from "@/utils/date";
-import { Badge } from "@/components/ui/badge";
 import { formatCurrencyVND } from "@/utils/string";
+import { BadgeOrderStatus } from "@/components/BadgeOrderStatus";
 
 export const orderColumns: ColumnDef<Order, any>[] = [
   {
@@ -24,8 +23,8 @@ export const orderColumns: ColumnDef<Order, any>[] = [
     minSize: 70,
     maxSize: 70,
     cell: ({ row }) => (
-      <Link to={"/orders/" + row.original.code}>
-        <Tag>#{row.original.code}</Tag>
+      <Link className="text-blue-500 font-weight" to={"/orders/" + row.original.code}>
+        #{row.original.code}
       </Link>
     ),
   },
@@ -71,11 +70,11 @@ export const orderColumns: ColumnDef<Order, any>[] = [
   {
     accessorKey: "status",
     header: "Status",
-    minSize: 120,
-    maxSize: 120,
+    minSize: 150,
+    maxSize: 150,
     cell: ({ row }) => {
-      const history = row.original.orderStatusHistory;
-      return <StatusBadge status={history[history.length - 1].status} />;
+      const orderStatusHistory = row.original.orderStatusHistory;
+      return <BadgeOrderStatus status={orderStatusHistory[orderStatusHistory.length - 1].status} />;
     },
   },
   {
@@ -142,35 +141,5 @@ export function OrderActions({ order }: { order: Order }) {
 
       <RemoveOrderDialogForm order={order} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
     </>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  let variant: "default" | "secondary" | "destructive" | "outline" = "outline";
-
-  switch (status.toLowerCase()) {
-    case "pending":
-      variant = "outline";
-      break;
-    case "confirm":
-      variant = "secondary";
-      break;
-    case "shipped":
-      variant = "default";
-      break;
-    case "completed":
-      variant = "default";
-      break;
-    case "cancelled":
-      variant = "destructive";
-      break;
-    default:
-      variant = "outline";
-  }
-
-  return (
-    <Badge variant={variant} className="capitalize">
-      {status}
-    </Badge>
   );
 }

@@ -93,7 +93,7 @@ export function CreateOrderForm() {
     try {
       const { data: order } = await dispatch(createOrder(values)).unwrap();
       resetForm();
-      if (order.payment.paymentUrl && order.payment.paymentMethod === ONLINE_PAYMENT_METHOD.MOMO) {
+      if (order.payment.paymentMethod === ONLINE_PAYMENT_METHOD.MOMO) {
         setOpenDialog(true);
       } else {
         navigate("/orders/" + order.code);

@@ -1,6 +1,6 @@
 import { Nullable, Optional } from "@/types/common";
 import { BaseResponse, GetListParams, GetListResponseData } from "@/types/response";
-import { Order, ORDER_STATUS } from "@/types/order";
+import { Order, ORDER_STATUS, OrderStatusHistory } from "@/types/order";
 import { ONLINE_PAYMENT_METHOD } from "@/types/payment";
 import { ProductVariant } from "@/types/product";
 
@@ -14,6 +14,11 @@ export interface OrderState {
     getOrder: boolean;
     editOrder: boolean;
     removeOrder: boolean;
+    confirmOrder: boolean;
+    cancelOrder: boolean;
+    shipOrder: boolean;
+    createShipOrder: boolean;
+    processingOrder: boolean;
   };
   newItem: Nullable<Order>;
   item: Nullable<Order>;
@@ -68,13 +73,13 @@ export interface GetOrderPayload {
 }
 export interface GetOrderResponse extends BaseResponse<Order> {}
 
-/**
- * Edit Order
- */
-export type EditOrderInfoPayload = {
-  id: string;
-};
-export interface EditOrderInfoResponse extends BaseResponse<Order> {}
+// /**
+//  * Edit Order
+//  */
+// export type EditOrderInfoPayload = {
+//   id: string;
+// };
+// export interface EditOrderInfoResponse extends BaseResponse<Order> {}
 
 /**
  * Remove Order
@@ -83,3 +88,35 @@ export type RemoveOrderPayload = {
   id: string;
 };
 export interface RemoveOrderResponse extends BaseResponse<{ id: string }> {}
+
+/**
+ * Confirm Order
+ */
+export type ConfirmOrderPayload = {
+  id: string;
+};
+export interface ConfirmOrderResponse extends BaseResponse<Order> {}
+
+/**
+ * Processing Order
+ */
+export type ProcessingOrderPayload = {
+  id: string;
+};
+export interface ProcessingOrderResponse extends BaseResponse<Order> {}
+
+/**
+ * Cancel Order
+ */
+export type CancelOrderPayload = {
+  id: string;
+};
+export interface CancelOrderResponse extends BaseResponse<Order> {}
+
+/**
+ * Create Ship Order
+ */
+export type CreateShipOrderPayload = {
+  id: string;
+};
+export interface CreateShipOrderResponse extends BaseResponse<Order> {}

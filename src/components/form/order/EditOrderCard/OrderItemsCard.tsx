@@ -1,6 +1,5 @@
 import { Image } from "@/components/Image";
 import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { TableBody, TableCell, TableHead, TableHeader, TableRow, Table as TableContainer } from "@/components/ui/table";

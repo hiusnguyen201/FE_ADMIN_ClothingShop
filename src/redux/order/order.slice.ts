@@ -1,13 +1,27 @@
 import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import {
   CreateOrderResponse,
-  EditOrderInfoResponse,
+  // EditOrderInfoResponse,
   GetListOrderResponse,
   GetOrderResponse,
   RemoveOrderResponse,
   OrderState,
+  ConfirmOrderResponse,
+  CancelOrderResponse,
+  CreateShipOrderResponse,
+  ProcessingOrderResponse,
 } from "@/redux/order/order.type";
-import { getListOrder, createOrder, getOrder, editOrderInfo, removeOrder } from "@/redux/order/order.thunk";
+import {
+  getListOrder,
+  createOrder,
+  getOrder,
+  // editOrderInfo,
+  removeOrder,
+  confirmOrder,
+  cancelOrder,
+  createShipOrder,
+  processingOrder,
+} from "@/redux/order/order.thunk";
 
 const initialState: OrderState = {
   loading: {
@@ -16,6 +30,11 @@ const initialState: OrderState = {
     getOrder: false,
     editOrder: false,
     removeOrder: false,
+    confirmOrder: false,
+    cancelOrder: false,
+    shipOrder: false,
+    createShipOrder: false,
+    processingOrder: false,
   },
   newItem: null,
   item: null,
@@ -88,23 +107,23 @@ const orderSlice = createSlice({
         state.item = null;
       });
 
-    builder
-      // Edit Order Info
-      .addCase(editOrderInfo.pending, (state: Draft<OrderState>) => {
-        state.loading.editOrder = true;
-        state.error = null;
-      })
-      .addCase(editOrderInfo.fulfilled, (state: Draft<OrderState>, action: PayloadAction<EditOrderInfoResponse>) => {
-        const { data } = action.payload;
-        state.loading.editOrder = false;
-        state.error = null;
-        state.item = data;
-        state.list = state.list.map((item) => (item.id === data.id ? data : item));
-      })
-      .addCase(editOrderInfo.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
-        state.loading.editOrder = false;
-        state.error = action.payload as string;
-      });
+    // builder
+    //   // Edit Order Info
+    //   .addCase(editOrderInfo.pending, (state: Draft<OrderState>) => {
+    //     state.loading.editOrder = true;
+    //     state.error = null;
+    //   })
+    //   .addCase(editOrderInfo.fulfilled, (state: Draft<OrderState>, action: PayloadAction<EditOrderInfoResponse>) => {
+    //     const { data } = action.payload;
+    //     state.loading.editOrder = false;
+    //     state.error = null;
+    //     state.item = data;
+    //     state.list = state.list.map((item) => (item.id === data.id ? data : item));
+    //   })
+    //   .addCase(editOrderInfo.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
+    //     state.loading.editOrder = false;
+    //     state.error = action.payload as string;
+    //   });
 
     builder
       // Remove Order
@@ -120,6 +139,80 @@ const orderSlice = createSlice({
       })
       .addCase(removeOrder.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
         state.loading.removeOrder = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      // Confirm Order
+      .addCase(confirmOrder.pending, (state: Draft<OrderState>) => {
+        state.loading.confirmOrder = true;
+        state.error = null;
+      })
+      .addCase(confirmOrder.fulfilled, (state: Draft<OrderState>, action: PayloadAction<ConfirmOrderResponse>) => {
+        const { data } = action.payload;
+        state.loading.confirmOrder = false;
+        state.error = null;
+        state.item = data;
+      })
+      .addCase(confirmOrder.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
+        state.loading.confirmOrder = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      // Processing Order
+      .addCase(processingOrder.pending, (state: Draft<OrderState>) => {
+        state.loading.processingOrder = true;
+        state.error = null;
+      })
+      .addCase(
+        processingOrder.fulfilled,
+        (state: Draft<OrderState>, action: PayloadAction<ProcessingOrderResponse>) => {
+          const { data } = action.payload;
+          state.loading.processingOrder = false;
+          state.error = null;
+          state.item = data;
+        }
+      )
+      .addCase(processingOrder.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
+        state.loading.processingOrder = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      // Cancel Order
+      .addCase(cancelOrder.pending, (state: Draft<OrderState>) => {
+        state.loading.cancelOrder = true;
+        state.error = null;
+      })
+      .addCase(cancelOrder.fulfilled, (state: Draft<OrderState>, action: PayloadAction<CancelOrderResponse>) => {
+        const { data } = action.payload;
+        state.loading.cancelOrder = false;
+        state.error = null;
+        state.item = data;
+      })
+      .addCase(cancelOrder.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
+        state.loading.cancelOrder = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      // Create ship Order
+      .addCase(createShipOrder.pending, (state: Draft<OrderState>) => {
+        state.loading.createShipOrder = true;
+        state.error = null;
+      })
+      .addCase(
+        createShipOrder.fulfilled,
+        (state: Draft<OrderState>, action: PayloadAction<CreateShipOrderResponse>) => {
+          const { data } = action.payload;
+          state.loading.createShipOrder = false;
+          state.error = null;
+          state.item = data;
+        }
+      )
+      .addCase(createShipOrder.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
+        state.loading.createShipOrder = false;
         state.error = action.payload as string;
       });
   },

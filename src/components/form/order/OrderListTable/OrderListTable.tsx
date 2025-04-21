@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { DataTable } from "@/components/data-table";
 import { getListOrder } from "@/redux/order/order.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";

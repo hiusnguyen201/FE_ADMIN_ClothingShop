@@ -11,11 +11,10 @@ import { Image } from "@/components/Image";
 interface OrderSuccessDialogProps {
   order: Order;
   onOpenChange?: (value: boolean) => void;
-  goTo?: () => void;
   open?: boolean;
 }
 
-export function OrderSuccessDialog({ order, open, onOpenChange, goTo }: OrderSuccessDialogProps) {
+export function PaymentInformationDialog({ order, open, onOpenChange }: OrderSuccessDialogProps) {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
@@ -28,25 +27,14 @@ export function OrderSuccessDialog({ order, open, onOpenChange, goTo }: OrderSuc
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-lg flex flex-col">
         <DialogHeader>
-          <DialogTitle className="text-center text-xl">Order Created Successfully!</DialogTitle>
-          <DialogDescription className="text-center">
-            The order has been created and is waiting for payment.
+          <DialogTitle className="text-center text-xl">Payment Information</DialogTitle>
+          <DialogDescription className="text-center capitalize">
+            Order #{order.code} - {order.orderStatusHistory[0].status}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-4">
-          <div className="space-y-2">
-            <div className="flex justify-between">
-              <span className="text-gray-500">Order Code:</span>
-              <span className="font-medium">{order.code}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-500">Status:</span>
-              <span className="font-medium text-amber-600 capitalize">{order.orderStatusHistory[0].status}</span>
-            </div>
-          </div>
-
           <div className="border rounded-md p-4 space-y-4">
-            <h3 className="font-medium">MoMo Payment Link</h3>
+            <h3 className="font-medium">MoMo Payment QR Code</h3>
             {order.payment.paymentUrl && (
               <div className="flex items-center justify-between bg-gray-50 p-2 rounded border">
                 <TruncatedTextWithTooltip className="text-sm max-w-[350px]">
@@ -57,22 +45,23 @@ export function OrderSuccessDialog({ order, open, onOpenChange, goTo }: OrderSuc
                 </Button>
               </div>
             )}
-
-            <div className="flex justify-center flex-col items-center">
-              <Image src={order.payment.qrCodeUrl} alt="QR CODE" className="border-0 w-64" />
+            <div className="flex flex-col items-center">
+              <Image className="w-64 border-0" src={order.payment.qrCodeUrl} alt={"QR Code"} />
             </div>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-2">
-            <Button className="flex-1" onClick={copyToClipboard}>
-              {copied ? "Copied!" : "Copy Link"}
-            </Button>
-            {/* <Button variant="outline" className="flex-1">
+            {order.payment.paymentUrl && (
+              <Button className="flex-1" onClick={copyToClipboard}>
+                {copied ? "Copied!" : "Copy Link"}
+              </Button>
+            )}
+            {/* <Button className="flex-1" variant={"outline"}>
               <Mail className="mr-2 h-4 w-4" />
               Send via Email
             </Button> */}
-            <Button variant="outline" className="flex-1" onClick={goTo}>
-              Goto details
+            <Button onClick={() => onOpenChange?.(false)} variant="outline" className="flex-1">
+              Go Back
             </Button>
           </div>
         </div>

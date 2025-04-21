@@ -1,19 +1,14 @@
 export type Province = {
-  code: string;
-  name: string;
-  unit: string;
+  ProvinceID: number;
+  ProvinceName: string;
 };
 
 export type District = {
-  code: string;
-  name: string;
-  unit: string;
-  full_name: string;
+  DistrictID: number;
+  DistrictName: string;
 };
 
 export type Ward = {
-  code: string;
-  name: string;
-  unit: string;
-  full_name: string;
+  WardCode: string;
+  WardName: string;
 };
