@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { GetListAssignedRolePermissionsPayload } from "@/redux/role/role.type";
+import { convertToSearchParams } from "@/utils/object";
 
 export function useRolePermissionsTableFilters(props: { searchParams?: URLSearchParams; roleId: string }) {
   const initialFilters: GetListAssignedRolePermissionsPayload = {
@@ -24,5 +25,7 @@ export function useRolePermissionsTableFilters(props: { searchParams?: URLSearch
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
-  return { filters, handlePageChange, handleLimitChange };
+  const isDefault = convertToSearchParams(filters).toString() === convertToSearchParams(initialFilters).toString();
+
+  return { filters, handlePageChange, handleLimitChange, isDefault };
 }

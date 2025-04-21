@@ -11,6 +11,7 @@ import categoryReducer from "./category/category.slice";
 import productReducer from "./product/product.slice";
 import optionReducer from "./option/option.slice";
 import divisionReducer from "./division/division.slice";
+import reportReducer from "./report/report.slice";
 
 export const store = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export const store = configureStore({
     category: categoryReducer,
     product: productReducer,
     option: optionReducer,
+    report: reportReducer,
   },
 });
 

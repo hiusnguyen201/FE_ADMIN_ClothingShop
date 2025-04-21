@@ -24,6 +24,8 @@ export type ProductVariant = {
   quantity: number;
   price: number;
   sku: string;
+  product: Product;
+  sold: number;
   variantValues: VariantValue[];
 };
 

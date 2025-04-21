@@ -16,7 +16,7 @@ export function PermissionListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading, initializedList } = useAppSelector<PermissionState>((state) => state.permission);
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = usePermissionTableFilters({
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = usePermissionTableFilters({
     searchParams,
   });
 
@@ -29,7 +29,10 @@ export function PermissionListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
+    if (!isDefault) {
+      setSearchParams(convertToSearchParams(filters));
+    }
+
     handleGetPermissionList();
   }, [filters, dispatch]);
 

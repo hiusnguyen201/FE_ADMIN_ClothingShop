@@ -18,7 +18,9 @@ export function RoleListTable() {
   const { list, totalCount, loading, initializedList, removedRoleIds } = useAppSelector<RoleState>(
     (state) => state.role
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useRoleTableFilters({ searchParams });
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useRoleTableFilters({
+    searchParams,
+  });
 
   const handleGetRoleList = async () => {
     try {
@@ -29,7 +31,10 @@ export function RoleListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
+    if (!isDefault) {
+      setSearchParams(convertToSearchParams(filters));
+    }
+
     handleGetRoleList();
   }, [filters, dispatch, removedRoleIds]);
 

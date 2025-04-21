@@ -18,7 +18,7 @@ export function ProductListTable() {
   const { list, totalCount, loading, initializedList, removedProductIds } = useAppSelector<ProductState>(
     (state) => state.product
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useProductTableFilters({
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useProductTableFilters({
     searchParams,
   });
 
@@ -31,7 +31,10 @@ export function ProductListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
+    if (!isDefault) {
+      setSearchParams(convertToSearchParams(filters));
+    }
+
     handleGetProductList();
   }, [filters, dispatch, removedProductIds]);
 

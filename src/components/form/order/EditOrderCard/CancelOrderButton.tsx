@@ -18,7 +18,7 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { Order, ORDER_STATUS } from "@/types/order";
 import { Loader2, XCircle } from "lucide-react";
 import { useState } from "react";
-import { PAYMENT_STATUS } from "@/types/payment";
+import { Payment, PAYMENT_STATUS } from "@/types/payment";
 
 export function CancelOrderButton({
   order,

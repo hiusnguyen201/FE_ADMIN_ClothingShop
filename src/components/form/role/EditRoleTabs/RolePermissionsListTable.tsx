@@ -26,7 +26,7 @@ export function RolePermissionsListTable({
     loading: roleLoading,
     initializedListRolePermission,
   } = useAppSelector<RoleState>((state) => state.role);
-  const { filters } = useRolePermissionsTableFilters({ searchParams, roleId: role.id });
+  const { filters, isDefault } = useRolePermissionsTableFilters({ searchParams, roleId: role.id });
 
   const fetchPermissions = useCallback(async () => {
     try {
@@ -37,7 +37,10 @@ export function RolePermissionsListTable({
   }, [filters]);
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
+    if (!isDefault) {
+      setSearchParams(convertToSearchParams(filters));
+    }
+
     fetchPermissions();
   }, [filters]);
 

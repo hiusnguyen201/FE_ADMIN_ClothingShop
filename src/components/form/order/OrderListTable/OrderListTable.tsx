@@ -20,7 +20,7 @@ export function OrderListTable() {
   const { list, totalCount, loading, initializedList, removedOrderIds } = useAppSelector<OrderState>(
     (state) => state.order
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleStatusChange } =
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleStatusChange, isDefault } =
     useOrderTableFilters({ searchParams });
 
   const handleGetOrderList = async () => {
@@ -32,7 +32,10 @@ export function OrderListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
+    if (!isDefault) {
+      setSearchParams(convertToSearchParams(filters));
+    }
+
     handleGetOrderList();
   }, [filters, removedOrderIds]);
 

@@ -18,12 +18,15 @@ export function CustomerListTable() {
   const { list, totalCount, loading, initializedList, removedCustomerIds } = useAppSelector<CustomerState>(
     (state) => state.customer
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useCustomerTableFilters({
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useCustomerTableFilters({
     searchParams,
   });
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
+    if (!isDefault) {
+      setSearchParams(convertToSearchParams(filters));
+    }
+
     (async () => {
       try {
         await dispatch(getListCustomer(filters)).unwrap();

@@ -22,33 +22,37 @@ export function OrderItemsCard({ order }: { order: Order }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {order.orderDetails.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell className="min-w-[300px]">
-                  <div className="flex items-center gap-3">
-                    <Image alt={item.product.name} src={item.product.thumbnail} />
-                    <div className="font-medium">
-                      <TruncatedTextWithTooltip lineClamp={2}>{item.product.name}</TruncatedTextWithTooltip>
-                      <div className="text-xs text-muted-foreground">SKU: {item.variant.sku}</div>
-                      {item.variant.variantValues.map((variantValue) => (
-                        <div key={variantValue.id} className="text-xs text-muted-foreground">
-                          <span className="text-muted-foreground">{variantValue.option.name}:</span>{" "}
-                          <span className="font-medium">{variantValue.optionValue.valueName}</span>
-                        </div>
-                      ))}
+            {order.orderDetails.map((item) => {
+              return (
+                <TableRow key={item.id}>
+                  <TableCell className="min-w-[300px]">
+                    <div className="flex items-center gap-3">
+                      <Image alt={item.product.name} src={item.product.thumbnail} />
+                      <div className="font-medium">
+                        <TruncatedTextWithTooltip lineClamp={2}>{item.product.name}</TruncatedTextWithTooltip>
+                        <div className="text-xs text-muted-foreground">SKU: {item.variant.sku}</div>
+                        {item.variant.variantValues.map((variantValue) => {
+                          return (
+                            <div key={variantValue.id} className="text-xs text-muted-foreground">
+                              <span className="text-muted-foreground">{variantValue.option.name}:</span>{" "}
+                              <span className="font-medium">{variantValue.optionValue.valueName}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                </TableCell>
-                <TableCell className="text-right font-medium min-w-[150px]">
-                  <div className="flex-col flex">
-                    {formatCurrencyVND(item.totalPrice)}
-                    <span className="text-muted-foreground text-xs">
-                      {formatCurrencyVND(item.unitPrice)} x {item.quantity}
-                    </span>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell className="text-right font-medium min-w-[150px]">
+                    <div className="flex-col flex">
+                      {formatCurrencyVND(item.totalPrice)}
+                      <span className="text-muted-foreground text-xs">
+                        {formatCurrencyVND(item.unitPrice)} x {item.quantity}
+                      </span>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </TableContainer>
       </CardContent>

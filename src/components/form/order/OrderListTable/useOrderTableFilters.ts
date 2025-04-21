@@ -3,6 +3,7 @@ import { GetListOrderPayload } from "@/redux/order/order.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";
 import { ORDER_STATUS } from "@/types/order";
+import { convertToSearchParams } from "@/utils/object";
 
 const initialFilters: GetListOrderPayload = {
   page: 1,
@@ -32,5 +33,7 @@ export function useOrderTableFilters(props?: { searchParams?: URLSearchParams })
     setFilters((prev) => ({ ...prev, keyword, page: 1 }));
   }, 500);
 
-  return { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleStatusChange };
+  const isDefault = convertToSearchParams(filters).toString() === convertToSearchParams(initialFilters).toString();
+
+  return { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleStatusChange, isDefault };
 }

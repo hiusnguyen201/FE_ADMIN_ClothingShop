@@ -16,7 +16,9 @@ export function MetricsCard({ title, value, change, chart }: MetricsCardProps) {
   return (
     <Card className="p-4 bg-background/50 backdrop-blur">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm text-muted-foreground">{title}</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="text-sm text-muted-foreground">{title}</h3>
+        </div>
         {chart ? <ArrowUpRight className="h-4 w-4 text-muted-foreground" /> : null}
       </div>
       <div className="flex items-end justify-between">

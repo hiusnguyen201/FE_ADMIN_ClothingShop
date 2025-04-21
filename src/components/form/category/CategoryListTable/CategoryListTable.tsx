@@ -18,7 +18,7 @@ export function CategoryListTable() {
   const { list, totalCount, loading, initializedList, removedCategoryIds } = useAppSelector<CategoryState>(
     (state) => state.category
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useCategoryTableFilters({
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useCategoryTableFilters({
     searchParams,
   });
 
@@ -31,7 +31,10 @@ export function CategoryListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
+    if (!isDefault) {
+      setSearchParams(convertToSearchParams(filters));
+    }
+
     handleGetCategoryList();
   }, [filters, dispatch, removedCategoryIds]);
 

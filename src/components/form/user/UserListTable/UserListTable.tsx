@@ -18,7 +18,9 @@ export function UserListTable() {
   const { list, totalCount, loading, initializedList, removedUserIds } = useAppSelector<UserState>(
     (state) => state.user
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange } = useUserTableFilters({ searchParams });
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useUserTableFilters({
+    searchParams,
+  });
 
   const handleGetUserList = async () => {
     try {
@@ -29,7 +31,10 @@ export function UserListTable() {
   };
 
   useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
+    if (!isDefault) {
+      setSearchParams(convertToSearchParams(filters));
+    }
+
     handleGetUserList();
   }, [filters, dispatch, removedUserIds]);
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { GetListCategoryPayload } from "@/redux/category/category.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";
+import { convertToSearchParams } from "@/utils/object";
 
 const initialFilters: GetListCategoryPayload = {
   page: 1,
@@ -26,5 +27,7 @@ export function useCategoryTableFilters(props?: { searchParams?: URLSearchParams
     setFilters((prev) => ({ ...prev, keyword, page: 1 }));
   }, 500);
 
-  return { filters, handlePageChange, handleLimitChange, handleKeywordChange };
+  const isDefault = convertToSearchParams(filters).toString() === convertToSearchParams(initialFilters).toString();
+
+  return { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault };
 }
