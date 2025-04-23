@@ -29,6 +29,7 @@ export const roleColumns: ColumnDef<Role, any>[] = [
   {
     accessorKey: "description",
     header: "Description",
+    maxSize: 600,
     cell: ({ row }) => <TruncatedTextWithTooltip>{row.original.description}</TruncatedTextWithTooltip>,
   },
   {

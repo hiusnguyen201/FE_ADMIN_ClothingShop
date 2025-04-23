@@ -99,6 +99,7 @@ const handlers: Record<ActionType, (state: State, action: AuthAction) => State> 
       isAuthenticated: true,
       isInitialized: true,
       user: action.payload.user,
+      permissions: action.payload.permissions,
       is2FactorRequired: false,
       error: null,
     };
@@ -169,8 +170,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const verifyOtpAction = async (values: VerifyOtpPayload): Promise<VerifyOtpResponse> => {
     try {
       const response: VerifyOtpResponse = await appDispatch(verifyOtp(values)).unwrap();
-      const { user, isAuthenticated } = response.data;
-      dispatch({ type: "VERIFY_OTP", payload: { ...state, user, isAuthenticated } });
+      const { user, isAuthenticated, permissions } = response.data;
+      dispatch({ type: "VERIFY_OTP", payload: { ...state, user, isAuthenticated, permissions } });
       return response;
     } catch (e: any) {
       const message = e?.response?.data?.message || e.message || e.toString();

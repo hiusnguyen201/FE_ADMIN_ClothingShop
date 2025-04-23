@@ -34,7 +34,7 @@ export interface LoginResponseData {
   isAuthenticated: boolean;
   is2FactorRequired: boolean;
   user: User;
-  permissions: Permission[];
+  permissions: string[];
 }
 export interface LoginResponse extends BaseResponse<LoginResponseData> {}
 
