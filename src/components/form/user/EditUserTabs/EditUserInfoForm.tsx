@@ -36,7 +36,7 @@ export function EditUserInfoForm({ user }: { user: User }) {
     email: user.email,
     phone: user.phone,
     gender: user.gender,
-    roleId: (user.role as string) || null,
+    roleId: (user.role as unknown as string) || null,
   };
 
   const handleSubmit = async (values: EditUserInfoPayload, { resetForm }: FormikHelpers<EditUserInfoPayload>) => {
@@ -106,7 +106,7 @@ export function EditUserInfoForm({ user }: { user: User }) {
         />
       </FlexBox>
 
-      <LoadingButton loading={loading.editUser} disabled={loading.editUser}>
+      <LoadingButton className="w-full sm:w-auto" loading={loading.editUser} disabled={loading.editUser}>
         Save
       </LoadingButton>
     </FlexBox>

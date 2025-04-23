@@ -1,4 +1,5 @@
 import { Nullable } from "@/types/common";
+import { Permission } from "@/types/permission";
 import { BaseResponse } from "@/types/response";
 import { User } from "@/types/user";
 
@@ -33,6 +34,7 @@ export interface LoginResponseData {
   isAuthenticated: boolean;
   is2FactorRequired: boolean;
   user: User;
+  permissions: Permission[];
 }
 export interface LoginResponse extends BaseResponse<LoginResponseData> {}
 

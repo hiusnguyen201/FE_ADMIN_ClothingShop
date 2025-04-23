@@ -17,6 +17,8 @@ import {
   GetListUserPermissionsResponse,
   EditListUserPermissionsPayload,
   EditListUserPermissionsResponse,
+  ResetPasswordUserPayload,
+  ResetPasswordUserResponse,
 } from "@/redux/user/user.type";
 
 export const checkEmailExistService = async (payload: CheckEmailExistPayload): Promise<CheckEmailExistResponse> => {
@@ -53,4 +55,10 @@ export const editListUserPermissionsService = async (
   payload: EditListUserPermissionsPayload
 ): Promise<EditListUserPermissionsResponse> => {
   return await apiInstance.put("/users/update-user-permissions-by-id", payload);
+};
+
+export const resetPasswordUserService = async (
+  payload: ResetPasswordUserPayload
+): Promise<ResetPasswordUserResponse> => {
+  return await apiInstance.put(`/users/${payload.userId}/reset-password`);
 };

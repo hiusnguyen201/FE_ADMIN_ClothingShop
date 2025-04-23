@@ -15,6 +15,8 @@ import { RemoveOrderDialogForm } from "@/components/form/order/RemoveOrderDialog
 import { formatDateString } from "@/utils/date";
 import { formatCurrencyVND } from "@/utils/string";
 import { BadgeOrderStatus } from "@/components/BadgeOrderStatus";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export const orderColumns: ColumnDef<Order, any>[] = [
   {
@@ -101,6 +103,8 @@ export const orderColumns: ColumnDef<Order, any>[] = [
 ];
 
 export function OrderActions({ order }: { order: Order }) {
+  const can = usePermission();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -118,28 +122,35 @@ export function OrderActions({ order }: { order: Order }) {
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
         >
-          <Link to={`/orders/${order.id}`}>
-            <DropdownMenuItem>
-              <Clipboard /> View Details
-            </DropdownMenuItem>
-          </Link>
+          {can(PERMISSIONS.READ_DETAILS_ORDER) && (
+            <Link to={`/orders/${order.id}`}>
+              <DropdownMenuItem>
+                <Clipboard /> View Details
+              </DropdownMenuItem>
+            </Link>
+          )}
 
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.preventDefault();
-              setMenuOpen(false);
-              setIsDialogOpen(true);
-            }}
-            className="text-destructive focus:text-destructive focus:bg-destructive/10"
-          >
-            <Trash /> Remove
-          </DropdownMenuItem>
+          {can(PERMISSIONS.REMOVE_ORDER) && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  setIsDialogOpen(true);
+                }}
+                className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              >
+                <Trash /> Remove
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveOrderDialogForm order={order} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      {can(PERMISSIONS.REMOVE_ORDER) && (
+        <RemoveOrderDialogForm order={order} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      )}
     </>
   );
 }

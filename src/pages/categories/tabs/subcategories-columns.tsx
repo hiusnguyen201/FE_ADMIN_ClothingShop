@@ -1,11 +1,13 @@
-import { FolderTree, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Category } from "@/types/category";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RemoveCategoryDialogForm } from "@/components/form/category/RemoveCategoryDialogForm";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
+import { Image } from "@/components/Image";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export const subcategoriesColumns: ColumnDef<Category, any>[] = [
   {
@@ -14,14 +16,9 @@ export const subcategoriesColumns: ColumnDef<Category, any>[] = [
     minSize: 300,
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <Avatar className="rounded h-20 w-20 border">
-          <AvatarImage src={row.original.image} alt={row.original.name} className="object-contain" />
-          <AvatarFallback className="rounded">
-            <FolderTree className="h-4 w-4 text-muted-foreground" />
-          </AvatarFallback>
-        </Avatar>
+        <Image src={row.original.image} alt={row.original.name} />
 
-        <Link className="text-blue-500" to={"/categories/" + row.original.id + "/settings"}>
+        <Link className="text-blue-500 font-medium" to={"/categories/" + row.original.id + "/settings"}>
           {row.original.name}
         </Link>
       </div>
@@ -37,15 +34,19 @@ export const subcategoriesColumns: ColumnDef<Category, any>[] = [
     id: "actions",
     maxSize: 64,
     cell: ({ row }) => {
+      const can = usePermission();
+
       return (
-        <RemoveCategoryDialogForm
-          category={row.original}
-          finishNavigate={`/categories/${row.original.parent}/subcategories`}
-        >
-          <Button variant="outline" size="icon" className="w-8 h-8">
-            <Trash2 />
-          </Button>
-        </RemoveCategoryDialogForm>
+        can(PERMISSIONS.REMOVE_CATEGORY) && (
+          <RemoveCategoryDialogForm
+            category={row.original}
+            finishNavigate={`/categories/${row.original.parent}/subcategories`}
+          >
+            <Button variant="outline" size="icon" className="w-8 h-8">
+              <Trash2 />
+            </Button>
+          </RemoveCategoryDialogForm>
+        )
       );
     },
   },

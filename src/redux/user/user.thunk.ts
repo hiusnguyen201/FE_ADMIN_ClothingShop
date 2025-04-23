@@ -8,6 +8,7 @@ import {
   getListUserService,
   getUserService,
   removeUserService,
+  resetPasswordUserService,
 } from "@/redux/user/user.service";
 import {
   CheckEmailExistPayload,
@@ -26,6 +27,8 @@ import {
   GetUserResponse,
   RemoveUserPayload,
   RemoveUserResponse,
+  ResetPasswordUserPayload,
+  ResetPasswordUserResponse,
 } from "@/redux/user/user.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
 
@@ -134,3 +137,16 @@ export const editListUserPermissions = createAsyncThunk<
     return rejectWithValue(message);
   }
 });
+
+export const resetPasswordUser = createAsyncThunk<ResetPasswordUserResponse, ResetPasswordUserPayload, ThunkApiConfig>(
+  "user/reset-password",
+  async (payload, { rejectWithValue }) => {
+    try {
+      const response: ResetPasswordUserResponse = await resetPasswordUserService(payload);
+      return response;
+    } catch (e: any) {
+      const message: string = e?.response?.data?.message || e.message || e.toString();
+      return rejectWithValue(message);
+    }
+  }
+);

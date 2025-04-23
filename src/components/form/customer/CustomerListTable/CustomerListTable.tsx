@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { useCustomerTableFilters } from "./useCustomerTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { convertToSearchParams } from "@/utils/object";
-import { customerColumns } from "./customer-columns";
+import { customerColumns } from "@/pages/customers/customer-columns";
 
 export function CustomerListTable() {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -13,10 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Customer } from "@/types/customer";
 import { RemoveCustomerDialogForm } from "@/components/form/customer/RemoveCustomerDialogForm";
 import { FlexBox } from "@/components/FlexBox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDateString } from "@/utils/date";
 import { TooltipWrapper } from "@/components/TooltipWrapper";
 import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
+import { Image } from "@/components/Image";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export const customerColumns: ColumnDef<Customer, any>[] = [
   {
@@ -28,10 +30,7 @@ export const customerColumns: ColumnDef<Customer, any>[] = [
 
       return (
         <FlexBox size="small" direction="row" className="items-center">
-          <Avatar className="h-10 w-10 rounded-full border">
-            {customer.avatar && <AvatarImage src={customer.avatar} alt={customer.name} />}
-            <AvatarFallback className="rounded-full capitalize">{customer.name.charAt(0)}</AvatarFallback>
-          </Avatar>
+          <Image src={customer.avatar} alt={customer.name} type="avatar" size={48} />
           <FlexBox className="gap-0">
             <TruncatedTextWithTooltip className="max-w-[300px]">
               <Link className="text-blue-500" to={"/customers/" + customer.id + "/settings"}>
@@ -99,6 +98,7 @@ export const customerColumns: ColumnDef<Customer, any>[] = [
 ];
 
 export function CustomerActions({ customer }: { customer: Customer }) {
+  const can = usePermission();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -116,27 +116,36 @@ export function CustomerActions({ customer }: { customer: Customer }) {
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
         >
-          <Link to={`/customers/${customer.id}/settings`}>
-            <DropdownMenuItem>
-              <Clipboard /> View Details
-            </DropdownMenuItem>
-          </Link>
+          {can(PERMISSIONS.READ_DETAILS_CUSTOMER) && (
+            <Link to={`/customers/${customer.id}/settings`}>
+              <DropdownMenuItem>
+                <Clipboard /> View Details
+              </DropdownMenuItem>
+            </Link>
+          )}
 
-          <DropdownMenuSeparator />
+          {can(PERMISSIONS.REMOVE_CUSTOMER) && (
+            <>
+              <DropdownMenuSeparator />
 
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.preventDefault();
-              setMenuOpen(false);
-              setIsDialogOpen(true);
-            }}
-            className="text-destructive focus:text-destructive focus:bg-destructive/10"
-          >
-            <Trash /> Remove
-          </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  setIsDialogOpen(true);
+                }}
+                className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              >
+                <Trash /> Remove
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <RemoveCustomerDialogForm customer={customer} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+
+      {can(PERMISSIONS.REMOVE_CUSTOMER) && (
+        <RemoveCustomerDialogForm customer={customer} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      )}
     </>
   );
 }

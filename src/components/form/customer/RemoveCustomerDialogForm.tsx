@@ -9,8 +9,8 @@ import { ReactNode } from "react";
 
 type RemoveCustomerDialogFormProps = {
   customer: Customer;
-  open: boolean;
-  onOpenChange: (value: boolean) => void;
+  open?: boolean;
+  onOpenChange?: (value: boolean) => void;
   children?: ReactNode;
 };
 

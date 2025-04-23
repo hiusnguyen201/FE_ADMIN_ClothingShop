@@ -9,8 +9,11 @@ import { ONLINE_PAYMENT_METHOD, PAYMENT_STATUS } from "@/types/payment";
 import { ConfirmOrderButton } from "@/components/form/order/EditOrderCard/ConfirmOrderButton";
 import { CreateShipOrderButton } from "@/components/form/order/EditOrderCard/CreateShipOrderButton";
 import { StartProcessingOrderButton } from "@/components/form/order/EditOrderCard/StartProcessingOrderButton";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export function PaymentInformationCard({ order }: { order: Order }) {
+  const can = usePermission();
   const [openDialog, setOpenDialog] = useState(false);
 
   return (
@@ -44,9 +47,10 @@ export function PaymentInformationCard({ order }: { order: Order }) {
             <BadgePaymentStatus status={order.payment.status} />
           </div>
         </div>
-        <ConfirmOrderButton order={order} />
-        <StartProcessingOrderButton order={order} />
-        <CreateShipOrderButton order={order} />
+
+        {can(PERMISSIONS.CONFIRM_ORDER) && <ConfirmOrderButton order={order} />}
+        {can(PERMISSIONS.PROCESSING_ORDER) && <StartProcessingOrderButton order={order} />}
+        {can(PERMISSIONS.CREATE_SHIP_ORDER) && <CreateShipOrderButton order={order} />}
       </CardContent>
 
       {order.payment.status === PAYMENT_STATUS.PENDING &&

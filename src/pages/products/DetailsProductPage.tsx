@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useMemo } from "react";
 import { Heading } from "@/components/Heading";
@@ -12,6 +12,8 @@ import { EditProductSettingsPage, EditProductVariantsPage } from "@/pages/produc
 import { ProductGuardChildrenProps } from "@/guards/product/ProductExistsGuard";
 import { BoxStatusMessage } from "@/components/BoxStatusMessage";
 import { PRODUCT_STATUS } from "@/types/product";
+import { PERMISSIONS } from "@/constants/permissions";
+import { usePermission } from "@/hooks/use-permission";
 
 enum TABS {
   SETTINGS = "settings",
@@ -48,6 +50,9 @@ const tabs = [
 ];
 
 export function DetailsProductPage({ product, checkExistLoading }: ProductGuardChildrenProps) {
+  const can = usePermission();
+  if (!can(PERMISSIONS.READ_DETAILS_PRODUCT)) return <Navigate to={"/forbidden"} />;
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -119,7 +124,12 @@ export function DetailsProductPage({ product, checkExistLoading }: ProductGuardC
               <div>
                 {tabs.map((item) => (
                   <TabsContent key={item.value} value={item.value} className="py-4 mt-0">
-                    {item.element({ product })}
+                    {item.element({
+                      product,
+                      canEdit: can(PERMISSIONS.EDIT_PRODUCT_INFO),
+                      canRemove: can(PERMISSIONS.REMOVE_PRODUCT),
+                      canEditVariants: can(PERMISSIONS.EDIT_PRODUCT_VARIANTS),
+                    })}
                   </TabsContent>
                 ))}
               </div>

@@ -19,6 +19,10 @@ import { DetailsOrderPage, ListOrderPage } from "@/pages/orders";
 import { CreateOrderPage } from "@/pages/orders/CreateOrderPage";
 import { CreateProductPage } from "@/pages/products/CreateProductPage";
 import { OrderExistsGuard } from "@/guards/order/OrderExistsGuard";
+import { ProfilePage } from "@/pages/account/ProfilePage";
+import { PermissionGuard } from "@/guards/PermissionGuard";
+import { PERMISSIONS } from "@/constants/permissions";
+import { ForbiddenPage } from "@/pages/errors/ForbiddenPage";
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -29,56 +33,153 @@ export const privateRoutes: RouteObject[] = [
     ),
     children: [
       { path: "/", element: <DashboardPage /> },
-      { path: "/products", element: <ListProductPage /> },
-      { path: "/products/new", element: <CreateProductPage /> },
+      {
+        path: "/products",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_PRODUCTS}>
+            <ListProductPage />
+          </PermissionGuard>
+        ),
+      },
+      {
+        path: "/products/new",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.CREATE_PRODUCT}>
+            <CreateProductPage />
+          </PermissionGuard>
+        ),
+      },
       {
         path: "/products/:productId/settings",
-        element: <ProductExistsGuard children={DetailsProductPage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_DETAILS_PRODUCT}>
+            <ProductExistsGuard children={DetailsProductPage} />
+          </PermissionGuard>
+        ),
       },
       {
         path: "/products/:productId/variants",
-        element: <ProductExistsGuard children={DetailsProductPage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_DETAILS_PRODUCT}>
+            <ProductExistsGuard children={DetailsProductPage} />
+          </PermissionGuard>
+        ),
       },
-      { path: "/categories", element: <ListCategoryPage /> },
+      {
+        path: "/categories",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_CATEGORIES}>
+            <ListCategoryPage />
+          </PermissionGuard>
+        ),
+      },
       {
         path: "/categories/:categoryId/settings",
-        element: <CategoryExistsGuard children={DetailsCategoryPage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_DETAILS_CATEGORY}>
+            <CategoryExistsGuard children={DetailsCategoryPage} />
+          </PermissionGuard>
+        ),
       },
       {
         path: "/categories/:categoryId/subcategories",
-        element: <CategoryExistsGuard children={DetailsCategoryPage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_DETAILS_CATEGORY}>
+            <CategoryExistsGuard children={DetailsCategoryPage} />
+          </PermissionGuard>
+        ),
       },
-      { path: "/customers", element: <ListCustomerPage /> },
+      {
+        path: "/customers",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_CUSTOMERS}>
+            <ListCustomerPage />
+          </PermissionGuard>
+        ),
+      },
       {
         path: "/customers/:customerId/settings",
-        element: <CustomerExistsGuard children={DetailsCustomerPage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_DETAILS_CUSTOMER}>
+            <CustomerExistsGuard children={DetailsCustomerPage} />
+          </PermissionGuard>
+        ),
       },
-      { path: "/users", element: <ListUserPage /> },
+      {
+        path: "/users",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_USERS}>
+            <ListUserPage />
+          </PermissionGuard>
+        ),
+      },
       {
         path: "/users/:userId/settings",
-        element: <UserExistsGuard children={DetailsUserPage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_DETAILS_USERS}>
+            <UserExistsGuard children={DetailsUserPage} />
+          </PermissionGuard>
+        ),
       },
-      { path: "/orders", element: <ListOrderPage /> },
-      { path: "/orders/create", element: <CreateOrderPage /> },
+      {
+        path: "/orders",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_ORDERS}>
+            <ListOrderPage />
+          </PermissionGuard>
+        ),
+      },
+      {
+        path: "/orders/create",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.CREATE_ORDER}>
+            <CreateOrderPage />
+          </PermissionGuard>
+        ),
+      },
       {
         path: "/orders/:orderCode",
-        element: <OrderExistsGuard children={DetailsOrderPage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_DETAILS_ORDER}>
+            <OrderExistsGuard children={DetailsOrderPage} />
+          </PermissionGuard>
+        ),
       },
-      { path: "/roles", element: <ListRolePage /> },
+      {
+        path: "/roles",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_ROLES}>
+            <ListRolePage />
+          </PermissionGuard>
+        ),
+      },
       {
         path: "/roles/:roleId/settings",
-        element: <RoleExistsGuard children={DetailsRolePage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_DETAILS_ROLE}>
+            <RoleExistsGuard children={DetailsRolePage} />
+          </PermissionGuard>
+        ),
       },
       {
         path: "/roles/:roleId/permissions",
-        element: <RoleExistsGuard children={DetailsRolePage} />,
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_ASSIGNED_ROLE_PERMISSIONS}>
+            <RoleExistsGuard children={DetailsRolePage} />
+          </PermissionGuard>
+        ),
       },
       {
-        path: "/roles/:roleId/users",
-        element: <RoleExistsGuard children={DetailsRolePage} />,
+        path: "/permissions",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.READ_PERMISSIONS}>
+            <ListPermissionPage />
+          </PermissionGuard>
+        ),
       },
-      { path: "/permissions", element: <ListPermissionPage /> },
+      { path: "/profile/general", element: <ProfilePage /> },
     ],
   },
+  { path: "/forbidden", element: <ForbiddenPage /> },
   { path: "*", element: <NotFoundPage /> },
 ];

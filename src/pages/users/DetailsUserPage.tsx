@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useMemo } from "react";
 import { Heading } from "@/components/Heading";
@@ -10,6 +10,8 @@ import { ContentWrapper } from "@/components/ContentWrapper";
 import { Spinner } from "@/components/spinner";
 import { EditUserSettingsPage } from "@/pages/users/tabs";
 import { UserGuardChildrenProps } from "@/guards/user/UserExistsGuard";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 enum TABS {
   SETTINGS = "settings",
@@ -23,6 +25,9 @@ const tabs = [
 ];
 
 export function DetailsUserPage({ user, checkExistLoading }: UserGuardChildrenProps) {
+  const can = usePermission();
+  if (!can(PERMISSIONS.READ_DETAILS_USERS)) return <Navigate to={"/forbidden"} />;
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -87,7 +92,12 @@ export function DetailsUserPage({ user, checkExistLoading }: UserGuardChildrenPr
               <div>
                 {tabs.map((item) => (
                   <TabsContent key={item.value} value={item.value} className="py-4 mt-0">
-                    {item.element({ user })}
+                    {item.element({
+                      user,
+                      canEdit: can(PERMISSIONS.EDIT_USER),
+                      canRemove: can(PERMISSIONS.REMOVE_USER),
+                      canResetPassword: can(PERMISSIONS.RESET_PASSWORD_USER),
+                    })}
                   </TabsContent>
                 ))}
               </div>

@@ -14,6 +14,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
+import { usePermission } from "@/hooks/use-permission";
 
 export function NavMain({
   label,
@@ -25,21 +26,33 @@ export function NavMain({
     url: string;
     icon?: LucideIcon;
     isActive?: boolean;
+    permission?: string;
     items?: {
       icon?: string;
       title: string;
       url: string;
+      permission?: string;
     }[];
   }[];
 }) {
   const location = useLocation();
+  const can = usePermission();
+  const someCan = can(
+    items.map((i) => i.permission).filter((p): p is string => !!p),
+    "some"
+  );
+  const somePer = items.some((i) => !i.permission);
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{label}</SidebarGroupLabel>
+      {(someCan || somePer) && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarMenu>
         {items.map((item) => {
           const active = location.pathname === item.url;
+          if (item.permission && !can(item.permission)) {
+            return null;
+          }
+
           return (
             <Collapsible key={item.title} asChild defaultOpen={active} className="group/collapsible">
               <SidebarMenuItem>
@@ -62,16 +75,22 @@ export function NavMain({
                 {item?.items && (
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      {item.items?.map((subItem) => (
-                        <SidebarMenuSubItem key={subItem.title}>
-                          <SidebarMenuSubButton asChild>
-                            <Link to={subItem.url}>
-                              {subItem.icon && <subItem.icon />}
-                              <span>{subItem.title}</span>
-                            </Link>
-                          </SidebarMenuSubButton>
-                        </SidebarMenuSubItem>
-                      ))}
+                      {item.items?.map((subItem) => {
+                        if (subItem.permission && !can(subItem.permission)) {
+                          return null;
+                        }
+
+                        return (
+                          <SidebarMenuSubItem key={subItem.title}>
+                            <SidebarMenuSubButton asChild>
+                              <Link to={subItem.url}>
+                                {subItem.icon && <subItem.icon />}
+                                <span>{subItem.title}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        );
+                      })}
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 )}

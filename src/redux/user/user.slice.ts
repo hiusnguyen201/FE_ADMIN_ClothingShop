@@ -17,6 +17,7 @@ import {
   getListUserPermissions,
   editListUserPermissions,
   checkEmailExist,
+  resetPasswordUser,
 } from "@/redux/user/user.thunk";
 
 const initialState: UserState = {
@@ -29,6 +30,7 @@ const initialState: UserState = {
     removeUser: false,
     getListUserPermissions: false,
     editListUserPermissions: false,
+    resetPasswordUser: false,
   },
   newItem: null,
   item: null,
@@ -37,7 +39,7 @@ const initialState: UserState = {
   totalCount: 0,
   error: null,
   listUserPermissions: [],
-  deletedUserIds: [],
+  removedUserIds: [],
 };
 
 const userSlice = createSlice({
@@ -186,6 +188,21 @@ const userSlice = createSlice({
       })
       .addCase(editListUserPermissions.rejected, (state: Draft<UserState>, action: PayloadAction<any>) => {
         state.loading.editListUserPermissions = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      //Reset password user
+      .addCase(resetPasswordUser.pending, (state: Draft<UserState>) => {
+        state.loading.resetPasswordUser = true;
+        state.error = null;
+      })
+      .addCase(resetPasswordUser.fulfilled, (state: Draft<UserState>) => {
+        state.loading.resetPasswordUser = false;
+        state.error = null;
+      })
+      .addCase(resetPasswordUser.rejected, (state: Draft<UserState>, action: PayloadAction<any>) => {
+        state.loading.resetPasswordUser = false;
         state.error = action.payload as string;
       });
   },

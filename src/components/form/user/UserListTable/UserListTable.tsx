@@ -10,7 +10,7 @@ import { useUserTableFilters } from "./useUserTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useSearchParams } from "react-router-dom";
 import { convertToSearchParams } from "@/utils/object";
-import { userColumns } from "./user-columns";
+import { userColumns } from "@/pages/users/user-columns";
 
 export function UserListTable() {
   const [searchParams, setSearchParams] = useSearchParams();

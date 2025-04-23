@@ -10,7 +10,7 @@ import { useRoleTableFilters } from "./useRoleTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { convertToSearchParams } from "@/utils/object";
 import { useSearchParams } from "react-router-dom";
-import { roleColumns } from "./role-columns";
+import { roleColumns } from "@/pages/roles/role-columns";
 
 export function RoleListTable() {
   const [searchParams, setSearchParams] = useSearchParams();

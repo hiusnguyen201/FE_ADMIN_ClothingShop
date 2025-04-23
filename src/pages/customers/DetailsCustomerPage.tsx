@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useMemo } from "react";
 import { Heading } from "@/components/Heading";
@@ -10,6 +10,8 @@ import { ContentWrapper } from "@/components/ContentWrapper";
 import { Spinner } from "@/components/spinner";
 import { EditCustomerSettingsPage } from "@/pages/customers/tabs";
 import { CustomerGuardChildrenProps } from "@/guards/customer/CustomerExistsGuard";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 enum TABS {
   SETTINGS = "settings",
@@ -23,6 +25,9 @@ const tabs = [
 ];
 
 export function DetailsCustomerPage({ customer, checkExistLoading }: CustomerGuardChildrenProps) {
+  const can = usePermission();
+  if (!can(PERMISSIONS.READ_DETAILS_CUSTOMER)) return <Navigate to={"forbidden"} />;
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -87,7 +92,11 @@ export function DetailsCustomerPage({ customer, checkExistLoading }: CustomerGua
               <div>
                 {tabs.map((item) => (
                   <TabsContent key={item.value} value={item.value} className="py-4 mt-0">
-                    {item.element({ customer })}
+                    {item.element({
+                      customer,
+                      canEdit: can(PERMISSIONS.EDIT_CUSTOMER),
+                      canRemove: can(PERMISSIONS.REMOVE_CUSTOMER),
+                    })}
                   </TabsContent>
                 ))}
               </div>

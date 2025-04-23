@@ -1,3 +1,4 @@
+import { Image } from "@/components/Image";
 import { LoadingButton } from "@/components/LoadingButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,14 +35,8 @@ export function OrderSummaryCard({
               {values.productVariants.map((variant) => (
                 <div key={variant.id} className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <Avatar className="h-12 w-12 rounded-sm border">
-                      {variant.product.thumbnail && (
-                        <AvatarImage src={variant.product.thumbnail} alt={variant.product.name} />
-                      )}
-                      <AvatarFallback className="rounded-full capitalize">
-                        {variant.product.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <Image src={variant.product.thumbnail} alt={variant.product.name} aspect="3/4" />
+
                     <div className="flex flex-col">
                       <span>{variant.product.name}</span>
                       <span className="text-muted-foreground text-sm">

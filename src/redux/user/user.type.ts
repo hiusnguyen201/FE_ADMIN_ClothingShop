@@ -16,6 +16,7 @@ export interface UserState {
     removeUser: boolean;
     getListUserPermissions: boolean;
     editListUserPermissions: boolean;
+    resetPasswordUser: boolean;
   };
   newItem: Nullable<User>;
   item: Nullable<User>;
@@ -103,3 +104,11 @@ export interface EditListUserPermissionsPayload {
   permissionIds: string[];
 }
 export interface EditListUserPermissionsResponse extends BaseResponse<Permission[]> {}
+
+/**
+ * Reset Password User
+ */
+export interface ResetPasswordUserPayload {
+  userId: string;
+}
+export interface ResetPasswordUserResponse extends BaseResponse<{ id: string }> {}

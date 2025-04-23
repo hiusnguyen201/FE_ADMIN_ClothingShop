@@ -15,6 +15,7 @@ type ImageFormikFieldProps<TData> = {
   size?: number | string;
   hint?: boolean;
   hintDirection?: "right" | "bottom";
+  type?: "avatar" | "normal";
 };
 
 export function ImageFormikField<TData>({
@@ -27,6 +28,7 @@ export function ImageFormikField<TData>({
   className,
   hint = true,
   hintDirection = "right",
+  type = "normal",
 }: ImageFormikFieldProps<TData>) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -95,6 +97,7 @@ export function ImageFormikField<TData>({
           {...getRootProps({ className: "dropzone" })}
           className={cn(
             "dropzone border-2 relative border-gray-300 rounded cursor-pointer flex items-center flex-col max-h-40 justify-center group basis-full",
+            type === "avatar" ? "rounded-full" : "",
             error ? "border-red-300" : "border-gray-300",
             currentValue ? "border" : "border-dashed"
           )}
@@ -102,15 +105,24 @@ export function ImageFormikField<TData>({
         >
           {previewUrl ? (
             <div
-              className="relative w-full h-full group"
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
             >
-              <img src={previewUrl} alt="Category preview" className="absolute inset-0 w-full h-full object-contain" />
+              <img
+                src={previewUrl}
+                alt="Category preview"
+                className={cn(
+                  "absolute inset-0 w-full h-full object-cover rounded",
+                  type === "avatar" ? "rounded-full" : ""
+                )}
+              />
               <div
-                className="hidden group-hover:flex absolute inset-0 items-center justify-center bg-black/40 cursor-pointer rounded"
+                className={cn(
+                  "hidden group-hover:flex absolute inset-0 items-center justify-center bg-black/40 cursor-pointer rounded",
+                  type === "avatar" ? "rounded-full" : ""
+                )}
                 onClick={(e) => {
                   e.stopPropagation();
                   handleRemoveImage();

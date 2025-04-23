@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Heading } from "@/components/Heading";
 import { FlexBox } from "@/components/FlexBox";
@@ -14,8 +14,13 @@ import {
   PaymentInformationCard,
 } from "@/components/form/order/EditOrderCard";
 import { CancelOrderButton } from "@/components/form/order/EditOrderCard/CancelOrderButton";
+import { PERMISSIONS } from "@/constants/permissions";
+import { usePermission } from "@/hooks/use-permission";
 
 export function DetailsOrderPage({ order, checkExistLoading }: OrderGuardChildrenProps) {
+  const can = usePermission();
+  if (!can(PERMISSIONS.READ_DETAILS_ORDER)) return <Navigate to={"/forbidden"} />;
+
   return (
     <ContentWrapper>
       <FlexBox size="large">
@@ -57,7 +62,7 @@ export function DetailsOrderPage({ order, checkExistLoading }: OrderGuardChildre
               <OrderItemsCard order={order} />
 
               <div className="flex items-center justify-end">
-                <CancelOrderButton className="max-w-[150px]" order={order} />
+                {can(PERMISSIONS.CANCEL_ORDER) && <CancelOrderButton className="max-w-[150px]" order={order} />}
               </div>
             </div>
           </div>

@@ -10,7 +10,7 @@ import { usePermissionTableFilters } from "./usePermissionTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { convertToSearchParams } from "@/utils/object";
 import { useSearchParams } from "react-router-dom";
-import { permissionColumns } from "./permission-columns";
+import { permissionColumns } from "@/pages/permissions/permission-columns";
 
 export function PermissionListTable() {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -5,13 +5,21 @@ import { RemoveProductDialogForm } from "@/components/form/product/RemoveProduct
 import { Button } from "@/components/ui/button";
 import { Product, PRODUCT_STATUS } from "@/types/product";
 
-export function EditProductSettingsPage({ product }: { product: Product }) {
+export function EditProductSettingsPage({
+  product,
+  canRemove,
+  canEdit,
+}: {
+  product: Product;
+  canRemove: boolean;
+  canEdit: boolean;
+}) {
   return (
     <FlexBox size="large">
       {/* Edit Form */}
-      <EditProductInfoForm product={product} />
+      {canEdit && <EditProductInfoForm product={product} />}
 
-      {product.status === PRODUCT_STATUS.INACTIVE && (
+      {canRemove && product.status === PRODUCT_STATUS.INACTIVE && (
         <FlexBox size="small">
           <h2 className="text-lg font-medium">Danger Zone</h2>
 

@@ -6,7 +6,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { NavMain } from "@/components/nav-main";
+import { NavMain } from "@/components/layouts/NavMain";
 import { navData } from "./nav-data";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, PanelLeft } from "lucide-react";

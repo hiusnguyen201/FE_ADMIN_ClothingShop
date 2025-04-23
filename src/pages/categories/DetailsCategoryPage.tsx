@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useMemo } from "react";
 import { Heading } from "@/components/Heading";
@@ -11,6 +11,8 @@ import { Spinner } from "@/components/spinner";
 import { EditCategorySettingsPage } from "@/pages/categories/tabs";
 import { CategoryGuardChildrenProps } from "@/guards/category/CategoryExistsGuard";
 import { EditSubcategoriesPage } from "@/pages/categories/tabs/EditSubcategoriesPage";
+import { PERMISSIONS } from "@/constants/permissions";
+import { usePermission } from "@/hooks/use-permission";
 
 enum TABS {
   SETTINGS = "settings",
@@ -18,6 +20,9 @@ enum TABS {
 }
 
 export function DetailsCategoryPage({ category, checkExistLoading }: CategoryGuardChildrenProps) {
+  const can = usePermission();
+  if (!can(PERMISSIONS.READ_DETAILS_CATEGORY)) return <Navigate to={"/forbidden"} />;
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -106,7 +111,13 @@ export function DetailsCategoryPage({ category, checkExistLoading }: CategoryGua
               <div>
                 {tabs.map((item) => (
                   <TabsContent key={item.value} value={item.value} className="py-4 mt-0">
-                    {item.element({ category })}
+                    {item.element({
+                      category,
+                      canEdit: can(PERMISSIONS.EDIT_CATEGORY),
+                      canRemove: can(PERMISSIONS.REMOVE_CATEGORY),
+                      canCreate: can(PERMISSIONS.CREATE_CATEGORY),
+                      canReadList: can(PERMISSIONS.READ_CATEGORIES),
+                    })}
                   </TabsContent>
                 ))}
               </div>

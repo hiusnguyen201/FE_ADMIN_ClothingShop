@@ -4,28 +4,39 @@ import { EditCustomerInfoForm } from "@/components/form/customer/EditCustomerTab
 import { RemoveCustomerDialogForm } from "@/components/form/customer/RemoveCustomerDialogForm";
 import { Button } from "@/components/ui/button";
 import { Customer } from "@/types/customer";
+import { usePermission } from "@/hooks/use-permission";
 
-export function EditCustomerSettingsPage({ customer }: { customer: Customer }) {
+export function EditCustomerSettingsPage({
+  customer,
+  canEdit,
+  canRemove,
+}: {
+  customer: Customer;
+  canEdit: boolean;
+  canRemove: boolean;
+}) {
   return (
     <FlexBox size="large">
       {/* Edit Form */}
-      <EditCustomerInfoForm customer={customer} />
+      {canEdit && <EditCustomerInfoForm customer={customer} />}
 
-      <FlexBox size="small">
-        <h2 className="text-lg font-medium">Danger Zone</h2>
+      {canRemove && (
+        <FlexBox size="small">
+          <h2 className="text-lg font-medium">Danger Zone</h2>
 
-        <AlertBox
-          title="Remove Customer"
-          description="Once confirmed, this operation can't be undone!"
-          rightAction={
-            <RemoveCustomerDialogForm customer={customer}>
-              <Button variant="destructive" className="capitalize rounded text-white">
-                Remove
-              </Button>
-            </RemoveCustomerDialogForm>
-          }
-        />
-      </FlexBox>
+          <AlertBox
+            title="Remove Customer"
+            description="Once confirmed, this operation can't be undone!"
+            rightAction={
+              <RemoveCustomerDialogForm customer={customer}>
+                <Button variant="destructive" className="capitalize rounded text-white">
+                  Remove
+                </Button>
+              </RemoveCustomerDialogForm>
+            }
+          />
+        </FlexBox>
+      )}
     </FlexBox>
   );
 }

@@ -10,7 +10,7 @@ import { useProductTableFilters } from "./useProductTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useSearchParams } from "react-router-dom";
 import { convertToSearchParams } from "@/utils/object";
-import { productColumns } from "./product-columns";
+import { productColumns } from "@/pages/products/product-columns";
 
 export function ProductListTable() {
   const [searchParams, setSearchParams] = useSearchParams();

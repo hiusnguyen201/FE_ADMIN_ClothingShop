@@ -87,7 +87,7 @@ export function DataTable<TData>({
           {data.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <Fragment key={row.id}>
-                <TableRow className={cn("flex w-full items-center", heightPerRow ? `h-[${heightPerRow}px]` : "")}>
+                <TableRow className={cn("flex w-full items-center", heightPerRow ? `min-h-[${heightPerRow}px]` : "")}>
                   {/* {row.subRows.length > 0 && row.getCanExpand() && (
                     <TableCell className="flex items-center">
                       <Button

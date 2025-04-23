@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useMemo } from "react";
 import { Heading } from "@/components/Heading";
@@ -8,8 +8,10 @@ import { TabsContent } from "@/components/ui/tabs";
 import { FlexBox } from "@/components/FlexBox";
 import { ContentWrapper } from "@/components/ContentWrapper";
 import { Spinner } from "@/components/spinner";
-import { EditRolePermissionsPage, EditRoleSettingsPage } from "@/pages/roles/tabs";
+import { ListRolePermissionsPage, EditRoleSettingsPage } from "@/pages/roles/tabs";
 import { RoleGuardChildrenProps } from "@/guards/role/RoleExistsGuard";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 enum TABS {
   SETTINGS = "settings",
@@ -23,11 +25,14 @@ const tabs = [
   },
   {
     value: TABS.PERMISSIONS,
-    element: EditRolePermissionsPage,
+    element: ListRolePermissionsPage,
   },
 ];
 
 export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenProps) {
+  const can = usePermission();
+  if (!can(PERMISSIONS.READ_DETAILS_ROLE)) return <Navigate to={"/forbidden"} />;
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -92,7 +97,13 @@ export function DetailsRolePage({ role, checkExistLoading }: RoleGuardChildrenPr
               <div>
                 {tabs.map((item) => (
                   <TabsContent key={item.value} value={item.value} className="py-4 mt-0">
-                    {item.element({ role })}
+                    {item.element({
+                      role,
+                      canAddPermission: can(PERMISSIONS.ADD_ROLE_PERMISSIONS),
+                      canEdit: can(PERMISSIONS.EDIT_ROLE),
+                      canReadPermissions: can(PERMISSIONS.READ_ASSIGNED_ROLE_PERMISSIONS),
+                      canRemove: can(PERMISSIONS.REMOVE_ROLE),
+                    })}
                   </TabsContent>
                 ))}
               </div>

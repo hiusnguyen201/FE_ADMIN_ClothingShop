@@ -10,7 +10,7 @@ import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import { convertToSearchParams } from "@/utils/object";
-import { categoryColumns } from "./category-columns";
+import { categoryColumns } from "@/pages/categories/category-columns";
 
 export function CategoryListTable() {
   const [searchParams, setSearchParams] = useSearchParams();

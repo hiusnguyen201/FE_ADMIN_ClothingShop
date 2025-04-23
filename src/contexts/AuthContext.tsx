@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { createContext, useEffect, useReducer } from "react";
 import { User } from "@/types/user";
-import { getProfile } from "@/redux/account/account.thunk";
+import { getPermissionsInUser, getProfile } from "@/redux/account/account.thunk";
 import { useAppDispatch } from "@/redux/store";
 import {
   LoginPayload,
@@ -21,6 +21,7 @@ type State = {
   isInitialized: boolean;
   error: Nullable<string>;
   user: Nullable<User>;
+  permissions: string[];
   login: (values: LoginPayload) => Promise<LoginResponse | void>;
   verifyOtp: (values: VerifyOtpPayload) => Promise<VerifyOtpResponse | void>;
   refreshToken: () => Promise<RefreshTokenResponse | void>;
@@ -34,6 +35,7 @@ const initialState: State = {
   is2FactorRequired: false,
   error: null,
   user: null,
+  permissions: [],
   login: () => Promise.resolve(),
   verifyOtp: () => Promise.resolve(),
   refreshToken: () => Promise.resolve(),
@@ -55,6 +57,7 @@ const handlers: Record<ActionType, (state: State, action: AuthAction) => State> 
       ...state,
       isAuthenticated,
       isInitialized: true,
+      permissions: action.payload.permissions,
       error: null,
       user,
     };
@@ -132,9 +135,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const initialize = async () => {
     try {
-      const response = await appDispatch(getProfile()).unwrap();
-      const userInfo = response.data;
-      dispatch({ type: "INITIALIZE", payload: { ...state, isAuthenticated: true, user: userInfo } });
+      const responseProfile = await appDispatch(getProfile()).unwrap();
+      const responsePermissions = await appDispatch(getPermissionsInUser()).unwrap();
+      const userInfo = responseProfile.data;
+      const permissions = responsePermissions.data;
+      dispatch({
+        type: "INITIALIZE",
+        payload: { ...state, isAuthenticated: true, user: userInfo, permissions: permissions },
+      });
     } catch (e: any) {
       // const message = e?.response?.data?.message || e.message || e.toString();
       dispatch({ type: "INITIALIZE", payload: { ...state, isAuthenticated: false, user: null } });

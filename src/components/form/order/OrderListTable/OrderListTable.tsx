@@ -10,7 +10,7 @@ import { useOrderTableFilters } from "./useOrderTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useSearchParams } from "react-router-dom";
 import { convertToSearchParams } from "@/utils/object";
-import { orderColumns } from "./order-columns";
+import { orderColumns } from "@/pages/orders/order-columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ORDER_STATUS } from "@/types/order";
 

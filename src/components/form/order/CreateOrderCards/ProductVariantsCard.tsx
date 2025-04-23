@@ -136,7 +136,7 @@ export function ProductVariantsCard({ formikProps }: { formikProps: FormikProps<
             <>
               <FlexBox size="medium" direction="row">
                 <div>
-                  <Image width={32} src={product.thumbnail} alt={product.name} />
+                  <Image src={product.thumbnail} alt={product.name} aspect="3/4" />
                 </div>
                 <div className="flex flex-col gap-2">
                   {product.productOptions.map((opt) => (
@@ -221,7 +221,7 @@ export function ProductVariantsCard({ formikProps }: { formikProps: FormikProps<
                               { ...variantDetails, quantity: 1 },
                             ]);
 
-                            setSelectedVariants((prev) => [...prev, variantDetails]);
+                            setSelectedVariants((prev) => [...prev, variantDetails as SelectedVariantWithDetails]);
                           } else {
                             handleQuantityChange(
                               values.productVariants[indexDuplicate].id,
@@ -261,14 +261,7 @@ export function ProductVariantsCard({ formikProps }: { formikProps: FormikProps<
                   className="flex flex-col gap-3 md:flex-row md:items-center justify-between p-4 border rounded-md"
                 >
                   <div className="flex items-center gap-3 flex-1 mb-3 md:mb-0">
-                    <Avatar className="h-12 w-12 rounded-sm border">
-                      {variant.product.thumbnail && (
-                        <AvatarImage src={variant.product.thumbnail} alt={variant.product.name} />
-                      )}
-                      <AvatarFallback className="rounded-full capitalize">
-                        {variant.product.name.charAt(0)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <Image src={variant.product.thumbnail} alt={variant.product.name} aspect="3/4" />
                     <div>
                       <TruncatedTextWithTooltip lineClamp={2} className="font-medium">
                         {variant.product.name}

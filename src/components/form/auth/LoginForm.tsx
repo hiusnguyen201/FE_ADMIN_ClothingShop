@@ -12,8 +12,8 @@ import { useTimer } from "@/hooks/use-timer";
 import { sendOtpViaEmail } from "@/redux/auth/auth.thunk";
 
 const initialValues: LoginPayload = {
-  email: "admin123@gmail.com",
-  password: "1234",
+  email: "",
+  password: "",
 };
 
 const loginSchema = Yup.object().shape({

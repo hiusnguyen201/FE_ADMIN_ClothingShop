@@ -13,25 +13,24 @@ import { Button } from "@/components/ui/button";
 import { User } from "@/types/user";
 import { RemoveUserDialogForm } from "@/components/form/user/RemoveUserDialogForm";
 import { FlexBox } from "@/components/FlexBox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDateString } from "@/utils/date";
 import { TooltipWrapper } from "@/components/TooltipWrapper";
 import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
+import { Image } from "@/components/Image";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export const userColumns: ColumnDef<User, any>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    minSize: 300,
+    minSize: 320,
     cell: ({ row }) => {
       const user = row.original;
 
       return (
         <FlexBox size="small" direction="row" className="items-center">
-          <Avatar className="h-10 w-10 rounded-full border">
-            {user.avatar && <AvatarImage src={user.avatar} alt={user.name} />}
-            <AvatarFallback className="rounded-full capitalize">{user.name.charAt(0)}</AvatarFallback>
-          </Avatar>
+          <Image src={user.avatar} alt={user.name} type="avatar" size={48} />
           <FlexBox className="gap-0">
             <TruncatedTextWithTooltip className="max-w-[300px]">
               <Link className="text-blue-500" to={"/users/" + user.id + "/settings"}>
@@ -47,18 +46,17 @@ export const userColumns: ColumnDef<User, any>[] = [
   {
     accessorKey: "role",
     header: "Role",
-    minSize: 150,
+    minSize: 250,
     maxSize: 150,
     cell: ({ row }) => {
       const user = row.original;
-      return <TruncatedTextWithTooltip>{user.role?.name}</TruncatedTextWithTooltip>;
+      return <TruncatedTextWithTooltip>{user.role?.name || "-"}</TruncatedTextWithTooltip>;
     },
   },
   {
     accessorKey: "gender",
     header: "Gender",
-    minSize: 100,
-    maxSize: 100,
+    minSize: 50,
     cell: ({ row }) => {
       const user = row.original;
       return <span className="capitalize">{user.gender}</span>;
@@ -67,8 +65,7 @@ export const userColumns: ColumnDef<User, any>[] = [
   {
     accessorKey: "contact",
     header: "Contact",
-    minSize: 150,
-    maxSize: 150,
+    minSize: 100,
     cell: ({ row }) => {
       const user = row.original;
       return (
@@ -109,6 +106,7 @@ export const userColumns: ColumnDef<User, any>[] = [
 ];
 
 export function UserActions({ user }: { user: User }) {
+  const can = usePermission();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -126,28 +124,35 @@ export function UserActions({ user }: { user: User }) {
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
         >
-          <Link to={`/users/${user.id}/settings`}>
-            <DropdownMenuItem>
-              <Clipboard /> View Details
-            </DropdownMenuItem>
-          </Link>
+          {can(PERMISSIONS.READ_DETAILS_USERS) && (
+            <Link to={`/users/${user.id}/settings`}>
+              <DropdownMenuItem>
+                <Clipboard /> View Details
+              </DropdownMenuItem>
+            </Link>
+          )}
 
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.preventDefault();
-              setMenuOpen(false);
-              setIsDialogOpen(true);
-            }}
-            className="text-destructive focus:text-destructive focus:bg-destructive/10"
-          >
-            <Trash /> Remove
-          </DropdownMenuItem>
+          {can(PERMISSIONS.REMOVE_USER) && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  setIsDialogOpen(true);
+                }}
+                className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              >
+                <Trash /> Remove
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveUserDialogForm user={user} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      {can(PERMISSIONS.REMOVE_USER) && (
+        <RemoveUserDialogForm user={user} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      )}
     </>
   );
 }

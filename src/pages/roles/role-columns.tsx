@@ -13,6 +13,8 @@ import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip"
 import { Role } from "@/types/role";
 import { RemoveRoleDialogForm } from "@/components/form/role/RemoveRoleDialogForm";
 import { useState } from "react";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export const roleColumns: ColumnDef<Role, any>[] = [
   {
@@ -37,6 +39,8 @@ export const roleColumns: ColumnDef<Role, any>[] = [
 ];
 
 export function RoleActions({ role }: { role: Role }) {
+  const can = usePermission();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -54,28 +58,35 @@ export function RoleActions({ role }: { role: Role }) {
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
         >
-          <Link to={`/roles/${role.id}/settings`}>
-            <DropdownMenuItem>
-              <Clipboard /> View Details
-            </DropdownMenuItem>
-          </Link>
+          {can(PERMISSIONS.READ_DETAILS_ROLE) && (
+            <Link to={`/roles/${role.id}/settings`}>
+              <DropdownMenuItem>
+                <Clipboard /> View Details
+              </DropdownMenuItem>
+            </Link>
+          )}
 
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.preventDefault();
-              setMenuOpen(false);
-              setIsDialogOpen(true);
-            }}
-            className="text-destructive focus:text-destructive focus:bg-destructive/10"
-          >
-            <Trash /> Remove
-          </DropdownMenuItem>
+          {can(PERMISSIONS.REMOVE_ROLE) && (
+            <>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  setIsDialogOpen(true);
+                }}
+                className="text-destructive focus:text-destructive focus:bg-destructive/10"
+              >
+                <Trash /> Remove
+              </DropdownMenuItem>
+            </>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveRoleDialogForm role={role} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      {can(PERMISSIONS.REMOVE_ROLE) && (
+        <RemoveRoleDialogForm role={role} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      )}
     </>
   );
 }

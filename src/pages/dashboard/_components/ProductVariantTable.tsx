@@ -67,7 +67,10 @@ export function ProductVariantTable() {
             <TableCell>{variant.quantity}</TableCell>
             <TableCell>{variant.sold}</TableCell>
             <TableCell>
-              <Badge variant={variant.product.status === PRODUCT_STATUS.INACTIVE ? "outline" : "default"}>
+              <Badge
+                className="capitalize"
+                variant={variant.product.status === PRODUCT_STATUS.INACTIVE ? "outline" : "default"}
+              >
                 {variant.product.status}
               </Badge>
             </TableCell>

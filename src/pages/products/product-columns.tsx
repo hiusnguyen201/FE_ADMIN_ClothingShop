@@ -13,11 +13,13 @@ import { Button } from "@/components/ui/button";
 import { Product, PRODUCT_STATUS } from "@/types/product";
 // import { RemoveProductDialogForm } from "@/components/form/product/RemoveProductDialogForm";
 import { FlexBox } from "@/components/FlexBox";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
 import { RemoveProductDialogForm } from "@/components/form/product/RemoveProductDialogForm";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrencyVND } from "@/utils/string";
+import { Image } from "@/components/Image";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export const productColumns: ColumnDef<Product, any>[] = [
   {
@@ -26,12 +28,9 @@ export const productColumns: ColumnDef<Product, any>[] = [
     minSize: 300,
     cell: ({ row }) => (
       <FlexBox size="small" direction="row" className="items-center">
-        <Avatar className="h-16 w-16 rounded border">
-          <AvatarImage className="object-contain" src={row.original.thumbnail} alt={row.original.name} />
-          <AvatarFallback className="rounded-full capitalize">{row.original.name.charAt(0)}</AvatarFallback>
-        </Avatar>
+        <Image src={row.original.thumbnail} alt={row.original.name} aspect="3/4" />
         <TruncatedTextWithTooltip lineClamp={2} className="max-w-[300px]">
-          <Link className="text-blue-500 w-full" to={"/products/" + row.original.id + "/settings"}>
+          <Link className="text-blue-500 w-full font-medium" to={"/products/" + row.original.id + "/settings"}>
             {row.original.name}
           </Link>
         </TruncatedTextWithTooltip>
@@ -115,6 +114,8 @@ export const productColumns: ColumnDef<Product, any>[] = [
 ];
 
 export function ProductActions({ product }: { product: Product }) {
+  const can = usePermission();
+
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
 
@@ -132,13 +133,15 @@ export function ProductActions({ product }: { product: Product }) {
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
         >
-          <Link to={`/products/${product.id}/settings`}>
-            <DropdownMenuItem>
-              <Clipboard /> View Details
-            </DropdownMenuItem>
-          </Link>
+          {can(PERMISSIONS.READ_DETAILS_PRODUCT) && (
+            <Link to={`/products/${product.id}/settings`}>
+              <DropdownMenuItem>
+                <Clipboard /> View Details
+              </DropdownMenuItem>
+            </Link>
+          )}
 
-          {product.status === PRODUCT_STATUS.INACTIVE && (
+          {can(PERMISSIONS.REMOVE_PRODUCT) && product.status === PRODUCT_STATUS.INACTIVE && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -156,7 +159,9 @@ export function ProductActions({ product }: { product: Product }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <RemoveProductDialogForm product={product} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      {can(PERMISSIONS.REMOVE_PRODUCT) && product.status === PRODUCT_STATUS.INACTIVE && (
+        <RemoveProductDialogForm product={product} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      )}
     </>
   );
 }

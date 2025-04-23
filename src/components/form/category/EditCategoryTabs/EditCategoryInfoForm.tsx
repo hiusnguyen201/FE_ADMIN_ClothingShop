@@ -24,7 +24,7 @@ export function EditCategoryInfoForm({ category }: { category: Category }) {
     id: category.id,
     image: category.image,
     name: category.name,
-    parentId: category.parent,
+    parentId: category.parent?.id ?? null,
   };
 
   const handleSubmit = async (

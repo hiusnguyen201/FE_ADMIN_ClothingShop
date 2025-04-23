@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { GetListAssignedRolePermissionsPayload } from "@/redux/role/role.type";
 import { convertToSearchParams } from "@/utils/object";
+import { useDebouncedCallback } from "use-debounce";
 
 export function useRolePermissionsTableFilters(props: { searchParams?: URLSearchParams; roleId: string }) {
   const initialFilters: GetListAssignedRolePermissionsPayload = {
@@ -25,7 +26,11 @@ export function useRolePermissionsTableFilters(props: { searchParams?: URLSearch
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
+  const handleKeywordChange = useDebouncedCallback((keyword: string) => {
+    setFilters((prev) => ({ ...prev, keyword, page: 1 }));
+  }, 500);
+
   const isDefault = convertToSearchParams(filters).toString() === convertToSearchParams(initialFilters).toString();
 
-  return { filters, handlePageChange, handleLimitChange, isDefault };
+  return { filters, handlePageChange, handleLimitChange, isDefault, handleKeywordChange };
 }
