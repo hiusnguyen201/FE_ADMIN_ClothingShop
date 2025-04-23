@@ -2,6 +2,7 @@ import { GuestGuard } from "@/guards/GuestGuard";
 import { AuthLayout } from "@/layouts/AuthLayout";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { VerifyOTPPage } from "@/pages/auth/VerifyOTPPage";
+import { NotFoundPage } from "@/pages/errors";
 import { RouteObject } from "react-router-dom";
 
 export const publicRoutes: RouteObject[] = [
@@ -16,4 +17,5 @@ export const publicRoutes: RouteObject[] = [
       { path: "/verify-otp", element: <VerifyOTPPage /> },
     ],
   },
+  { path: "*", element: <NotFoundPage /> },
 ];
