@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "cross-env HTTPS=true SSL_CRT_FILE=./ssl/localhost.crt SSL_KEY_FILE=./ssl/localhost.key vite",
+    "dev": "cross-env vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -75,6 +75,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.0.1",
     "recharts": "^2.15.3",
+    "serve": "^14.2.4",
     "shadcn": "^2.3.0",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
