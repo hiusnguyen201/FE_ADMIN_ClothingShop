@@ -59,7 +59,7 @@ export function OrderSuccessDialog({ order, open, onOpenChange, goTo }: OrderSuc
             )}
 
             <div className="flex justify-center flex-col items-center">
-              <Image src={order.payment.qrCodeUrl} alt="QR CODE" className="border-0 w-64" />
+              <Image src={order.payment.qrCodeUrl} alt="QR CODE" className="border-0" size={256} />
             </div>
           </div>
 
