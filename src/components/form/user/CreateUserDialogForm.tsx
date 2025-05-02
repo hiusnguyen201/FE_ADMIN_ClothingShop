@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 import { FormikHelpers, useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Fragment, ReactNode, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { CreateDialogForm } from "@/components/dialog-form";
@@ -12,6 +12,7 @@ import { GENDER } from "@/types/user";
 import { REGEX_PATTERNS } from "@/types/constant";
 import { getListRole } from "@/redux/role/role.thunk";
 import { RoleState } from "@/redux/role/role.type";
+import { Button } from "@/components/ui/button";
 
 const initialValues: CreateUserPayload = {
   name: "",
@@ -35,24 +36,30 @@ const createUserSchema = Yup.object().shape({
 
 type CreateUserDialogFormProps = {
   children?: ReactNode;
-  open?: false;
-  onOpenChange?: (value: boolean) => void;
 };
 
-export function CreateUserDialogForm({ children, open, onOpenChange }: CreateUserDialogFormProps) {
+export function CreateUserDialogForm({ children }: CreateUserDialogFormProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { loading } = useAppSelector<UserState>((selector) => selector.user);
   const { list: listRole } = useAppSelector<RoleState>((selector) => selector.role);
   const [openSelectRole, setOpenSelectRole] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
 
   const handleSubmit = async (values: CreateUserPayload, { resetForm }: FormikHelpers<CreateUserPayload>) => {
     try {
       const response: CreateUserResponse = await dispatch(createUser(values)).unwrap();
       resetForm();
-      const { data: user, message } = response;
-      toast({ title: message });
-      navigate(`/users/${user.id}/settings`);
+      toast({
+        title: "Create user successful",
+        action: (
+          <Link to={`/users/${response.data.id}/settings`}>
+            <Button size="sm" className="h-8 gap-1">
+              <span>View Details</span>
+            </Button>
+          </Link>
+        ),
+      });
+      setInternalOpen(false);
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
@@ -78,9 +85,9 @@ export function CreateUserDialogForm({ children, open, onOpenChange }: CreateUse
   return (
     <CreateDialogForm
       title="Create User"
-      open={open}
+      open={internalOpen}
       trigger={children}
-      onOpenChange={onOpenChange}
+      onOpenChange={setInternalOpen}
       initialValues={initialValues}
       validationSchema={createUserSchema}
       extendSchema={checkUniqueEmail}

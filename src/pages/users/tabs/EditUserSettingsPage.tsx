@@ -20,7 +20,7 @@ export function EditUserSettingsPage({
   return (
     <FlexBox size="large">
       {/* Edit Form */}
-      {canEdit && <EditUserInfoForm user={user} />}
+      <EditUserInfoForm user={user} canEdit={canEdit} />
 
       {canRemove ||
         (canResetPassword && (

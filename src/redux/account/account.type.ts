@@ -1,5 +1,5 @@
 import { Nullable } from "@/types/common";
-import { Permission } from "@/types/permission";
+import { UserNotification } from "@/types/notification";
 import { BaseResponse } from "@/types/response";
 import { GENDER, User } from "@/types/user";
 
@@ -12,8 +12,15 @@ export interface AccountState {
     editProfile: boolean;
     changePassword: boolean;
     getPermissionsInUser: boolean;
+    getListNotificationInUser: boolean;
+    markAsReadNotificationInUser: boolean;
+    markAllAsReadNotificationInUser: boolean;
   };
-  permissions: Permission[];
+  totalCount: {
+    totalUnreadNotifications: number;
+  };
+  permissions: string[];
+  userNotifications: UserNotification[];
   user: Nullable<User>;
   error: Nullable<string>;
 }
@@ -50,3 +57,23 @@ export type ChangePasswordPayload = {
   confirmNewPassword: string;
 };
 export interface ChangePasswordResponse extends BaseResponse<void> {}
+
+/**
+ * Get list notification in user
+ */
+export type GetListNotificationInUserPayload = {};
+export interface GetListNotificationInUserResponse
+  extends BaseResponse<{ notifications: UserNotification[]; totalUnread: number }> {}
+
+/**
+ * Mark as read notification in user
+ */
+export type MarkAsReadNotificationInUserPayload = {
+  id: string;
+};
+export interface MarkAsReadNotificationInUserResponse extends BaseResponse<UserNotification> {}
+
+/**
+ * Mark all as read notification in user
+ */
+export interface MarkAllAsReadNotificationInUserResponse extends BaseResponse<UserNotification[]> {}

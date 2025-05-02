@@ -46,7 +46,7 @@ export function PaymentInformationDialog({ order, open, onOpenChange }: OrderSuc
               </div>
             )}
             <div className="flex flex-col items-center">
-              <Image className="w-64 border-0" src={order.payment.qrCodeUrl} alt={"QR Code"} />
+              <Image className="!w-64 !h-64 border-0" src={order.payment.qrCodeUrl} alt="QR Code" />
             </div>
           </div>
 

@@ -3,7 +3,7 @@ import { Heading } from "@/components/Heading";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Category } from "@/types/category";
-import { CreateCategoryDialogForm } from "@/components/form/category/CreateCategoryForm";
+import { CreateCategoryDialogForm } from "@/components/form/category/CreateCategoryDialogForm";
 import { SubcategoryListTable } from "@/components/form/category/EditCategoryTabs/SubcategoryListTable";
 
 export function EditSubcategoriesPage({

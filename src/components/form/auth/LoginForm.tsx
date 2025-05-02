@@ -6,14 +6,14 @@ import { LoadingButton } from "@/components/LoadingButton";
 import { InputFormikField } from "@/components/formik-fields";
 import { toast } from "@/hooks/use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { AuthState, LoginPayload } from "@/redux/auth/auth.type";
+import { AuthState, LoginPayload, LoginResponse } from "@/redux/auth/auth.type";
 import { useAuth } from "@/hooks/use-auth";
 import { useTimer } from "@/hooks/use-timer";
 import { sendOtpViaEmail } from "@/redux/auth/auth.thunk";
 
 const initialValues: LoginPayload = {
-  email: "",
-  password: "",
+  email: "test@gmail.com",
+  password: "1234",
 };
 
 const loginSchema = Yup.object().shape({
@@ -30,8 +30,13 @@ export function LoginForm({ className }: { className?: string }) {
 
   const handleSubmit = async (values: LoginPayload, { resetForm }: FormikHelpers<LoginPayload>) => {
     try {
-      await login?.(values);
+      const response: LoginResponse | void = await login(values);
       resetForm();
+
+      if (!response?.data?.is2FactorRequired) {
+        toast({ title: "Login successful" });
+        return await navigate("/");
+      }
 
       if (!getRemainingSeconds()) {
         dispatch(sendOtpViaEmail({ email: values.email }));

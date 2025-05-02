@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { FormikHelpers, useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
-import { Fragment, ReactNode, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Fragment, ReactNode, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { CreateDialogForm } from "@/components/dialog-form";
 import { InputFormikField, SelectBoxFormikField } from "@/components/formik-fields";
@@ -10,9 +10,9 @@ import { createCustomer } from "@/redux/customer/customer.thunk";
 import { CreateCustomerPayload, CreateCustomerResponse, CustomerState } from "@/redux/customer/customer.type";
 import { GENDER } from "@/types/customer";
 import { REGEX_PATTERNS } from "@/types/constant";
-import { getListRole } from "@/redux/role/role.thunk";
 import { CheckEmailExistResponse, UserState } from "@/redux/user/user.type";
 import { checkEmailExist } from "@/redux/user/user.thunk";
+import { Button } from "@/components/ui/button";
 
 const initialValues: CreateCustomerPayload = {
   name: "",
@@ -35,32 +35,29 @@ const createCustomerSchema = Yup.object().shape({
 
 type CreateCustomerDialogFormProps = {
   children?: ReactNode;
-  open?: boolean;
-  onOpenChange?: (value: boolean) => void;
-  finishRedirect?: boolean;
 };
 
-export function CreateCustomerDialogForm({
-  children,
-  open,
-  onOpenChange,
-  finishRedirect = true,
-}: CreateCustomerDialogFormProps) {
+export function CreateCustomerDialogForm({ children }: CreateCustomerDialogFormProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { loading } = useAppSelector<CustomerState>((selector) => selector.customer);
   const { loading: loadingUser } = useAppSelector<UserState>((selector) => selector.user);
+  const [internalOpen, setInternalOpen] = useState(false);
 
   const handleSubmit = async (values: CreateCustomerPayload, { resetForm }: FormikHelpers<CreateCustomerPayload>) => {
     try {
       const response: CreateCustomerResponse = await dispatch(createCustomer(values)).unwrap();
       resetForm();
-      const { data: customer, message } = response;
-      toast({ title: message });
-      if (finishRedirect) {
-        navigate(`/customers/${customer.id}/settings`);
-      }
-      onOpenChange?.(false);
+      toast({
+        title: "Create customer successful",
+        action: (
+          <Link to={`/customers/${response.data.id}/settings`}>
+            <Button size="sm" className="h-8 gap-1">
+              <span>View Details</span>
+            </Button>
+          </Link>
+        ),
+      });
+      setInternalOpen(false);
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
@@ -77,18 +74,12 @@ export function CreateCustomerDialogForm({
     return errors;
   };
 
-  useEffect(() => {
-    (async () => {
-      await dispatch(getListRole({ page: 1, limit: 100 })).unwrap();
-    })();
-  }, []);
-
   return (
     <CreateDialogForm
       title="Create Customer"
-      open={open}
       trigger={children}
-      onOpenChange={onOpenChange}
+      open={internalOpen}
+      onOpenChange={setInternalOpen}
       initialValues={initialValues}
       validationSchema={createCustomerSchema}
       extendSchema={checkUniqueEmail}

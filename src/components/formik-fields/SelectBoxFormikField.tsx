@@ -12,9 +12,11 @@ export type SelectBoxFormikFieldProps<TData> = {
   className?: string;
   formikProps: FormikProps<TData>;
   direction?: "column" | "row";
+  editing?: boolean;
 };
 
 export function SelectBoxFormikField<TData extends { [key: string]: any }>({
+  editing = true,
   name,
   label,
   required = false,
@@ -32,7 +34,7 @@ export function SelectBoxFormikField<TData extends { [key: string]: any }>({
   return (
     <div className={cn("w-full", className)}>
       {label && (
-        <Label className={cn("select-none mb-2 block", error && "text-red-500")}>
+        <Label className={cn("select-none mb-2 block", editing && error && "text-red-500")}>
           {label} {required && <span>*</span>}
         </Label>
       )}
@@ -45,37 +47,54 @@ export function SelectBoxFormikField<TData extends { [key: string]: any }>({
       >
         {options.map((item: string) => (
           <Label
-            className="inline-flex gap-2 items-center text-base cursor-pointer -ml-1 p-1"
+            className={cn(
+              "inline-flex gap-2 items-center text-base -ml-1 p-1",
+              editing ? "cursor-pointer" : "cursor-default"
+            )}
             key={item}
             htmlFor={item}
           >
-            <Input
-              tabIndex={-1}
-              id={item}
-              disabled={isSubmitting}
-              type={type}
-              name={name}
-              value={item}
-              checked={currentValue === item}
-              className={cn(
-                "cursor-pointer w-auto h-auto transform scale-110",
-                error && "border-red-500 focus:border-red-500"
-              )}
-              onChange={(e) => {
-                handleChange(e);
-                setFieldError(name, undefined);
-              }}
-              onBlur={async (e) => {
-                handleBlur(e);
-                validateField(name);
-              }}
-            />
+            {editing ? (
+              <Input
+                tabIndex={-1}
+                id={item}
+                disabled={isSubmitting}
+                type={type}
+                name={name}
+                value={item}
+                checked={currentValue === item}
+                className={cn(
+                  "cursor-pointer w-auto h-auto transform scale-110",
+                  error && "border-red-500 focus:border-red-500"
+                )}
+                onChange={(e) => {
+                  handleChange(e);
+                  setFieldError(name, undefined);
+                }}
+                onBlur={async (e) => {
+                  handleBlur(e);
+                  validateField(name);
+                }}
+              />
+            ) : (
+              <Input
+                tabIndex={-1}
+                id={item}
+                disabled={true}
+                type={type}
+                name={name}
+                value={item}
+                checked={currentValue === item}
+                className={cn("!cursor-default !opacity-100 w-auto h-auto transform scale-110")}
+              />
+            )}
+
             <span className="select-none font-normal capitalize">{item}</span>
           </Label>
         ))}
       </div>
 
-      {error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
+      {editing && error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
     </div>
   );
 }

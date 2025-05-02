@@ -17,6 +17,7 @@ export type OptionItem = {
 };
 
 export type SelectObjectFormikFieldProps<TData extends Record<string, any>> = {
+  editing?: boolean;
   name: string;
   switchable?: boolean;
   label?: string;
@@ -43,6 +44,7 @@ export type SelectObjectFormikFieldProps<TData extends Record<string, any>> = {
 };
 
 export function SelectObjectFormikField<TData extends Record<string, any>>({
+  editing = true,
   name,
   switchable = false,
   label,
@@ -108,7 +110,7 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
   return (
     <div className={cn("w-full", isSubmitting && "opacity-50", className)}>
       {label && (
-        <Label className={cn("select-none mb-2 block items-center", error && "text-red-500")}>
+        <Label className={cn("select-none mb-2 block items-center", editing && error && "text-red-500")}>
           {label} {required && <span>*</span>}
         </Label>
       )}
@@ -121,77 +123,85 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
             className={cn(
               "text-start flex items-center justify-between w-full border py-[9px] px-4 rounded bg-white",
               disabled && "opacity-60",
-              error && "border-red-500 focus:border-red-500"
+              editing && error && "border-red-500 focus:border-red-500"
             )}
           >
-            <Button variant="outline" role="combobox" aria-expanded={open} className="w-full justify-between">
+            <Button
+              disabled={isSubmitting || disabled || !editing}
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className={cn("w-full justify-between", !editing && "!cursor-default !opacity-100 bg-gray-100")}
+            >
               {options.find((item) => item.value === currentValue)?.title ?? (placeHolder || `Select ${label || name}`)}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]" align="start">
-            <Command className="max-h-[312px]">
-              {searchable && (
-                <SearchFormField
-                  className="focus-within:ring-0 rounded-none border-b border-t-0 border-x-0"
-                  name={name}
-                  type="change"
-                  value={searchInForm ? searchInFormValue : searchValue ?? ""}
-                  onValueChange={(value) => {
-                    onSearchChange?.(value);
-                    if (searchInForm) {
-                      setSearchInFormValue(value);
-                    }
-                  }}
-                  placeholder={placeHolder}
-                />
-              )}
-
-              <CommandList>
-                <CommandEmpty>{loading ? <Spinner /> : <span>No select options.</span>}</CommandEmpty>
-                {!loading && (
-                  <CommandGroup>
-                    {filterOptions.map((opt) => {
-                      const isSelected = currentValue === opt.value;
-                      return (
-                        <CommandItem
-                          key={opt.value}
-                          value={opt.value.toString()}
-                          onSelect={() => {
-                            if (!switchable && currentValue === opt.value) return;
-                            const val = currentValue === opt.value ? null : opt.value;
-                            setFieldValue(name, val);
-                            setFieldTouched(name);
-                            onSelectChange?.(val ? val.toString() : null);
-                            if (val) {
-                              setDialogOpen(false);
-                            }
-                          }}
-                          className="cursor-pointer"
-                        >
-                          <span>{opt.title}</span>
-                          {isSelected && <Check className="ml-auto h-4 w-4" />}
-                        </CommandItem>
-                      );
-                    })}
-                  </CommandGroup>
+          {editing && (
+            <PopoverContent className="p-0 w-[var(--radix-popover-trigger-width)]" align="start">
+              <Command className="max-h-[312px]">
+                {searchable && (
+                  <SearchFormField
+                    className="focus-within:ring-0 rounded-none border-b border-t-0 border-x-0"
+                    name={name}
+                    type="change"
+                    value={searchInForm ? searchInFormValue : searchValue ?? ""}
+                    onValueChange={(value) => {
+                      onSearchChange?.(value);
+                      if (searchInForm) {
+                        setSearchInFormValue(value);
+                      }
+                    }}
+                    placeholder={placeHolder}
+                  />
                 )}
-              </CommandList>
-              {pagination && (
-                <CommandPagination
-                  page={page ?? 1}
-                  totalPages={Math.max(1, Math.ceil((totalCount ?? 0) / (limit ?? 10)))}
-                  onPageChange={(page) => {
-                    onPageChange?.(page);
-                  }}
-                />
-              )}
-            </Command>
-          </PopoverContent>
+
+                <CommandList>
+                  <CommandEmpty>{loading ? <Spinner /> : <span>No select options.</span>}</CommandEmpty>
+                  {!loading && (
+                    <CommandGroup>
+                      {filterOptions.map((opt) => {
+                        const isSelected = currentValue === opt.value;
+                        return (
+                          <CommandItem
+                            key={opt.value}
+                            value={opt.value.toString()}
+                            onSelect={() => {
+                              if (!switchable && currentValue === opt.value) return;
+                              const val = currentValue === opt.value ? null : opt.value;
+                              setFieldValue(name, val);
+                              setFieldTouched(name);
+                              onSelectChange?.(val ? val.toString() : null);
+                              if (val) {
+                                setDialogOpen(false);
+                              }
+                            }}
+                            className="cursor-pointer"
+                          >
+                            <span>{opt.title}</span>
+                            {isSelected && <Check className="ml-auto h-4 w-4" />}
+                          </CommandItem>
+                        );
+                      })}
+                    </CommandGroup>
+                  )}
+                </CommandList>
+                {pagination && (
+                  <CommandPagination
+                    page={page ?? 1}
+                    totalPages={Math.max(1, Math.ceil((totalCount ?? 0) / (limit ?? 10)))}
+                    onPageChange={(page) => {
+                      onPageChange?.(page);
+                    }}
+                  />
+                )}
+              </Command>
+            </PopoverContent>
+          )}
         </Popover>
       </div>
 
-      {error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
+      {editing && error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
     </div>
   );
 }

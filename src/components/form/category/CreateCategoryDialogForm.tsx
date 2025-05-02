@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 import { FormikHelpers, useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
-import { Fragment, ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { Fragment, ReactNode, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { CreateDialogForm } from "@/components/dialog-form";
 import { InputFormikField } from "@/components/formik-fields";
@@ -15,6 +15,7 @@ import {
 } from "@/redux/category/category.type";
 import { ImageFormikField } from "@/components/formik-fields/ImageFormikField";
 import { Category } from "@/types/category";
+import { Button } from "@/components/ui/button";
 
 const createCategorySchema = Yup.object().shape({
   image: Yup.mixed<File>().required(),
@@ -24,15 +25,13 @@ const createCategorySchema = Yup.object().shape({
 
 type CreateCategoryDialogFormProps = {
   children?: ReactNode;
-  open?: false;
-  onOpenChange?: (value: boolean) => void;
   parent?: Category;
 };
 
-export function CreateCategoryDialogForm({ children, open, onOpenChange, parent }: CreateCategoryDialogFormProps) {
+export function CreateCategoryDialogForm({ children, parent }: CreateCategoryDialogFormProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { loading } = useAppSelector<CategoryState>((selector) => selector.category);
+  const [internalOpen, setInternalOpen] = useState(false);
 
   const initialValues: CreateCategoryPayload = {
     image: null,
@@ -44,9 +43,17 @@ export function CreateCategoryDialogForm({ children, open, onOpenChange, parent 
     try {
       const response: CreateCategoryResponse = await dispatch(createCategory(values)).unwrap();
       resetForm();
-      const { data: category, message } = response;
-      toast({ title: message });
-      navigate(`/categories/${category.id}/settings`);
+      toast({
+        title: "Create category successful",
+        action: (
+          <Link to={`/categories/${response.data.id}/settings`}>
+            <Button size="sm" className="h-8 gap-1">
+              <span>View Details</span>
+            </Button>
+          </Link>
+        ),
+      });
+      setInternalOpen(false);
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
@@ -68,9 +75,9 @@ export function CreateCategoryDialogForm({ children, open, onOpenChange, parent 
   return (
     <CreateDialogForm
       title="Create Category"
-      open={open}
       trigger={children}
-      onOpenChange={onOpenChange}
+      open={internalOpen}
+      onOpenChange={setInternalOpen}
       initialValues={initialValues}
       validationSchema={createCategorySchema}
       extendSchema={checkUniqueCategoryName}

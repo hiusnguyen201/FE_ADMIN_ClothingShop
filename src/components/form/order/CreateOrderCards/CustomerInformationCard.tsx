@@ -48,7 +48,7 @@ export function CustomerInformationCard({ formikProps }: { formikProps: FormikPr
           </div>
 
           {!isMobile && (
-            <CreateCustomerDialogForm finishRedirect={false}>
+            <CreateCustomerDialogForm>
               <Button>
                 <Plus size={14} />
                 Create Customer
@@ -61,7 +61,7 @@ export function CustomerInformationCard({ formikProps }: { formikProps: FormikPr
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4">
             {isMobile && (
-              <CreateCustomerDialogForm finishRedirect={false}>
+              <CreateCustomerDialogForm>
                 <Button>
                   <Plus size={14} />
                   Create Customer

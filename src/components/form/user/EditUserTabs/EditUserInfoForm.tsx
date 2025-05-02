@@ -11,7 +11,11 @@ import { FlexBox } from "@/components/FlexBox";
 import { REGEX_PATTERNS } from "@/types/constant";
 import { RoleState } from "@/redux/role/role.type";
 import { getListRole } from "@/redux/role/role.thunk";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Heading } from "@/components/Heading";
+import { Button } from "@/components/ui/button";
+import { Pen } from "lucide-react";
+import { usePermission } from "@/hooks/use-permission";
 
 const editUserInfoSchema = Yup.object().shape({
   name: Yup.string().required().min(3).max(50),
@@ -25,10 +29,17 @@ const editUserInfoSchema = Yup.object().shape({
   roleId: Yup.string().nullable().optional(),
 });
 
-export function EditUserInfoForm({ user }: { user: User }) {
+type EditUserInfoFormProps = { user: User; canEdit: boolean };
+
+export function EditUserInfoForm({ user, canEdit }: EditUserInfoFormProps) {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector<UserState>((selector) => selector.user);
-  const { list: listRole, loading: roleLoading } = useAppSelector<RoleState>((selector) => selector.role);
+  const { loading: roleLoading, list: listRole } = useAppSelector<RoleState>((selector) => selector.role);
+  const [editing, setEditing] = useState<boolean>(false);
+
+  const handleToggleEditing = () => {
+    setEditing(!editing);
+  };
 
   const initialValues: EditUserInfoPayload = {
     id: user.id,
@@ -40,6 +51,7 @@ export function EditUserInfoForm({ user }: { user: User }) {
   };
 
   const handleSubmit = async (values: EditUserInfoPayload, { resetForm }: FormikHelpers<EditUserInfoPayload>) => {
+    if (!canEdit) return;
     try {
       await dispatch(editUserInfo(values)).unwrap();
       resetForm();
@@ -72,43 +84,73 @@ export function EditUserInfoForm({ user }: { user: User }) {
   });
 
   useEffect(() => {
+    if (!canEdit) return;
     (async () => {
       await dispatch(getListRole({ page: 1, limit: 100 })).unwrap();
     })();
   }, []);
 
   return (
-    <FlexBox size="large" onSubmit={formik.handleSubmit} component="form" className="md:max-w-[600px]">
-      <FlexBox>
-        <InputFormikField label="Name" name="name" type="text" required formikProps={formik} />
+    <FlexBox size="large">
+      <Heading
+        title="Personal Details"
+        description="Enter your basic information and contact details to complete your profile registration."
+        actionRight={
+          canEdit &&
+          !editing && (
+            <Button onClick={handleToggleEditing} type="button">
+              <Pen /> Edit
+            </Button>
+          )
+        }
+      />
 
-        <InputFormikField label="Email" name="email" type="email" required formikProps={formik} />
+      <FlexBox
+        size="large"
+        onSubmit={formik.handleSubmit}
+        component={canEdit ? "form" : "div"}
+        className="md:max-w-[600px]"
+      >
+        <FlexBox>
+          <InputFormikField editing={editing} label="Name" name="name" type="text" required formikProps={formik} />
 
-        <InputFormikField label="Phone" name="phone" type="tel" required formikProps={formik} />
+          <InputFormikField editing={editing} label="Email" name="email" type="email" required formikProps={formik} />
 
-        <SelectBoxFormikField
-          name="gender"
-          type="radio"
-          label="Gender"
-          options={Object.values(GENDER)}
-          required
-          formikProps={formik}
-        />
+          <InputFormikField editing={editing} label="Phone" name="phone" type="tel" required formikProps={formik} />
 
-        <SelectObjectFormikField
-          switchable
-          label="Role"
-          placeHolder="Select a role"
-          name="roleId"
-          loading={roleLoading.getListRole}
-          options={listRole.map((item) => ({ value: item.id, title: item.name }))}
-          formikProps={formik}
-        />
+          <SelectBoxFormikField
+            editing={editing}
+            name="gender"
+            type="radio"
+            label="Gender"
+            options={Object.values(GENDER)}
+            required
+            formikProps={formik}
+          />
+
+          <SelectObjectFormikField
+            editing={editing}
+            switchable
+            label="Role"
+            placeHolder="Select a role"
+            name="roleId"
+            loading={roleLoading.getListRole}
+            options={listRole.map((item) => ({ value: item.id, title: item.name }))}
+            formikProps={formik}
+          />
+        </FlexBox>
+
+        {canEdit && editing && (
+          <div className="flex w-full sm:flex-row flex-col items-center gap-3">
+            <LoadingButton onClick={handleToggleEditing} variant="outline" type="button" disabled={loading.editUser}>
+              Cancel
+            </LoadingButton>
+            <LoadingButton loading={loading.editUser} disabled={loading.editUser}>
+              Save
+            </LoadingButton>
+          </div>
+        )}
       </FlexBox>
-
-      <LoadingButton className="w-full sm:w-auto" loading={loading.editUser} disabled={loading.editUser}>
-        Save
-      </LoadingButton>
     </FlexBox>
   );
 }

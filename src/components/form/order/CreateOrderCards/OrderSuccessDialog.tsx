@@ -1,21 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy, Mail } from "lucide-react";
+import { Check, Copy } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Order } from "@/types/order";
 import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
 import { Image } from "@/components/Image";
+import { Link } from "react-router-dom";
 
 interface OrderSuccessDialogProps {
   order: Order;
   onOpenChange?: (value: boolean) => void;
-  goTo?: () => void;
   open?: boolean;
 }
 
-export function OrderSuccessDialog({ order, open, onOpenChange, goTo }: OrderSuccessDialogProps) {
+export function OrderSuccessDialog({ order, open, onOpenChange }: OrderSuccessDialogProps) {
   const [copied, setCopied] = useState(false);
 
   const copyToClipboard = () => {
@@ -71,9 +71,11 @@ export function OrderSuccessDialog({ order, open, onOpenChange, goTo }: OrderSuc
               <Mail className="mr-2 h-4 w-4" />
               Send via Email
             </Button> */}
-            <Button variant="outline" className="flex-1" onClick={goTo}>
-              Goto details
-            </Button>
+            <Link to={"/orders/" + order.code}>
+              <Button variant="outline" className="flex-1">
+                Goto details
+              </Button>
+            </Link>
           </div>
         </div>
       </DialogContent>

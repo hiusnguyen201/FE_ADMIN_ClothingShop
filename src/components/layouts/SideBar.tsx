@@ -1,25 +1,18 @@
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarRail,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, useSidebar } from "@/components/ui/sidebar";
 import { NavMain } from "@/components/layouts/NavMain";
 import { navData } from "./nav-data";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, PanelLeft } from "lucide-react";
+import { PanelLeft } from "lucide-react";
 import { forwardRef, LegacyRef } from "react";
 import { cn } from "@/lib/utils";
 
 export const SideBar = forwardRef(
   ({ className }: { className?: string }, ref: LegacyRef<HTMLDivElement> | undefined) => {
-    const { toggleSidebar, isMobile, open, setOpen, setOpenMobile } = useSidebar();
+    const { open, setOpen } = useSidebar();
 
     return (
       <Sidebar ref={ref} collapsible="icon" className={cn(className)}>
-        <SidebarContent className="overflow-x-hidden bg-white">
+        <SidebarContent className="overflow-x-hidden bg-white pt-16 group-has-[[data-collapsible=icon]]/sidebar-wrapper:pt-12">
           <NavMain label="Application" items={navData.navMainGroupApp} />
           <NavMain label="System" items={navData.navMainGroupSystem} />
           {/* <NavProjects projects={navData.projects} /> */}
@@ -31,7 +24,7 @@ export const SideBar = forwardRef(
           </Button>
         </SidebarFooter>
 
-        <SidebarRail />
+        {/* <SidebarRail /> */}
       </Sidebar>
     );
   }

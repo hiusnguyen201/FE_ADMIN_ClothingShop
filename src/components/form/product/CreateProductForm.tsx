@@ -1,9 +1,8 @@
 import * as Yup from "yup";
 import { FormikHelpers, FormikProps, useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { CreateDialogForm } from "@/components/dialog-form";
 import { InputFormikField, SelectObjectFormikField } from "@/components/formik-fields";
 import { toast } from "@/hooks/use-toast";
 import { checkProductNameExist, createProduct } from "@/redux/product/product.thunk";
@@ -20,6 +19,7 @@ import { FlexBox } from "@/components/FlexBox";
 import { LoadingButton } from "@/components/LoadingButton";
 import { TextEditorFormikField } from "@/components/formik-fields/TextEditorFormikField";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Button } from "@/components/ui/button";
 
 const initialValues: CreateProductPayload = {
   name: "",
@@ -40,17 +40,23 @@ const createProductSchema = Yup.object().shape({
 export function CreateProductForm() {
   const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { loading } = useAppSelector<ProductState>((selector) => selector.product);
   const [categories, setCategories] = useState<Category[]>([]);
 
   const handleSubmit = async (values: CreateProductPayload, { resetForm }: FormikHelpers<CreateProductPayload>) => {
     try {
-      const response: CreateProductResponse = await dispatch(createProduct(values)).unwrap();
+      const { data }: CreateProductResponse = await dispatch(createProduct(values)).unwrap();
       resetForm();
-      const { data: product, message } = response;
-      toast({ title: message });
-      navigate(`/products/${product.id}/settings`);
+      toast({
+        title: "Create product successful",
+        action: (
+          <Link to={`/products/${data.id}/settings`}>
+            <Button size="sm" className="h-8 gap-1">
+              <span>View Details</span>
+            </Button>
+          </Link>
+        ),
+      });
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }

@@ -10,8 +10,6 @@ import { InputFormikField, SelectBoxFormikField } from "@/components/formik-fiel
 import { LoadingButton } from "@/components/LoadingButton";
 import { FlexBox } from "@/components/FlexBox";
 import { REGEX_PATTERNS } from "@/types/constant";
-import { getListRole } from "@/redux/role/role.thunk";
-import { useEffect } from "react";
 import { CheckEmailExistResponse, UserState } from "@/redux/user/user.type";
 
 const editCustomerInfoSchema = Yup.object().shape({
@@ -23,7 +21,6 @@ const editCustomerInfoSchema = Yup.object().shape({
   gender: Yup.string()
     .required()
     .oneOf([...Object.values(GENDER)], { message: "gender is required" }),
-  roleId: Yup.string().nullable().optional(),
 });
 
 export function EditCustomerInfoForm({ customer }: { customer: Customer }) {
@@ -73,12 +70,6 @@ export function EditCustomerInfoForm({ customer }: { customer: Customer }) {
     onSubmit: handleSubmit,
     enableReinitialize: true,
   });
-
-  useEffect(() => {
-    (async () => {
-      await dispatch(getListRole({ page: 1, limit: 100 })).unwrap();
-    })();
-  }, []);
 
   return (
     <FlexBox size="large" onSubmit={formik.handleSubmit} component="form" className="md:max-w-[600px]">

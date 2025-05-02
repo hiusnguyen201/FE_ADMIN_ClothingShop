@@ -2,10 +2,21 @@ import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@red
 import {
   AccountState,
   EditProfileResponse,
+  GetListNotificationInUserResponse,
   GetPermissionsInUserResponse,
   GetProfileResponse,
+  MarkAllAsReadNotificationInUserResponse,
+  MarkAsReadNotificationInUserResponse,
 } from "@/redux/account/account.type";
-import { changePassword, editProfile, getPermissionsInUser, getProfile } from "@/redux/account/account.thunk";
+import {
+  changePassword,
+  editProfile,
+  getListNotificationInUser,
+  getPermissionsInUser,
+  getProfile,
+  markAllAsReadNotificationInUser,
+  markAsReadNotificationInUser,
+} from "@/redux/account/account.thunk";
 
 const initialState: AccountState = {
   loading: {
@@ -13,8 +24,15 @@ const initialState: AccountState = {
     editProfile: false,
     changePassword: false,
     getPermissionsInUser: false,
+    getListNotificationInUser: false,
+    markAsReadNotificationInUser: false,
+    markAllAsReadNotificationInUser: false,
+  },
+  totalCount: {
+    totalUnreadNotifications: 0,
   },
   user: null,
+  userNotifications: [],
   permissions: [],
   error: null,
 };
@@ -90,6 +108,80 @@ const accountSlice = createSlice({
       })
       .addCase(changePassword.rejected, (state: Draft<AccountState>, action: PayloadAction<any>) => {
         state.loading.changePassword = false;
+        state.error = action.payload as string;
+        state.user = null;
+      });
+
+    builder
+      // Get list user notification
+      .addCase(getListNotificationInUser.pending, (state: Draft<AccountState>) => {
+        state.loading.getListNotificationInUser = true;
+        state.error = null;
+      })
+      .addCase(
+        getListNotificationInUser.fulfilled,
+        (state: Draft<AccountState>, action: PayloadAction<GetListNotificationInUserResponse>) => {
+          const { data } = action.payload;
+          state.loading.getListNotificationInUser = false;
+          state.userNotifications = data.notifications;
+          state.totalCount.totalUnreadNotifications = data.totalUnread;
+          state.error = null;
+        }
+      )
+      .addCase(getListNotificationInUser.rejected, (state: Draft<AccountState>, action: PayloadAction<any>) => {
+        state.loading.getListNotificationInUser = false;
+        state.error = action.payload as string;
+        state.userNotifications = [];
+        state.totalCount.totalUnreadNotifications = 0;
+        state.user = null;
+      });
+
+    builder
+      // Mark as read user notification
+      .addCase(markAsReadNotificationInUser.pending, (state: Draft<AccountState>) => {
+        state.loading.markAsReadNotificationInUser = true;
+        state.error = null;
+      })
+      .addCase(
+        markAsReadNotificationInUser.fulfilled,
+        (state: Draft<AccountState>, action: PayloadAction<MarkAsReadNotificationInUserResponse>) => {
+          const { data } = action.payload;
+          state.loading.markAsReadNotificationInUser = false;
+          state.userNotifications = state.userNotifications.map((item) =>
+            item.id === data.id ? { ...item, isRead: data.isRead, readAt: data.readAt } : item
+          );
+          state.totalCount.totalUnreadNotifications = Math.max(state.totalCount.totalUnreadNotifications - 1, 0);
+          state.error = null;
+        }
+      )
+      .addCase(markAsReadNotificationInUser.rejected, (state: Draft<AccountState>, action: PayloadAction<any>) => {
+        state.loading.markAsReadNotificationInUser = false;
+        state.error = action.payload as string;
+        state.userNotifications = [];
+        state.user = null;
+      });
+
+    builder
+      // Mark all as read user notification
+      .addCase(markAllAsReadNotificationInUser.pending, (state: Draft<AccountState>) => {
+        state.loading.markAllAsReadNotificationInUser = true;
+        state.error = null;
+      })
+      .addCase(
+        markAllAsReadNotificationInUser.fulfilled,
+        (state: Draft<AccountState>, action: PayloadAction<MarkAllAsReadNotificationInUserResponse>) => {
+          const { data } = action.payload;
+          state.loading.markAllAsReadNotificationInUser = false;
+          state.userNotifications = state.userNotifications.map((noti) => {
+            const updatedItem = data.find((item) => item.id === noti.id);
+            return updatedItem ? { ...noti, isRead: updatedItem.isRead, readAt: updatedItem.readAt } : noti;
+          });
+          state.totalCount.totalUnreadNotifications = 0;
+          state.error = null;
+        }
+      )
+      .addCase(markAllAsReadNotificationInUser.rejected, (state: Draft<AccountState>, action: PayloadAction<any>) => {
+        state.loading.markAllAsReadNotificationInUser = false;
         state.error = action.payload as string;
         state.user = null;
       });

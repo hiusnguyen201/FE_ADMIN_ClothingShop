@@ -3,7 +3,7 @@ import { Heading } from "@/components/Heading";
 import { CategoryListTable } from "@/components/form/category/CategoryListTable";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CreateCategoryDialogForm } from "@/components/form/category/CreateCategoryForm";
+import { CreateCategoryDialogForm } from "@/components/form/category/CreateCategoryDialogForm";
 import { usePermission } from "@/hooks/use-permission";
 import { PERMISSIONS } from "@/constants/permissions";
 

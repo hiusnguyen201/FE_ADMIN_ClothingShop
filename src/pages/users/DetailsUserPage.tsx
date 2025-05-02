@@ -17,13 +17,6 @@ enum TABS {
   SETTINGS = "settings",
 }
 
-const tabs = [
-  {
-    value: TABS.SETTINGS,
-    element: EditUserSettingsPage,
-  },
-];
-
 export function DetailsUserPage({ user, checkExistLoading }: UserGuardChildrenProps) {
   const can = usePermission();
   if (!can(PERMISSIONS.READ_DETAILS_USERS)) return <Navigate to={"/forbidden"} />;
@@ -76,31 +69,27 @@ export function DetailsUserPage({ user, checkExistLoading }: UserGuardChildrenPr
               className="flex flex-col gap-6 w-full"
             >
               <TabsList className="bg-[transparent] gap-6 border-b w-full justify-start rounded-none h-auto p-0">
-                {tabs.map((item) => (
+                {Object.values(TABS).map((item) => (
                   <TabsTrigger
-                    key={item.value}
-                    value={item.value}
+                    key={item}
+                    value={item}
                     className="relative capitalize transition-all py-3 px-1 data-[state=active]:bg-[transparent] hover:text-primary data-[state=active]:text-primary border-0 data-[state=active]:shadow-none rounded-none "
                   >
-                    {item.value}
-                    {activeTab === item.value && (
+                    {item}
+                    {activeTab === item && (
                       <div className="absolute h-[2px] bg-primary w-full inset-x-0 bottom-0"></div>
                     )}
                   </TabsTrigger>
                 ))}
               </TabsList>
-              <div>
-                {tabs.map((item) => (
-                  <TabsContent key={item.value} value={item.value} className="py-4 mt-0">
-                    {item.element({
-                      user,
-                      canEdit: can(PERMISSIONS.EDIT_USER),
-                      canRemove: can(PERMISSIONS.REMOVE_USER),
-                      canResetPassword: can(PERMISSIONS.RESET_PASSWORD_USER),
-                    })}
-                  </TabsContent>
-                ))}
-              </div>
+              <TabsContent value={TABS.SETTINGS} className="py-4 mt-0">
+                <EditUserSettingsPage
+                  user={user}
+                  canEdit={can(PERMISSIONS.EDIT_USER)}
+                  canResetPassword={can(PERMISSIONS.RESET_PASSWORD_USER)}
+                  canRemove={can(PERMISSIONS.REMOVE_USER)}
+                />
+              </TabsContent>
             </Tabs>
           </FlexBox>
         )}

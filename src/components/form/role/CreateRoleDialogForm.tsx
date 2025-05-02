@@ -1,13 +1,14 @@
 import * as Yup from "yup";
 import { FormikHelpers, useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
-import { Fragment, ReactNode } from "react";
+import { Fragment, ReactNode, useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { CreateDialogForm } from "@/components/dialog-form";
 import { InputFormikField } from "@/components/formik-fields";
 import { toast } from "@/hooks/use-toast";
 import { checkRoleNameExist, createRole } from "@/redux/role/role.thunk";
 import { CheckRoleNameExistResponse, CreateRolePayload, CreateRoleResponse, RoleState } from "@/redux/role/role.type";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 const initialValues: CreateRolePayload = {
   name: "",
@@ -27,16 +28,24 @@ type CreateRoleDialogFormProps = {
 
 export function CreateRoleDialogForm({ children, open, onOpenChange }: CreateRoleDialogFormProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { loading } = useAppSelector<RoleState>((selector) => selector.role);
+  const [internalOpen, setInternalOpen] = useState(false);
 
   const handleSubmit = async (values: CreateRolePayload, { resetForm }: FormikHelpers<CreateRolePayload>) => {
     try {
-      const response: CreateRoleResponse = await dispatch(createRole(values)).unwrap();
+      const { data }: CreateRoleResponse = await dispatch(createRole(values)).unwrap();
       resetForm();
-      const { data: role, message } = response;
-      toast({ title: message });
-      navigate(`/roles/${role.id}/settings`);
+      toast({
+        title: "Create role successful",
+        action: (
+          <Link to={`/roles/${data.id}/settings`}>
+            <Button size="sm" className="h-8 gap-1">
+              <span>View Details</span>
+            </Button>
+          </Link>
+        ),
+      });
+      setInternalOpen(false);
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
@@ -56,9 +65,9 @@ export function CreateRoleDialogForm({ children, open, onOpenChange }: CreateRol
   return (
     <CreateDialogForm
       title="New Role"
-      open={open}
+      open={internalOpen}
       trigger={children}
-      onOpenChange={onOpenChange}
+      onOpenChange={setInternalOpen}
       initialValues={initialValues}
       validationSchema={createRoleSchema}
       extendSchema={checkUniqueName}

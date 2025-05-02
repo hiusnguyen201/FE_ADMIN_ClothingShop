@@ -1,6 +1,5 @@
 "use client";
 import { LogOut, User2 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,10 +15,10 @@ import { Link } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { MouseEvent } from "react";
 import { Image } from "@/components/Image";
+import { User } from "@/types/user";
 
-export function NavUser() {
-  const { logout, user } = useAuth();
-  if (!user) return <></>;
+export function NavUser({ user }: { user: User }) {
+  const { logout } = useAuth();
 
   const handleLogout = async (e: MouseEvent) => {
     e.preventDefault();
