@@ -1,5 +1,5 @@
 import * as Yup from "yup";
-import { Fragment, useEffect, useMemo, useRef } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { getListOption } from "@/redux/option/option.thunk";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { Product } from "@/types/product";
@@ -20,6 +20,8 @@ import { Separator } from "@radix-ui/react-dropdown-menu";
 import { InputFormField } from "@/components/form-fields/InputFormField";
 import { Button } from "@/components/ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Heading } from "@/components/Heading";
+import { Pen } from "lucide-react";
 
 const editProductVariantsSchema = Yup.object({
   options: Yup.array()
@@ -52,7 +54,7 @@ const editProductVariantsSchema = Yup.object({
     .min(1),
 });
 
-export function EditProductVariantsForm({ product }: { product: Product }) {
+export function EditProductVariantsForm({ product, canEditVariants }: { product: Product; canEditVariants: boolean }) {
   const isMobile = useIsMobile();
   const dispatch = useAppDispatch();
   const priceRef = useRef<HTMLInputElement>(null);
@@ -60,6 +62,11 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
   const skuRef = useRef<HTMLInputElement>(null);
   const { loading: loadingOption, list: options } = useAppSelector<OptionState>((selector) => selector.option);
   const { loading: loadingProduct } = useAppSelector<ProductState>((selector) => selector.product);
+  const [editing, setEditing] = useState<boolean>(false);
+
+  const handleToggleEditing = () => {
+    setEditing(!editing);
+  };
 
   const initialValues = {
     id: product.id,
@@ -94,6 +101,7 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
       try {
         await dispatch(editProductVariants(values)).unwrap();
         toast({ title: "Edit product successful" });
+        setEditing(false);
       } catch (error: any) {
         toast({ variant: "destructive", title: error });
       }
@@ -105,12 +113,14 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
   const columns: ColumnDef<CreateProductVariant, any>[] = useMemo(
     () =>
       getProductVariantsColumns({
+        editing: editing,
+        canEdit: canEditVariants,
         selectedOption: values.options,
         onProductVariantsChange: (index, key, value) => {
           setFieldValue(`productVariants[${index}][${key}]`, value);
         },
       }),
-    [values.options]
+    [values.options, editing, canEditVariants]
   );
 
   useEffect(() => {
@@ -146,10 +156,25 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
   };
 
   return (
-    <FlexBox size="large" onSubmit={handleSubmit} component="form">
+    <FlexBox size="large" onSubmit={handleSubmit} component={editing && canEditVariants ? "form" : "div"}>
+      <Heading
+        level={2}
+        title="Product Variants"
+        description="Enter basic information."
+        actionRight={
+          canEditVariants &&
+          !editing && (
+            <Button onClick={handleToggleEditing} type="button">
+              <Pen /> Edit
+            </Button>
+          )
+        }
+      />
+
       <FlexBox>
         <OptionGroup
           loading={loadingOption.getListOption}
+          editing={editing && canEditVariants}
           error={typeof errors.options === "string" ? errors.options : undefined}
           className="flex-1 md:max-w-[600px]"
           option={{
@@ -175,6 +200,7 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
               const option = options.find((item) => item.name === opt.option);
               return option ? (
                 <OptionGroup
+                  editing={editing && canEditVariants}
                   loading={loadingOption.getListOption}
                   error={
                     Array.isArray(errors.options) && typeof errors.options[index] === "object"
@@ -197,26 +223,38 @@ export function EditProductVariantsForm({ product }: { product: Product }) {
           </FlexBox>
         )}
       </FlexBox>
-
       <Separator />
-
       {values.options.length > 0 && (
         <FlexBox size="small">
           <Label>Variation List</Label>
-          <FlexBox direction={isMobile ? "column" : "row"} size="small">
-            <InputFormField ref={priceRef} name="price" type="number" min={0} placeholder="Price" />
-            <InputFormField ref={quantityRef} name="quantity" type="number" min={0} placeholder="Quantity" />
-            <InputFormField ref={skuRef} name="sku" type="text" placeholder="SKU" />
-            <Button type="button" className={isMobile ? "w-full" : ""} onClick={handleApplyToAll}>
-              Apply To All
-            </Button>
-          </FlexBox>
+          {editing && canEditVariants && (
+            <FlexBox direction={isMobile ? "column" : "row"} size="small">
+              <InputFormField ref={priceRef} name="price" type="number" min={0} placeholder="Price" />
+              <InputFormField ref={quantityRef} name="quantity" type="number" min={0} placeholder="Quantity" />
+              <InputFormField ref={skuRef} name="sku" type="text" placeholder="SKU" />
+              <Button type="button" className={isMobile ? "w-full" : ""} onClick={handleApplyToAll}>
+                Apply To All
+              </Button>
+            </FlexBox>
+          )}
           <DataTable className="border" columns={columns} data={values.productVariants} placeholder="No variants" />
         </FlexBox>
       )}
-      <LoadingButton loading={loadingProduct.editProductVariants} disabled={loadingProduct.editProductVariants}>
-        Save variants
-      </LoadingButton>
+      {canEditVariants && editing && (
+        <div className="flex w-full sm:flex-row flex-col items-center gap-3">
+          <LoadingButton
+            onClick={handleToggleEditing}
+            variant="outline"
+            type="button"
+            disabled={loadingProduct.editProductVariants}
+          >
+            Cancel
+          </LoadingButton>
+          <LoadingButton loading={loadingProduct.editProductVariants} disabled={loadingProduct.editProductVariants}>
+            Save variants
+          </LoadingButton>
+        </div>
+      )}
     </FlexBox>
   );
 }

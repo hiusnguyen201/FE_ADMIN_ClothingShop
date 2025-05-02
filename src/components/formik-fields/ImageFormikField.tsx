@@ -4,6 +4,7 @@ import { FormikProps } from "formik";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type ImageFormikFieldProps<TData> = {
   label?: string;
@@ -16,6 +17,7 @@ type ImageFormikFieldProps<TData> = {
   hint?: boolean;
   hintDirection?: "right" | "bottom";
   type?: "avatar" | "normal";
+  editing?: boolean;
 };
 
 export function ImageFormikField<TData>({
@@ -29,6 +31,7 @@ export function ImageFormikField<TData>({
   hint = true,
   hintDirection = "right",
   type = "normal",
+  editing = true,
 }: ImageFormikFieldProps<TData>) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -96,13 +99,16 @@ export function ImageFormikField<TData>({
         <div
           {...getRootProps({ className: "dropzone" })}
           className={cn(
-            "dropzone border-2 relative border-gray-300 rounded cursor-pointer flex items-center flex-col max-h-40 justify-center group basis-full",
+            "dropzone border-2 relative border-gray-300 rounded flex items-center flex-col max-h-40 justify-center group basis-full",
             type === "avatar" ? "rounded-full" : "",
             error ? "border-red-300" : "border-gray-300",
-            currentValue ? "border" : "border-dashed"
+            currentValue ? "border" : "border-dashed",
+            editing ? "cursor-pointer" : "cursor-default"
           )}
           style={{ width: size, height: size, maxWidth: size, maxHeight: size }}
         >
+          <Skeleton className={cn("h-full w-full", type === "avatar" ? "rounded-full" : "")} />
+
           {previewUrl ? (
             <div
               onClick={(e) => {
@@ -118,28 +124,33 @@ export function ImageFormikField<TData>({
                   type === "avatar" ? "rounded-full" : ""
                 )}
               />
-              <div
-                className={cn(
-                  "hidden group-hover:flex absolute inset-0 items-center justify-center bg-black/40 cursor-pointer rounded",
-                  type === "avatar" ? "rounded-full" : ""
-                )}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleRemoveImage();
-                }}
-              >
-                <span className="text-white font-medium">
-                  <X />
-                </span>
-              </div>
+
+              {editing && (
+                <div
+                  className={cn(
+                    "hidden group-hover:flex absolute inset-0 items-center justify-center bg-black/40 cursor-pointer rounded",
+                    type === "avatar" ? "rounded-full" : ""
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRemoveImage();
+                  }}
+                >
+                  <span className="text-white font-medium">
+                    <X />
+                  </span>
+                </div>
+              )}
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center">
-              <ImagePlus className="w-8 h-8 text-gray-500 dark:text-gray-400" />
-            </div>
+            editing && (
+              <div className="flex flex-col items-center justify-center">
+                <ImagePlus className="w-8 h-8 text-gray-500 dark:text-gray-400" />
+              </div>
+            )
           )}
 
-          <input {...getInputProps()} />
+          {editing && <input {...getInputProps()} />}
         </div>
 
         {hint && hintDirection === "right" && (

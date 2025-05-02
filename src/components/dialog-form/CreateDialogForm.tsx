@@ -71,11 +71,6 @@ export function CreateDialogForm<T extends FormikValues>({
     formik.resetForm();
   };
 
-  const handleClick = (e: MouseEvent) => {
-    e.preventDefault();
-    setDialogOpen(true);
-  };
-
   return (
     <Dialog
       open={dialogOpen}
@@ -95,7 +90,7 @@ export function CreateDialogForm<T extends FormikValues>({
           aria-hidden={dialogOpen ? "false" : "true"}
           className="fixed left-[50%] top-[50%] z-50 grid w-full sm:max-w-[640px] max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg"
         >
-          <DialogHeader className="flex-row items-center justify-between px-10 pt-10 pb-6">
+          <DialogHeader className="flex-row space-y-0 items-center justify-between px-10 pt-10 pb-6">
             <DialogPrimitive.DialogTitle className="text-xl font-medium">{title}</DialogPrimitive.DialogTitle>
 
             <Button

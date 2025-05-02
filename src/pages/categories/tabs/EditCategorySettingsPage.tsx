@@ -17,7 +17,7 @@ export function EditCategorySettingsPage({
   return (
     <FlexBox size="large">
       {/* Edit Form */}
-      {canEdit && <EditCategoryInfoForm category={category} />}
+      <EditCategoryInfoForm category={category} canEdit={canEdit} />
 
       {canRemove && (
         <FlexBox size="small">

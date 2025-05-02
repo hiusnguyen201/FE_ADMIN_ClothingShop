@@ -15,7 +15,6 @@ import { useEffect, useState } from "react";
 import { Heading } from "@/components/Heading";
 import { Button } from "@/components/ui/button";
 import { Pen } from "lucide-react";
-import { usePermission } from "@/hooks/use-permission";
 
 const editUserInfoSchema = Yup.object().shape({
   name: Yup.string().required().min(3).max(50),
@@ -56,6 +55,7 @@ export function EditUserInfoForm({ user, canEdit }: EditUserInfoFormProps) {
       await dispatch(editUserInfo(values)).unwrap();
       resetForm();
       toast({ title: "Edit user successful" });
+      setEditing(false);
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
@@ -93,6 +93,7 @@ export function EditUserInfoForm({ user, canEdit }: EditUserInfoFormProps) {
   return (
     <FlexBox size="large">
       <Heading
+        level={2}
         title="Personal Details"
         description="Enter your basic information and contact details to complete your profile registration."
         actionRight={

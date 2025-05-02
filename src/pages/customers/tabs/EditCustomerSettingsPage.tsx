@@ -4,7 +4,6 @@ import { EditCustomerInfoForm } from "@/components/form/customer/EditCustomerTab
 import { RemoveCustomerDialogForm } from "@/components/form/customer/RemoveCustomerDialogForm";
 import { Button } from "@/components/ui/button";
 import { Customer } from "@/types/customer";
-import { usePermission } from "@/hooks/use-permission";
 
 export function EditCustomerSettingsPage({
   customer,
@@ -18,7 +17,7 @@ export function EditCustomerSettingsPage({
   return (
     <FlexBox size="large">
       {/* Edit Form */}
-      {canEdit && <EditCustomerInfoForm customer={customer} />}
+      <EditCustomerInfoForm customer={customer} canEdit={canEdit} />
 
       {canRemove && (
         <FlexBox size="small">

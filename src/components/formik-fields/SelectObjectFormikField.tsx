@@ -131,7 +131,10 @@ export function SelectObjectFormikField<TData extends Record<string, any>>({
               variant="outline"
               role="combobox"
               aria-expanded={open}
-              className={cn("w-full justify-between", !editing && "!cursor-default !opacity-100 bg-gray-100")}
+              className={cn(
+                "w-full justify-between",
+                !editing && "!cursor-default font-normal !opacity-100 bg-gray-100"
+              )}
             >
               {options.find((item) => item.value === currentValue)?.title ?? (placeHolder || `Select ${label || name}`)}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

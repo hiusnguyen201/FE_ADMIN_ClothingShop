@@ -10,9 +10,13 @@ const skuSchema = Yup.string().optional().min(8).max(16);
 
 export function getProductVariantsColumns({
   selectedOption,
+  editing = true,
+  canEdit,
   onProductVariantsChange,
 }: {
   selectedOption: SelectedOption[];
+  editing?: boolean;
+  canEdit: boolean;
   onProductVariantsChange: (index: number, key: string, value: any) => void;
 }): ColumnDef<CreateProductVariant>[] {
   return [
@@ -37,6 +41,7 @@ export function getProductVariantsColumns({
         const [error, setError] = useState("");
         return (
           <InputFormField
+            editing={editing && canEdit}
             type="number"
             name="price"
             value={row.original.price}
@@ -65,6 +70,7 @@ export function getProductVariantsColumns({
         const [error, setError] = useState("");
         return (
           <InputFormField
+            editing={editing && canEdit}
             type="number"
             name="quantity"
             value={row.original.quantity}
@@ -93,6 +99,7 @@ export function getProductVariantsColumns({
         const [error, setError] = useState("");
         return (
           <InputFormField
+            editing={editing && canEdit}
             type="text"
             name="sku"
             value={row.original.sku}

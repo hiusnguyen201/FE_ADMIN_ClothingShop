@@ -17,12 +17,12 @@ export function EditRoleSettingsPage({
   return (
     <FlexBox size="large">
       {/* Edit Form */}
-      {canEdit && <EditRoleInfoForm role={role} />}
+      <EditRoleInfoForm role={role} canEdit={canEdit} />
 
-      <FlexBox size="small">
-        <h2 className="text-lg font-medium">Danger Zone</h2>
+      {canRemove && (
+        <FlexBox size="small">
+          <h2 className="text-lg font-medium">Danger Zone</h2>
 
-        {canRemove && (
           <AlertBox
             title="Remove Role"
             description="Once confirmed, this operation can't be undone!"
@@ -34,8 +34,8 @@ export function EditRoleSettingsPage({
               </RemoveRoleDialogForm>
             }
           />
-        )}
-      </FlexBox>
+        </FlexBox>
+      )}
     </FlexBox>
   );
 }

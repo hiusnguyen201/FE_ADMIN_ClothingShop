@@ -15,7 +15,7 @@ import { productColumns } from "@/pages/products/product-columns";
 export function ProductListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, initializedList, removedProductIds } = useAppSelector<ProductState>(
+  const { list, totalCount, loading, initializedList, removedProductIds, newItem } = useAppSelector<ProductState>(
     (state) => state.product
   );
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useProductTableFilters({
@@ -36,7 +36,7 @@ export function ProductListTable() {
     }
 
     handleGetProductList();
-  }, [filters, dispatch, removedProductIds]);
+  }, [filters, dispatch, removedProductIds, newItem]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">

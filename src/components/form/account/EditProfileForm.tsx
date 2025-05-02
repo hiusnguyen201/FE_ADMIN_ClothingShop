@@ -57,7 +57,7 @@ export function EditProfileForm({ account }: { account: User }) {
     <FlexBox size="large" onSubmit={formik.handleSubmit} component="form">
       <FlexBox className="sm:flex-row sm:justify-between">
         <div className="w-full sm:w-auto flex items-center justify-center">
-          <ImageFormikField hint={false} size={200} className="rounded-full" name="avatar" formikProps={formik} />
+          <ImageFormikField hint={false} size={200} type="avatar" name="avatar" formikProps={formik} />
         </div>
 
         <div className="w-full flex flex-col gap-5 max-w-[600px]">

@@ -17,7 +17,7 @@ export function EditProductSettingsPage({
   return (
     <FlexBox size="large">
       {/* Edit Form */}
-      {canEdit && <EditProductInfoForm product={product} />}
+      <EditProductInfoForm product={product} canEdit={canEdit} />
 
       {canRemove && product.status === PRODUCT_STATUS.INACTIVE && (
         <FlexBox size="small">

@@ -77,14 +77,17 @@ export function RichTextEditor({
   value,
   onChange,
   onBlur,
+  editing,
 }: {
   className?: string;
   value: string;
   onChange?: (value: string) => void;
   onBlur?: () => void;
+  editing?: boolean;
 }) {
   const editor = useEditor({
     immediatelyRender: false,
+    editable: editing,
     extensions: extensions as Extension[],
     content: value,
     editorProps: {
@@ -107,9 +110,10 @@ export function RichTextEditor({
         className
       )}
     >
-      <EditorToolbar editor={editor} />
-      {/* <FloatingToolbar editor={editor} /> */}
+      {editing && <EditorToolbar editor={editor} />}
       <TipTapFloatingMenu editor={editor} />
+      {/* <FloatingToolbar editor={editor} /> */}
+
       <EditorContent editor={editor} className=" min-h-[600px] w-full min-w-full cursor-text sm:p-6" />
     </div>
   );

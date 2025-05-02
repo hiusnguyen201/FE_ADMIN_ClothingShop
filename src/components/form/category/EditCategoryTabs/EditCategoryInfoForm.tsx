@@ -9,6 +9,10 @@ import { InputFormikField } from "@/components/formik-fields";
 import { LoadingButton } from "@/components/LoadingButton";
 import { FlexBox } from "@/components/FlexBox";
 import { ImageFormikField } from "@/components/formik-fields/ImageFormikField";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Pen } from "lucide-react";
+import { Heading } from "@/components/Heading";
 
 const editCategoryInfoSchema = Yup.object().shape({
   image: Yup.mixed<File>().required(),
@@ -16,9 +20,14 @@ const editCategoryInfoSchema = Yup.object().shape({
   parentId: Yup.string().required().nullable(),
 });
 
-export function EditCategoryInfoForm({ category }: { category: Category }) {
+export function EditCategoryInfoForm({ category, canEdit }: { category: Category; canEdit: boolean }) {
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector<CategoryState>((selector) => selector.category);
+  const [editing, setEditing] = useState<boolean>(false);
+
+  const handleToggleEditing = () => {
+    setEditing(!editing);
+  };
 
   const initialValues: EditCategoryInfoPayload = {
     id: category.id,
@@ -31,10 +40,12 @@ export function EditCategoryInfoForm({ category }: { category: Category }) {
     values: EditCategoryInfoPayload,
     { resetForm }: FormikHelpers<EditCategoryInfoPayload>
   ) => {
+    if (!canEdit) return;
     try {
       await dispatch(editCategoryInfo(values)).unwrap();
       resetForm();
       toast({ title: "Edit category successful" });
+      setEditing(false);
     } catch (error: any) {
       toast({ variant: "destructive", title: error });
     }
@@ -65,16 +76,49 @@ export function EditCategoryInfoForm({ category }: { category: Category }) {
   });
 
   return (
-    <FlexBox size="large" onSubmit={formik.handleSubmit} component="form" className="md:max-w-[600px]">
-      <FlexBox>
-        <ImageFormikField size={120} name="image" label="Image" required formikProps={formik} />
+    <FlexBox size="large">
+      <Heading
+        level={2}
+        title="Category information"
+        description="View and manage detailed information about this category, including its name, description, and related data."
+        actionRight={
+          canEdit &&
+          !editing && (
+            <Button onClick={handleToggleEditing} type="button">
+              <Pen /> Edit
+            </Button>
+          )
+        }
+      />
 
-        <InputFormikField label="Name" name="name" type="text" required formikProps={formik} />
+      <FlexBox
+        size="large"
+        onSubmit={formik.handleSubmit}
+        component={editing && canEdit ? "form" : "div"}
+        className="md:max-w-[600px]"
+      >
+        <FlexBox>
+          <ImageFormikField editing={editing} size={120} name="image" label="Image" required formikProps={formik} />
+
+          <InputFormikField editing={editing} label="Name" name="name" type="text" required formikProps={formik} />
+        </FlexBox>
+
+        {canEdit && editing && (
+          <div className="flex w-full sm:flex-row flex-col items-center gap-3">
+            <LoadingButton
+              onClick={handleToggleEditing}
+              variant="outline"
+              type="button"
+              disabled={loading.editCategory}
+            >
+              Cancel
+            </LoadingButton>
+            <LoadingButton loading={loading.editCategory} disabled={loading.editCategory}>
+              Save
+            </LoadingButton>
+          </div>
+        )}
       </FlexBox>
-
-      <LoadingButton loading={loading.editCategory} disabled={loading.editCategory}>
-        Save
-      </LoadingButton>
     </FlexBox>
   );
 }

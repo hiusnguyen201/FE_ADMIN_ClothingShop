@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Clipboard, Mail, MoreHorizontal, Phone, Trash } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";

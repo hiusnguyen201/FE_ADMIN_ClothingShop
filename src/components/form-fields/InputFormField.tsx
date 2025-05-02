@@ -7,6 +7,7 @@ type InputFormFieldProps = {
   name: string;
   label?: string;
   value?: any;
+  editing?: boolean;
   disabled?: boolean;
   placeholder?: string;
   autoFocus?: boolean;
@@ -36,38 +37,50 @@ const InputFormField = forwardRef(
       error,
       onBlur,
       min,
+      editing = true,
     }: InputFormFieldProps,
     ref: React.ForwardedRef<HTMLInputElement>
   ) => {
     return (
       <div className={cn("w-full", className)}>
         {label && (
-          <Label className={cn("select-none mb-2 block", error && "text-red-500")} htmlFor={name}>
+          <Label className={cn("select-none mb-2 block", editing && error && "text-red-500")} htmlFor={name}>
             {label} {required && <span>*</span>}
           </Label>
         )}
 
-        <Input
-          id={name}
-          ref={ref}
-          disabled={disabled}
-          type={type}
-          autoFocus={autoFocus}
-          placeholder={placeholder}
-          name={name}
-          onBlur={onBlur}
-          value={value}
-          min={min}
-          className={cn(
-            "w-full rounded focus-visible:!outline focus-visible:!outline-1",
-            error ? "border-red-500 focus:border-red-500" : "focus-visible:!outline-primary focus-visible:!outline-2"
-          )}
-          onChange={(e) => {
-            onValueChange?.(e.target.value);
-          }}
-        />
+        {editing ? (
+          <Input
+            id={name}
+            ref={ref}
+            disabled={disabled || !editing}
+            type={type}
+            autoFocus={autoFocus}
+            placeholder={placeholder}
+            name={name}
+            onBlur={onBlur}
+            value={value}
+            min={min}
+            className={cn(
+              "w-full rounded focus-visible:!outline focus-visible:!outline-1",
+              editing && error
+                ? "border-red-500 focus:border-red-500"
+                : "focus-visible:!outline-primary focus-visible:!outline-2"
+            )}
+            onChange={(e) => {
+              onValueChange?.(e.target.value);
+            }}
+          />
+        ) : (
+          <Input
+            disabled={true}
+            value={value}
+            placeholder={placeholder}
+            className="w-full !opacity-100 !cursor-default bg-gray-100 rounded focus-visible:!outline focus-visible:!outline-1 focus-visible:outline-offset-0 resize-none"
+          />
+        )}
 
-        {error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
+        {editing && error && <p className="text-sm text-red-500 font-normal mt-2">{error}</p>}
       </div>
     );
   }

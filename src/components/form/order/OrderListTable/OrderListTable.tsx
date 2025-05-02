@@ -17,7 +17,7 @@ import { ORDER_STATUS } from "@/types/order";
 export function OrderListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, initializedList, removedOrderIds } = useAppSelector<OrderState>(
+  const { list, totalCount, loading, initializedList, removedOrderIds, newItem } = useAppSelector<OrderState>(
     (state) => state.order
   );
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleStatusChange, isDefault } =
@@ -37,7 +37,7 @@ export function OrderListTable() {
     }
 
     handleGetOrderList();
-  }, [filters, removedOrderIds]);
+  }, [filters, removedOrderIds, dispatch, newItem]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">

@@ -15,7 +15,7 @@ import { categoryColumns } from "@/pages/categories/category-columns";
 export function CategoryListTable() {
   const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
-  const { list, totalCount, loading, initializedList, removedCategoryIds } = useAppSelector<CategoryState>(
+  const { list, totalCount, loading, initializedList, removedCategoryIds, newItem } = useAppSelector<CategoryState>(
     (state) => state.category
   );
   const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useCategoryTableFilters({
@@ -36,7 +36,7 @@ export function CategoryListTable() {
     }
 
     handleGetCategoryList();
-  }, [filters, dispatch, removedCategoryIds]);
+  }, [filters, dispatch, removedCategoryIds, newItem]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
