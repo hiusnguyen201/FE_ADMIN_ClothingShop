@@ -25,8 +25,8 @@ const initialValues: CreateOrderPayload = {
   customerName: "",
   customerPhone: "",
 
-  districtCode: "",
-  provinceCode: "",
+  districtId: "",
+  provinceId: "",
   wardCode: "",
   address: "",
 
@@ -45,8 +45,8 @@ const createOrderSchema = Yup.object().shape({
     .required()
     .matches(REGEX_PATTERNS.PHONE_NUMBER["VN"], { message: "phone is not Vietnam phone number" }),
 
-  districtCode: Yup.string().required(),
-  provinceCode: Yup.string().required(),
+  districtId: Yup.string().required(),
+  provinceId: Yup.string().required(),
   wardCode: Yup.string().required(),
   address: Yup.string().required(),
 

@@ -18,23 +18,23 @@ export function ShippingInformationCard({ formikProps }: { formikProps: FormikPr
   }, []);
 
   useEffect(() => {
-    if (formikProps.values.provinceCode) {
-      formikProps.setFieldValue("districtCode", "");
+    if (formikProps.values.provinceId) {
+      formikProps.setFieldValue("districtId", "");
       formikProps.setFieldValue("wardCode", "");
       (async () => {
-        await dispatch(getListDistrict({ provinceCode: formikProps.values.provinceCode })).unwrap();
+        await dispatch(getListDistrict({ provinceId: formikProps.values.provinceId })).unwrap();
       })();
     }
-  }, [formikProps.values.provinceCode]);
+  }, [formikProps.values.provinceId]);
 
   useEffect(() => {
-    if (formikProps.values.districtCode) {
+    if (formikProps.values.districtId) {
       formikProps.setFieldValue("wardCode", "");
       (async () => {
-        await dispatch(getListWard({ districtCode: formikProps.values.districtCode })).unwrap();
+        await dispatch(getListWard({ districtId: formikProps.values.districtId })).unwrap();
       })();
     }
-  }, [formikProps.values.districtCode]);
+  }, [formikProps.values.districtId]);
 
   return (
     <Card>
@@ -49,7 +49,7 @@ export function ShippingInformationCard({ formikProps }: { formikProps: FormikPr
             searchInForm
             loading={loading.getListProvince}
             disabled={division.provinces.length === 0}
-            name="provinceCode"
+            name="provinceId"
             className="w-full"
             placeHolder="Select province"
             options={division.provinces.map((item) => ({ title: item.ProvinceName, value: item.ProvinceID }))}
@@ -61,7 +61,7 @@ export function ShippingInformationCard({ formikProps }: { formikProps: FormikPr
             searchInForm
             loading={loading.getListDistrict}
             disabled={division.districts.length === 0}
-            name="districtCode"
+            name="districtId"
             className="w-full"
             placeHolder="Select district"
             options={division.districts.map((item) => ({ title: item.DistrictName, value: item.DistrictID }))}

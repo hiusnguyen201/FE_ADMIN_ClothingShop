@@ -12,9 +12,9 @@ export const getListProvinceService = async (): Promise<GetListProvinceResponse>
 };
 
 export const getListDistrictService = async (payload: GetListDistrictPayload): Promise<GetListDistrictResponse> => {
-  return await apiInstance.get(`/divisions/get-districts-by-province-code/${payload.provinceCode}`);
+  return await apiInstance.get(`/divisions/get-districts-by-province-code/${payload.provinceId}`);
 };
 
 export const getListWardService = async (payload: GetListWardPayload): Promise<GetListWardResponse> => {
-  return await apiInstance.get(`/divisions/get-wards-by-district-code/${payload.districtCode}`);
+  return await apiInstance.get(`/divisions/get-wards-by-district-code/${payload.districtId}`);
 };

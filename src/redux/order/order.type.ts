@@ -41,8 +41,8 @@ export type CreateOrderPayload = {
   customerPhone: string;
 
   // Shipping
-  provinceCode: string;
-  districtCode: string;
+  provinceId: string;
+  districtId: string;
   wardCode: string;
   address: string;
 
