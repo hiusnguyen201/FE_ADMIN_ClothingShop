@@ -75,10 +75,11 @@ const handlers: Record<ActionType, (state: State, action: AuthAction) => State> 
     if (!action?.payload) return state;
     return {
       ...state,
-      isAuthenticated: action.payload.isAuthenticated ?? false,
+      isAuthenticated: action.payload.isAuthenticated,
+      permissions: action.payload.permissions,
       isInitialized: true,
       user: action.payload.user,
-      is2FactorRequired: action.payload.is2FactorRequired ?? true,
+      is2FactorRequired: action.payload.is2FactorRequired,
       error: null,
     };
   },
