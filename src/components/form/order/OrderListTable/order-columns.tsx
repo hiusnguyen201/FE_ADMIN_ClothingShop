@@ -22,8 +22,8 @@ export const orderColumns: ColumnDef<Order, any>[] = [
   {
     accessorKey: "code",
     header: "Code",
-    minSize: 70,
-    maxSize: 70,
+    minSize: 100,
+    maxSize: 100,
     cell: ({ row }) => (
       <Link className="text-blue-500 font-weight" to={"/orders/" + row.original.code}>
         #{row.original.code}
@@ -31,7 +31,7 @@ export const orderColumns: ColumnDef<Order, any>[] = [
     ),
   },
   {
-    accessorKey: "date",
+    accessorKey: "orderDate",
     header: "Date",
     minSize: 100,
     cell: ({ row }) => formatDateString(row.original.orderDate),
@@ -40,6 +40,7 @@ export const orderColumns: ColumnDef<Order, any>[] = [
     accessorKey: "customer",
     header: "Customer",
     minSize: 200,
+    enableSorting: false,
     cell: ({ row }) => {
       const customer = row.original.customer;
       return (
@@ -57,6 +58,7 @@ export const orderColumns: ColumnDef<Order, any>[] = [
     accessorKey: "location",
     header: "Location",
     minSize: 250,
+    enableSorting: false,
     cell: ({ row }) => {
       return (
         <div>
@@ -72,8 +74,8 @@ export const orderColumns: ColumnDef<Order, any>[] = [
   {
     accessorKey: "status",
     header: "Status",
+    enableSorting: false,
     minSize: 150,
-    maxSize: 150,
     cell: ({ row }) => {
       const orderStatusHistory = row.original.orderStatusHistory;
       return <BadgeOrderStatus status={orderStatusHistory[orderStatusHistory.length - 1].status} />;
@@ -83,7 +85,6 @@ export const orderColumns: ColumnDef<Order, any>[] = [
     accessorKey: "total",
     header: "Total",
     minSize: 100,
-    maxSize: 100,
     cell: ({ row }) => (
       <div className="text-right font-medium">
         {formatCurrencyVND(row.original.total)}
@@ -95,6 +96,7 @@ export const orderColumns: ColumnDef<Order, any>[] = [
     id: "actions",
     minSize: 64,
     maxSize: 64,
+    enableSorting: false,
     cell: ({ row }) => {
       const order = row.original;
       return <OrderActions order={order} />;

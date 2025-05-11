@@ -23,6 +23,7 @@ export const rolePermissionsColumns: ColumnDef<{ role: Role; permission: Permiss
   {
     id: "actions",
     maxSize: 64,
+    enableSorting: false,
     cell: ({ row }) => {
       const can = usePermission();
       return (

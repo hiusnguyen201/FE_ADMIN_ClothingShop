@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { GetListCustomerPayload } from "@/redux/customer/customer.type";
+import { useEffect, useState } from "react";
+import { CustomerFieldsSort, GetListCustomerPayload } from "@/redux/customer/customer.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";
 import { convertToSearchParams } from "@/utils/object";
+import { useSearchParams } from "react-router-dom";
 
 const initialFilters: GetListCustomerPayload = {
   page: 1,
@@ -12,8 +13,16 @@ const initialFilters: GetListCustomerPayload = {
   sortOrder: null,
 };
 
-export function useCustomerTableFilters(props?: { searchParams?: URLSearchParams }) {
-  const [filters, setFilters] = useState<GetListCustomerPayload>({ ...initialFilters, ...props?.searchParams });
+export function useCustomerTableFilters() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = useState<GetListCustomerPayload>({
+    ...initialFilters,
+    ...Object.fromEntries(searchParams?.entries() ?? {}),
+  });
+
+  useEffect(() => {
+    setSearchParams(convertToSearchParams(filters));
+  }, [filters]);
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));
@@ -23,11 +32,29 @@ export function useCustomerTableFilters(props?: { searchParams?: URLSearchParams
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
+  const handleSortChange = (field?: CustomerFieldsSort, desc?: boolean) => {
+    if (!field || desc === undefined) {
+      setFilters((prev) => ({ ...prev, sortBy: undefined, sortOrder: undefined, page: 1 }));
+    } else {
+      setFilters((prev) => ({ ...prev, sortBy: field, sortOrder: desc ? "desc" : "asc", page: 1 }));
+    }
+  };
+
+  const handleFiltersChange = (filters: any) => {
+    setFilters((prev) => ({ ...prev, ...filters, page: 1 }));
+  };
+
   const handleKeywordChange = useDebouncedCallback((keyword: string) => {
     setFilters((prev) => ({ ...prev, keyword, page: 1 }));
   }, 500);
 
-  const isDefault = convertToSearchParams(filters).toString() === convertToSearchParams(initialFilters).toString();
-
-  return { filters, handlePageChange, handleLimitChange, handleKeywordChange, initialFilters, isDefault };
+  return {
+    filters,
+    handlePageChange,
+    handleLimitChange,
+    handleKeywordChange,
+    initialFilters,
+    handleSortChange,
+    handleFiltersChange,
+  };
 }

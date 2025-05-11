@@ -58,7 +58,7 @@ export const cancelOrderService = async (payload: CancelOrderPayload): Promise<C
 };
 
 export const createShipOrderService = async (payload: CancelOrderPayload): Promise<CancelOrderResponse> => {
-  return await apiInstance.post("/orders/create-ship-order", {
+  return await apiInstance.post("/orders/create-shipping-order", {
     orderId: payload.id,
   });
 };

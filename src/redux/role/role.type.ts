@@ -43,7 +43,7 @@ export interface CreateRoleResponse extends BaseResponse<Role> {}
 /**
  * Get List Role
  */
-type RoleFieldsSort = Extract<"name" | "createdAt", Role>;
+export type RoleFieldsSort = Extract<"name" | "description" | "createdAt", Role>;
 export interface GetListRolePayload extends GetListParams<Role> {
   sortBy?: Optional<Nullable<RoleFieldsSort>>;
 }

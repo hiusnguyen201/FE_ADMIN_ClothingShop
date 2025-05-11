@@ -1,40 +1,64 @@
-import { FormikProps } from "formik";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
 
-export type SelectBoxFormikFieldProps<TData> = {
+type OptionItem = {
+  label: string;
+  value: string;
+};
+
+export type SelectBoxFormFieldProps = {
   name: string;
   label?: string;
   required?: boolean;
   type: "radio" | "checkbox";
-  options: string[];
+  options: OptionItem[];
   className?: string;
-  formikProps: FormikProps<TData>;
   direction?: "column" | "row";
   editing?: boolean;
+  value: string[];
+  error?: string;
+  onValueChange?: (value: string[]) => void;
 };
 
-export function SelectBoxFormikField<TData extends { [key: string]: any }>({
+export function SelectBoxFormField({
   editing = true,
   name,
   label,
   required = false,
   type,
+  value = [],
   className,
   options,
+  error,
   direction = "row",
-  formikProps,
-}: SelectBoxFormikFieldProps<TData>) {
-  const { handleChange, handleBlur, setFieldError, validateField, errors, values, isSubmitting } = formikProps;
+  onValueChange,
+}: SelectBoxFormFieldProps) {
+  const [selectedValues, setSelectedValues] = useState<string[]>(value);
 
-  const currentValue: string = values[name] as string;
-  const error: string = errors[name] as string;
+  useEffect(() => {
+    setSelectedValues(value);
+  }, [value]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    let newValues: string[];
+
+    if (type === "checkbox") {
+      newValues = selectedValues.includes(val) ? selectedValues.filter((v) => v !== val) : [...selectedValues, val];
+    } else {
+      newValues = [val];
+    }
+
+    setSelectedValues(newValues);
+    onValueChange?.(newValues);
+  };
 
   return (
     <div className={cn("w-full", className)}>
       {label && (
-        <Label className={cn("mb-2 block", editing && error && "text-red-500")}>
+        <Label className={cn("select-none mb-2 block", editing && error && "text-red-500")}>
           {label} {required && <span>*</span>}
         </Label>
       )}
@@ -45,51 +69,43 @@ export function SelectBoxFormikField<TData extends { [key: string]: any }>({
           direction === "column" ? "flex-col" : "flex-row"
         )}
       >
-        {options.map((item: string) => (
+        {options.map((item) => (
           <Label
             className={cn(
               "inline-flex gap-2 items-center text-base -ml-1 p-1",
               editing ? "cursor-pointer" : "cursor-default"
             )}
-            key={item}
-            htmlFor={item}
+            key={item.value}
+            htmlFor={item.value}
           >
             {editing ? (
               <Input
                 tabIndex={-1}
-                id={item}
-                disabled={isSubmitting}
+                id={item.value}
                 type={type}
                 name={name}
-                value={item}
-                checked={currentValue === item}
+                value={item.value}
+                checked={selectedValues.includes(item.value)}
+                onChange={handleChange}
                 className={cn(
                   "cursor-pointer w-auto h-auto transform scale-110",
                   error && "border-red-500 focus:border-red-500"
                 )}
-                onChange={(e) => {
-                  handleChange(e);
-                  setFieldError(name, undefined);
-                }}
-                onBlur={async (e) => {
-                  handleBlur(e);
-                  validateField(name);
-                }}
               />
             ) : (
               <Input
                 tabIndex={-1}
-                id={item}
+                id={item.value}
+                readOnly
                 disabled={true}
                 type={type}
                 name={name}
-                value={item}
-                checked={currentValue === item}
+                value={item.value}
+                checked={selectedValues.includes(item.value)}
                 className={cn("!cursor-default !opacity-100 w-auto h-auto transform scale-110")}
               />
             )}
-
-            <span className="select-none font-normal capitalize">{item}</span>
+            <span className="select-none font-normal capitalize">{item.label}</span>
           </Label>
         ))}
       </div>
@@ -98,26 +114,3 @@ export function SelectBoxFormikField<TData extends { [key: string]: any }>({
     </div>
   );
 }
-
-// 'button' |
-//   'checkbox' |
-//   'color' |
-//   'date' |
-//   'datetime-local' |
-//   'email' |
-//   'file' |
-//   'hidden' |
-//   'image' |
-//   'month' |
-//   'number' |
-//   'password' |
-//   'radio' |
-//   'range' |
-//   'reset' |
-//   'search' |
-//   'submit' |
-//   'tel' |
-//   'text' |
-//   'time' |
-//   'url' |
-//   'week';

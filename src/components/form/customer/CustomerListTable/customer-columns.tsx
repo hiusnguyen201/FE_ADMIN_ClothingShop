@@ -19,15 +19,15 @@ import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip"
 import { Image } from "@/components/Image";
 import { usePermission } from "@/hooks/use-permission";
 import { PERMISSIONS } from "@/constants/permissions";
+import { BadgeUserStatus } from "@/components/BadgeUserStatus";
 
 export const customerColumns: ColumnDef<Customer, any>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    minSize: 300,
+    minSize: 400,
     cell: ({ row }) => {
       const customer = row.original;
-
       return (
         <FlexBox size="small" direction="row" className="items-center">
           <Image src={customer.avatar} alt={customer.name} type="avatar" size={48} />
@@ -44,10 +44,17 @@ export const customerColumns: ColumnDef<Customer, any>[] = [
     },
   },
   {
+    accessorKey: "verifiedAt",
+    header: "Status",
+    minSize: 50,
+    cell: ({ row }) => {
+      return <BadgeUserStatus user={row.original} />;
+    },
+  },
+  {
     accessorKey: "gender",
     header: "Gender",
     minSize: 100,
-    maxSize: 100,
     cell: ({ row }) => {
       const customer = row.original;
       return <span className="capitalize">{customer.gender}</span>;
@@ -56,8 +63,8 @@ export const customerColumns: ColumnDef<Customer, any>[] = [
   {
     accessorKey: "contact",
     header: "Contact",
+    enableSorting: false,
     minSize: 150,
-    maxSize: 150,
     cell: ({ row }) => {
       const customer = row.original;
       return (
@@ -77,10 +84,9 @@ export const customerColumns: ColumnDef<Customer, any>[] = [
     },
   },
   {
-    accessorKey: "lastLogin",
+    accessorKey: "lastLoginAt",
     header: "Last Login",
     minSize: 100,
-    maxSize: 100,
     cell: ({ row }) => {
       const customer = row.original;
       return customer.lastLoginAt ? formatDateString(customer.lastLoginAt) : "never";
@@ -90,6 +96,7 @@ export const customerColumns: ColumnDef<Customer, any>[] = [
     id: "actions",
     minSize: 64,
     maxSize: 64,
+    enableSorting: false,
     cell: ({ row }) => {
       const customer = row.original;
       return <CustomerActions customer={customer} />;

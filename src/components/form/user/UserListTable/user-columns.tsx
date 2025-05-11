@@ -19,12 +19,13 @@ import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip"
 import { Image } from "@/components/Image";
 import { usePermission } from "@/hooks/use-permission";
 import { PERMISSIONS } from "@/constants/permissions";
+import { BadgeUserStatus } from "@/components/BadgeUserStatus";
 
 export const userColumns: ColumnDef<User, any>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    minSize: 320,
+    minSize: 400,
     cell: ({ row }) => {
       const user = row.original;
 
@@ -47,10 +48,18 @@ export const userColumns: ColumnDef<User, any>[] = [
     accessorKey: "role",
     header: "Role",
     minSize: 250,
-    maxSize: 150,
+    enableSorting: false,
     cell: ({ row }) => {
       const user = row.original;
       return <TruncatedTextWithTooltip>{user.role?.name || "-"}</TruncatedTextWithTooltip>;
+    },
+  },
+  {
+    accessorKey: "verifiedAt",
+    header: "Status",
+    minSize: 50,
+    cell: ({ row }) => {
+      return <BadgeUserStatus user={row.original} />;
     },
   },
   {
@@ -66,6 +75,7 @@ export const userColumns: ColumnDef<User, any>[] = [
     accessorKey: "contact",
     header: "Contact",
     minSize: 100,
+    enableSorting: false,
     cell: ({ row }) => {
       const user = row.original;
       return (
@@ -85,10 +95,9 @@ export const userColumns: ColumnDef<User, any>[] = [
     },
   },
   {
-    accessorKey: "lastLogin",
+    accessorKey: "lastLoginAt",
     header: "Last Login",
     minSize: 100,
-    maxSize: 100,
     cell: ({ row }) => {
       const user = row.original;
       return user.lastLoginAt ? formatDateString(user.lastLoginAt) : "never";
@@ -98,6 +107,7 @@ export const userColumns: ColumnDef<User, any>[] = [
     id: "actions",
     minSize: 64,
     maxSize: 64,
+    enableSorting: false,
     cell: ({ row }) => {
       const user = row.original;
       return <UserActions user={user} />;

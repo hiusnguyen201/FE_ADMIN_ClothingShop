@@ -90,7 +90,7 @@ export function ImageFormikField<TData>({
   return (
     <section className={cn("w-full", `w-[${size}px]`, className)}>
       {label && (
-        <Label className={cn("select-none mb-2 block", error && "text-red-500")} htmlFor={name}>
+        <Label className={cn("mb-2 block", error && "text-red-500")} htmlFor={name}>
           {label} {required && <span>*</span>}
         </Label>
       )}
@@ -144,7 +144,7 @@ export function ImageFormikField<TData>({
             </div>
           ) : (
             editing && (
-              <div className="flex flex-col items-center justify-center">
+              <div className="flex absolute flex-col items-center justify-center">
                 <ImagePlus className="w-8 h-8 text-gray-500 dark:text-gray-400" />
               </div>
             )

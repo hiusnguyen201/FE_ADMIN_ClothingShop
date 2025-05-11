@@ -25,7 +25,7 @@ export const productColumns: ColumnDef<Product, any>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    minSize: 300,
+    minSize: 400,
     cell: ({ row }) => (
       <FlexBox size="small" direction="row" className="items-center">
         <Image src={row.original.thumbnail} alt={row.original.name} aspect="3/4" />
@@ -38,10 +38,20 @@ export const productColumns: ColumnDef<Product, any>[] = [
     ),
   },
   {
+    accessorKey: "status",
+    header: "Status",
+    minSize: 100,
+    cell: ({ row }) => (
+      <Badge className="capitalize" variant={row.original.status === PRODUCT_STATUS.ACTIVE ? "default" : "outline"}>
+        {row.original.status}
+      </Badge>
+    ),
+  },
+  {
     accessorKey: "category",
+    enableSorting: false,
     header: "Category",
     minSize: 150,
-    maxSize: 150,
     cell: ({ row }) => (
       <div>
         <div>{row.original.category.name}</div>
@@ -53,9 +63,9 @@ export const productColumns: ColumnDef<Product, any>[] = [
   },
   {
     accessorKey: "price",
+    enableSorting: false,
     header: "Price",
     minSize: 120,
-    maxSize: 150,
     cell: ({ row }) => {
       if (row.original.productVariants.length === 0) return <div>-</div>;
       if (row.original.productVariants.length === 1)
@@ -71,10 +81,10 @@ export const productColumns: ColumnDef<Product, any>[] = [
     },
   },
   {
-    accessorKey: "stock",
+    accessorKey: "quantity",
+    enableSorting: false,
     header: "Stock",
     minSize: 120,
-    maxSize: 120,
     cell: ({ row }) => {
       if (row.original.productVariants.length === 0) return <div>-</div>;
 
@@ -91,21 +101,12 @@ export const productColumns: ColumnDef<Product, any>[] = [
       );
     },
   },
-  {
-    accessorKey: "status",
-    header: "Status",
-    minSize: 100,
-    maxSize: 120,
-    cell: ({ row }) => (
-      <Badge className="capitalize" variant={row.original.status === PRODUCT_STATUS.ACTIVE ? "default" : "outline"}>
-        {row.original.status}
-      </Badge>
-    ),
-  },
+
   {
     id: "actions",
     minSize: 64,
     maxSize: 64,
+    enableSorting: false,
     cell: ({ row }) => {
       const product = row.original;
       return <ProductActions product={product} />;

@@ -1,9 +1,10 @@
-import { ColumnDef, flexRender, getCoreRowModel, Table, useReactTable } from "@tanstack/react-table";
+import { ColumnDef, flexRender, getCoreRowModel, SortingState, Table, useReactTable } from "@tanstack/react-table";
 import { Table as TableContainer, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Fragment } from "react/jsx-runtime";
 import { Spinner } from "@/components/spinner";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useEffect, useState } from "react";
+import { ArrowDownZA, ArrowUpAZ, ArrowUpDown } from "lucide-react";
 
 export type DataTableProps<TData> = {
   data: TData[];
@@ -13,6 +14,7 @@ export type DataTableProps<TData> = {
   className?: string;
   loading?: boolean;
   // getSubRows?: (originalRow: TData, index: number) => undefined | TData[];
+  onSortingChange?: (sorting: SortingState) => void;
 };
 
 /**
@@ -26,8 +28,31 @@ export function DataTable<TData>({
   heightPerRow,
   className,
   loading = false,
+  onSortingChange,
 }: DataTableProps<TData>) {
-  const isMobile = useIsMobile();
+  const [sorting, setSorting] = useState<SortingState>([]);
+
+  const handleSorting = (header: any) => {
+    if (!header.column.getCanSort()) return;
+
+    const sortField = header.column.id;
+    const currentSort = sorting[0];
+
+    let newSort: SortingState = [];
+
+    if (!currentSort || currentSort.id !== sortField) {
+      newSort = [{ id: sortField, desc: false }];
+    } else if (currentSort.id === sortField && !currentSort.desc) {
+      newSort = [{ id: sortField, desc: true }];
+    }
+
+    setSorting(newSort);
+  };
+
+  useEffect(() => {
+    onSortingChange?.(sorting);
+  }, [sorting]);
+
   const table: Table<TData> = useReactTable({
     data,
     columns,
@@ -38,12 +63,18 @@ export function DataTable<TData>({
       size: Number.MAX_SAFE_INTEGER,
       maxSize: Number.MAX_SAFE_INTEGER,
     },
+    enableSorting: true,
+    manualSorting: true,
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+    },
   });
 
   return (
     <div className="overflow-x-auto flex flex-col w-full relative">
       {loading && (
-        <div className="opacity-50 top-0 left-0 z-50 h-full absolute bg-white flex items-center w-full justify-center">
+        <div className="opacity-50 top-0 left-0 z-10 h-full absolute bg-white flex items-center w-full justify-center">
           <Spinner size="large" />
         </div>
       )}
@@ -77,7 +108,22 @@ export function DataTable<TData>({
                     minWidth: header.column.columnDef.minSize,
                   }}
                 >
-                  {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  {header.isPlaceholder ? null : (
+                    <div
+                      className={cn(
+                        "flex items-center gap-2",
+                        header.column.getCanSort() && "cursor-pointer select-none"
+                      )}
+                      onClick={() => handleSorting(header)}
+                    >
+                      {flexRender(header.column.columnDef.header, header.getContext())}
+                      {{
+                        asc: <ArrowUpAZ className="h-4 w-4" />,
+                        desc: <ArrowDownZA className="h-4 w-4" />,
+                      }[header.column.getIsSorted() as string] ??
+                        (header.column.getCanSort() && <ArrowUpDown className="h-4 w-4" />)}
+                    </div>
+                  )}
                 </TableHead>
               ))}
             </TableRow>

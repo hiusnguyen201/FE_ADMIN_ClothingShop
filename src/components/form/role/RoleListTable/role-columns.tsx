@@ -1,9 +1,6 @@
-import { ColumnDef } from "@tanstack/react-table";
-import { Category } from "@/types/category";
-import { Clipboard, MoreHorizontal, Trash } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Clipboard, MoreHorizontal, Trash } from "lucide-react";
+import { ColumnDef } from "@tanstack/react-table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,46 +9,38 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { RemoveCategoryDialogForm } from "@/components/form/category/RemoveCategoryDialogForm";
-import { Image } from "@/components/Image";
-import { PERMISSIONS } from "@/constants/permissions";
+import { TruncatedTextWithTooltip } from "@/components/TruncatedTextWithTooltip";
+import { Role } from "@/types/role";
+import { RemoveRoleDialogForm } from "@/components/form/role/RemoveRoleDialogForm";
+import { useState } from "react";
 import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
-export const categoryColumns: ColumnDef<Category, any>[] = [
+export const roleColumns: ColumnDef<Role, any>[] = [
   {
-    id: "name",
+    accessorKey: "name",
     header: "Name",
-    minSize: 300,
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <Image src={row.original.image} alt={row.original.name} />
-
-        <Link className="text-blue-500 font-medium" to={"/categories/" + row.original.id + "/settings"}>
-          {row.original.name}
-        </Link>
-      </div>
+      <Link className="text-blue-500" to={"/roles/" + row.original.id + "/settings"}>
+        {row.original.name}
+      </Link>
     ),
   },
   {
-    id: "level",
-    header: "Level",
-    minSize: 100,
-    cell: ({ row }) => <Badge variant="outline">Level {row.original.level}</Badge>,
-  },
-  {
-    id: "subCategory",
-    header: "Total sub-category",
-    minSize: 100,
-    cell: ({ row }) => row.original.children.length || 0,
+    accessorKey: "description",
+    header: "Description",
+    maxSize: 600,
+    cell: ({ row }) => <TruncatedTextWithTooltip>{row.original.description}</TruncatedTextWithTooltip>,
   },
   {
     id: "actions",
     maxSize: 64,
-    cell: ({ row }) => <CategoryActions category={row.original} />,
+    enableSorting: false,
+    cell: ({ row }) => <RoleActions role={row.original} />,
   },
 ];
 
-export function CategoryActions({ category }: { category: Category }) {
+export function RoleActions({ role }: { role: Role }) {
   const can = usePermission();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -71,15 +60,15 @@ export function CategoryActions({ category }: { category: Category }) {
           align="end"
           className="absolute right-0 z-10 bg-white text-black p-2 rounded shadow-lg min-w-[180px]"
         >
-          {can(PERMISSIONS.READ_DETAILS_CATEGORY) && (
-            <Link to={`/categories/${category.id}/settings`}>
+          {can(PERMISSIONS.READ_DETAILS_ROLE) && (
+            <Link to={`/roles/${role.id}/settings`}>
               <DropdownMenuItem>
                 <Clipboard /> View Details
               </DropdownMenuItem>
             </Link>
           )}
 
-          {can(PERMISSIONS.REMOVE_CATEGORY) && (
+          {can(PERMISSIONS.REMOVE_ROLE) && (
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem
@@ -97,8 +86,8 @@ export function CategoryActions({ category }: { category: Category }) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {can(PERMISSIONS.REMOVE_CATEGORY) && (
-        <RemoveCategoryDialogForm category={category} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
+      {can(PERMISSIONS.REMOVE_ROLE) && (
+        <RemoveRoleDialogForm role={role} open={isDialogOpen} onOpenChange={setIsDialogOpen} />
       )}
     </>
   );

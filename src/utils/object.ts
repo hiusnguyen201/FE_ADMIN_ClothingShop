@@ -18,6 +18,10 @@ export function convertTo<T>(record: Record<string, string>): T {
   return result as T;
 }
 
+export function filterTruthyValues(record: Record<string, any>) {
+  return Object.fromEntries(Object.entries(record).filter(([_, value]) => Boolean(value)));
+}
+
 export function convertToSearchParams(obj: Record<string, any>): URLSearchParams {
   const params = Object.fromEntries(Object.entries(obj).filter(([_, value]) => value));
   return new URLSearchParams(params);

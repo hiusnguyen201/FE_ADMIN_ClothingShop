@@ -37,7 +37,7 @@ export function InputFormikField<TData>({
   return (
     <div className={cn("w-full", className)}>
       {label && (
-        <Label className={cn("select-none mb-2 block font-medium", editing && error && "text-red-500")} htmlFor={name}>
+        <Label className={cn("mb-2 block font-medium", editing && error && "text-red-500")} htmlFor={name}>
           {label} {required && <span>*</span>}
         </Label>
       )}

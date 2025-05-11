@@ -137,7 +137,7 @@ export const cancelOrder = createAsyncThunk<CancelOrderResponse, CancelOrderPayl
 );
 
 export const createShipOrder = createAsyncThunk<CreateShipOrderResponse, CreateShipOrderPayload, ThunkApiConfig>(
-  "order/create-ship-order",
+  "order/create-shipping-order",
   async (payload, { rejectWithValue }) => {
     try {
       const response: CreateShipOrderResponse = await createShipOrderService(payload);

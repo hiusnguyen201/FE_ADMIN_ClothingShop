@@ -10,7 +10,7 @@ import { PERMISSIONS } from "@/constants/permissions";
 export function ListRolePage() {
   const can = usePermission();
   return (
-    <ContentWrapper>
+    <ContentWrapper className="lg:max-w-6xl">
       <Heading
         title="Roles"
         description="Create and manage Roles for your applications. Roles contain collections of Permissions."

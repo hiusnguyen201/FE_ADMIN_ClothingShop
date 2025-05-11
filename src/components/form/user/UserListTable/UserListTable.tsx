@@ -4,23 +4,20 @@ import { DataTable } from "@/components/data-table";
 import { getListUser } from "@/redux/user/user.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
-import { UserState } from "@/redux/user/user.type";
+import { UserFieldsSort, UserState } from "@/redux/user/user.type";
 import { toast } from "@/hooks/use-toast";
 import { useUserTableFilters } from "./useUserTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
-import { useSearchParams } from "react-router-dom";
-import { convertToSearchParams } from "@/utils/object";
-import { userColumns } from "@/pages/users/user-columns";
+import { userColumns } from "./user-columns";
+import { UserFilterSidebarForm } from "./UserFilterSidebarForm";
 
 export function UserListTable() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading, initializedList, removedUserIds, newItem } = useAppSelector<UserState>(
     (state) => state.user
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useUserTableFilters({
-    searchParams,
-  });
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleFiltersChange, handleSortChange } =
+    useUserTableFilters();
 
   const handleGetUserList = async () => {
     try {
@@ -31,28 +28,34 @@ export function UserListTable() {
   };
 
   useEffect(() => {
-    if (!isDefault) {
-      setSearchParams(convertToSearchParams(filters));
-    }
-
     handleGetUserList();
   }, [filters, dispatch, removedUserIds, newItem]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
-      <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListUser}
-          className="col-span-3 sm:col-span-2"
           value={filters.keyword}
           onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
+        />
+
+        <UserFilterSidebarForm
+          onApplyFilter={handleFiltersChange}
+          values={{
+            status: filters.status,
+            gender: filters.gender,
+          }}
         />
       </div>
 
       <DataTable
         data={list}
+        onSortingChange={(sorting) => {
+          handleSortChange(sorting[0]?.id as UserFieldsSort, sorting[0]?.desc);
+        }}
         placeholder="No users found. Note: if a user was just created/deleted, it takes some time for it to be indexed."
         columns={userColumns}
         heightPerRow={77}

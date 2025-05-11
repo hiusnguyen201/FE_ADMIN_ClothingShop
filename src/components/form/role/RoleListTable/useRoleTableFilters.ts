@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { GetListRolePayload } from "@/redux/role/role.type";
+import { useEffect, useState } from "react";
+import { GetListRolePayload, RoleFieldsSort } from "@/redux/role/role.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";
 import { convertToSearchParams } from "@/utils/object";
+import { useSearchParams } from "react-router-dom";
 
 const initialFilters: GetListRolePayload = {
   page: 1,
@@ -12,8 +13,16 @@ const initialFilters: GetListRolePayload = {
   sortOrder: null,
 };
 
-export function useRoleTableFilters(props?: { searchParams?: URLSearchParams }) {
-  const [filters, setFilters] = useState<GetListRolePayload>({ ...initialFilters, ...props?.searchParams });
+export function useRoleTableFilters() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filters, setFilters] = useState<GetListRolePayload>({
+    ...initialFilters,
+    ...Object.fromEntries(searchParams?.entries() ?? {}),
+  });
+
+  useEffect(() => {
+    setSearchParams(convertToSearchParams(filters));
+  }, [filters]);
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));
@@ -23,11 +32,17 @@ export function useRoleTableFilters(props?: { searchParams?: URLSearchParams }) 
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
+  const handleSortChange = (field?: RoleFieldsSort, desc?: boolean) => {
+    if (!field || desc === undefined) {
+      setFilters((prev) => ({ ...prev, sortBy: undefined, sortOrder: undefined, page: 1 }));
+    } else {
+      setFilters((prev) => ({ ...prev, sortBy: field, sortOrder: desc ? "desc" : "asc", page: 1 }));
+    }
+  };
+
   const handleKeywordChange = useDebouncedCallback((keyword: string) => {
     setFilters((prev) => ({ ...prev, keyword, page: 1 }));
   }, 500);
 
-  const isDefault = convertToSearchParams(filters).toString() === convertToSearchParams(initialFilters).toString();
-
-  return { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault };
+  return { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleSortChange };
 }

@@ -11,7 +11,7 @@ export function ListCategoryPage() {
   const can = usePermission();
 
   return (
-    <ContentWrapper>
+    <ContentWrapper className="lg:max-w-6xl">
       <Heading
         title="Categories"
         description="View categories for your applications."

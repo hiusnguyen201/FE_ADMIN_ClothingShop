@@ -1,22 +1,29 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GetListAssignedRolePermissionsPayload } from "@/redux/role/role.type";
 import { convertToSearchParams } from "@/utils/object";
 import { useDebouncedCallback } from "use-debounce";
+import { useSearchParams } from "react-router-dom";
+import { PermissionFieldsSort } from "@/redux/permission/permission.type";
 
-export function useRolePermissionsTableFilters(props: { searchParams?: URLSearchParams; roleId: string }) {
+export function useRolePermissionsTableFilters(roleId: string) {
   const initialFilters: GetListAssignedRolePermissionsPayload = {
     page: 1,
     limit: 100,
     keyword: "",
     sortBy: null,
     sortOrder: null,
-    roleId: props.roleId,
+    roleId: roleId,
   };
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState<GetListAssignedRolePermissionsPayload>({
     ...initialFilters,
-    ...props?.searchParams,
+    ...Object.fromEntries(searchParams?.entries() ?? {}),
   });
+
+  useEffect(() => {
+    setSearchParams(convertToSearchParams(filters));
+  }, [filters]);
 
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));
@@ -26,11 +33,17 @@ export function useRolePermissionsTableFilters(props: { searchParams?: URLSearch
     setFilters((prev) => ({ ...prev, limit, page: 1 }));
   };
 
+  const handleSortChange = (field?: PermissionFieldsSort, desc?: boolean) => {
+    if (!field || desc === undefined) {
+      setFilters((prev) => ({ ...prev, sortBy: undefined, sortOrder: undefined, page: 1 }));
+    } else {
+      setFilters((prev) => ({ ...prev, sortBy: field, sortOrder: desc ? "desc" : "asc", page: 1 }));
+    }
+  };
+
   const handleKeywordChange = useDebouncedCallback((keyword: string) => {
     setFilters((prev) => ({ ...prev, keyword, page: 1 }));
   }, 500);
 
-  const isDefault = convertToSearchParams(filters).toString() === convertToSearchParams(initialFilters).toString();
-
-  return { filters, handlePageChange, handleLimitChange, isDefault, handleKeywordChange };
+  return { filters, handlePageChange, handleLimitChange, handleSortChange, handleKeywordChange };
 }

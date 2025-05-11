@@ -40,7 +40,7 @@ export function DataTablePagination({
             switchable={false}
             className="w-auto"
             name="limit"
-            value={limit}
+            value={+limit}
             onValueChange={(val) => {
               onLimitChange(val || LIMIT_PER_PAGE[0]);
             }}
@@ -66,7 +66,7 @@ export function DataTablePagination({
               variant="outline"
               size="icon"
               onClick={() => {
-                onPageChange(page - 1);
+                onPageChange(+page - 1);
               }}
               disabled={!isFirst || loading}
             >
@@ -77,7 +77,7 @@ export function DataTablePagination({
               variant="outline"
               size="icon"
               onClick={() => {
-                onPageChange(page + 1);
+                onPageChange(+page + 1);
               }}
               disabled={!isLast || loading}
             >

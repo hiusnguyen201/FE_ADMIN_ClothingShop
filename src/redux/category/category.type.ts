@@ -47,7 +47,7 @@ export interface CreateCategoryResponse extends BaseResponse<Category> {}
 /**
  * Get List Category
  */
-type CategoryFieldsSort = Extract<"name" | "createdAt", Category>;
+export type CategoryFieldsSort = Extract<"name" | "createdAt", Category>;
 export interface GetListCategoryPayload extends GetListParams<Category> {
   sortBy?: Optional<Nullable<CategoryFieldsSort>>;
 }

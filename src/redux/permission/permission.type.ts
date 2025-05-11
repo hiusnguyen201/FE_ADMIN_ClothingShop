@@ -19,7 +19,7 @@ export interface PermissionState {
 /**
  * Get List Permission
  */
-type PermissionFieldsSort = Extract<"name" | "createdAt", Permission>;
+export type PermissionFieldsSort = Extract<"name" | "description" | "createdAt", Permission>;
 export interface GetListPermissionPayload extends GetListParams<Permission> {
   sortBy?: Optional<Nullable<PermissionFieldsSort>>;
 }

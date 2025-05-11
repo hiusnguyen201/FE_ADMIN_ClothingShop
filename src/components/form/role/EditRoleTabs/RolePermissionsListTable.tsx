@@ -6,46 +6,39 @@ import { getListAssignedRolePermissions } from "@/redux/role/role.thunk";
 import { FlexBox } from "@/components/FlexBox";
 import { DataTable, DataTableLoading } from "@/components/data-table";
 import { useRolePermissionsTableFilters } from "./useRolePermissionsTableFilters";
-import { useSearchParams } from "react-router-dom";
-import { convertToSearchParams } from "@/utils/object";
 import { RoleState } from "@/redux/role/role.type";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
-import { rolePermissionsColumns } from "@/pages/roles/tabs/role-permissions-columns";
+import { rolePermissionsColumns } from "./role-permissions-columns";
+import { PermissionFieldsSort } from "@/redux/permission/permission.type";
 
 export function RolePermissionsListTable({ role }: { role: Role }) {
-  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const {
     assignedRolePermissions,
     loading: roleLoading,
     initializedListRolePermission,
   } = useAppSelector<RoleState>((state) => state.role);
-  const { filters, isDefault, handleKeywordChange } = useRolePermissionsTableFilters({ searchParams, roleId: role.id });
+  const { filters, handleKeywordChange, handleSortChange } = useRolePermissionsTableFilters(role.id);
 
-  const fetchPermissions = useCallback(async () => {
+  const handleGetPermissions = async () => {
     try {
       await dispatch(getListAssignedRolePermissions(filters)).unwrap();
     } catch (error: any) {
       toast({ title: error, variant: "destructive" });
     }
-  }, [filters]);
+  };
 
   useEffect(() => {
-    if (!isDefault) {
-      setSearchParams(convertToSearchParams(filters));
-    }
-
-    fetchPermissions();
+    handleGetPermissions();
   }, [filters]);
 
   return (
     <FlexBox className="w-full items-center">
       <DataTableLoading initialized={initializedListRolePermission} className="flex flex-col gap-6 w-full">
-        <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
           <SearchFormField
             name="keyword"
             disabled={roleLoading.getListAssignedRolePermissions}
-            className="col-span-3 sm:col-span-2"
             value={filters.keyword}
             onValueChange={handleKeywordChange}
             placeholder="Enter a keyword"
@@ -54,6 +47,9 @@ export function RolePermissionsListTable({ role }: { role: Role }) {
 
         <DataTable
           loading={roleLoading.getListAssignedRolePermissions}
+          onSortingChange={(sorting) => {
+            handleSortChange(sorting[0]?.id as PermissionFieldsSort, sorting[0]?.desc);
+          }}
           data={assignedRolePermissions.map((permission) => ({ role, permission }))}
           placeholder="No roles found. Note: if a role was just created/deleted, it takes some time for it to be indexed."
           columns={rolePermissionsColumns}

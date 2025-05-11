@@ -3,24 +3,20 @@ import { DataTable } from "@/components/data-table";
 import { getListCategory } from "@/redux/category/category.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
-import { CategoryState } from "@/redux/category/category.type";
+import { CategoryFieldsSort, CategoryState } from "@/redux/category/category.type";
 import { toast } from "@/hooks/use-toast";
 import { useCategoryTableFilters } from "./useCategoryTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
-import { convertToSearchParams } from "@/utils/object";
-import { categoryColumns } from "@/pages/categories/category-columns";
+import { categoryColumns } from "./category-columns";
 
 export function CategoryListTable() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading, initializedList, removedCategoryIds, newItem } = useAppSelector<CategoryState>(
     (state) => state.category
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useCategoryTableFilters({
-    searchParams,
-  });
+  const { filters, handlePageChange, handleLimitChange, handleSortChange, handleKeywordChange } =
+    useCategoryTableFilters();
 
   const handleGetCategoryList = async () => {
     try {
@@ -31,20 +27,15 @@ export function CategoryListTable() {
   };
 
   useEffect(() => {
-    if (!isDefault) {
-      setSearchParams(convertToSearchParams(filters));
-    }
-
     handleGetCategoryList();
   }, [filters, dispatch, removedCategoryIds, newItem]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
-      <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListCategory}
-          className="col-span-3 sm:col-span-2"
           value={filters.keyword}
           onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
@@ -53,6 +44,9 @@ export function CategoryListTable() {
 
       <DataTable
         data={list}
+        onSortingChange={(sorting) => {
+          handleSortChange(sorting[0]?.id as CategoryFieldsSort, sorting[0]?.desc);
+        }}
         loading={loading.getListCategory}
         placeholder="No categories found. Note: if a category was just created/deleted, it takes some time for it to be indexed."
         columns={categoryColumns}

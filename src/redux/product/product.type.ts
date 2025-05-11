@@ -49,11 +49,13 @@ export interface CreateProductResponse extends BaseResponse<Product> {}
 /**
  * Get List Product
  */
-type ProductFieldsSort = Extract<"name" | "email" | "createdAt", Product>;
+export type ProductFieldsSort = Extract<"name" | "category" | "price" | "stock" | "createdAt", Product>;
 export interface GetListProductPayload extends GetListParams<Product> {
   sortBy?: Optional<Nullable<ProductFieldsSort>>;
   status?: Optional<Nullable<PRODUCT_STATUS>>;
-  category?: Optional<Nullable<string>>;
+  categoryIds?: Optional<Nullable<string>>;
+  minPrice?: Optional<Nullable<number>>;
+  maxPrice?: Optional<Nullable<number>>;
 }
 export interface GetListProductResponse extends GetListResponseData<Product> {}
 

@@ -4,23 +4,20 @@ import { DataTable } from "@/components/data-table";
 import { getListProduct } from "@/redux/product/product.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
-import { ProductState } from "@/redux/product/product.type";
+import { ProductFieldsSort, ProductState } from "@/redux/product/product.type";
 import { toast } from "@/hooks/use-toast";
 import { useProductTableFilters } from "./useProductTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
-import { useSearchParams } from "react-router-dom";
-import { convertToSearchParams } from "@/utils/object";
-import { productColumns } from "@/pages/products/product-columns";
+import { productColumns } from "./product-columns";
+import { ProductFilterSidebarForm } from "./ProductFilterSidebarForm";
 
 export function ProductListTable() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading, initializedList, removedProductIds, newItem } = useAppSelector<ProductState>(
     (state) => state.product
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, isDefault } = useProductTableFilters({
-    searchParams,
-  });
+  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleFiltersChange, handleSortChange } =
+    useProductTableFilters();
 
   const handleGetProductList = async () => {
     try {
@@ -31,28 +28,37 @@ export function ProductListTable() {
   };
 
   useEffect(() => {
-    if (!isDefault) {
-      setSearchParams(convertToSearchParams(filters));
-    }
-
     handleGetProductList();
   }, [filters, dispatch, removedProductIds, newItem]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
-      <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListProduct}
-          className="col-span-3 sm:col-span-2"
+          className="flex-grow"
           value={filters.keyword}
           onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
+        />
+
+        <ProductFilterSidebarForm
+          onApplyFilter={handleFiltersChange}
+          values={{
+            status: filters.status,
+            categoryIds: filters.categoryIds,
+            maxPrice: filters.maxPrice,
+            minPrice: filters.minPrice,
+          }}
         />
       </div>
 
       <DataTable
         data={list}
+        onSortingChange={(sorting) => {
+          handleSortChange(sorting[0]?.id as ProductFieldsSort, sorting[0]?.desc);
+        }}
         loading={loading.getListProduct}
         placeholder="No products found. Note: if a product was just created/deleted, it takes some time for it to be indexed."
         columns={productColumns}

@@ -43,9 +43,11 @@ export interface CreateUserResponse extends BaseResponse<User> {}
 /**
  * Get List User
  */
-type UserFieldsSort = Extract<"name" | "email" | "createdAt", User>;
+export type UserFieldsSort = Extract<"name" | "email" | "lastLoginAt" | "gender" | "verifiedAt" | "createdAt", User>;
 export interface GetListUserPayload extends GetListParams<User> {
   sortBy: Optional<Nullable<UserFieldsSort>>;
+  status?: Optional<Nullable<"active" | "inactive">>;
+  gender?: Optional<Nullable<GENDER>>;
 }
 export interface GetListUserResponse extends GetListResponseData<User> {}
 

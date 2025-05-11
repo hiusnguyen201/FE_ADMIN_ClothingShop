@@ -14,7 +14,7 @@ export function CreateOrderPage() {
     <ContentWrapper>
       <Link to={"/orders"} className="flex items-center gap-2 text-sm">
         <ArrowLeft size={16} />
-        <span>Back to orders</span>
+        <span>Back to Orders</span>
       </Link>
 
       <Heading title="Create Order" />

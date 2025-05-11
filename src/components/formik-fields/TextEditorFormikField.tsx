@@ -37,7 +37,7 @@ export function TextEditorFormikField<TData>({
       <RichTextEditor
         editing={editing}
         className={cn(
-          "max-h-[720px] rounded focus-visible:!outline focus-visible:!outline-1 focus-visible:outline-offset-0",
+          "max-h-[520px] rounded focus-visible:!outline focus-visible:!outline-1 focus-visible:outline-offset-0",
           error ? "border-red-500 focus:border-red-500" : "focus-visible:!outline-primary focus-visible:!outline-2"
         )}
         value={currentValue}

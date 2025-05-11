@@ -4,24 +4,29 @@ import { DataTable } from "@/components/data-table";
 import { getListOrder } from "@/redux/order/order.thunk";
 import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
-import { OrderState } from "@/redux/order/order.type";
+import { OrderFieldsSort, OrderState } from "@/redux/order/order.type";
 import { toast } from "@/hooks/use-toast";
 import { useOrderTableFilters } from "./useOrderTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
-import { useSearchParams } from "react-router-dom";
-import { convertToSearchParams } from "@/utils/object";
-import { orderColumns } from "@/pages/orders/order-columns";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ORDER_STATUS } from "@/types/order";
+import { orderColumns } from "./order-columns";
+import { OrderFilterSidebarForm } from "./OrderFilterSidebarForm";
 
 export function OrderListTable() {
-  const [searchParams, setSearchParams] = useSearchParams();
   const dispatch = useAppDispatch();
   const { list, totalCount, loading, initializedList, removedOrderIds, newItem } = useAppSelector<OrderState>(
     (state) => state.order
   );
-  const { filters, handlePageChange, handleLimitChange, handleKeywordChange, handleStatusChange, isDefault } =
-    useOrderTableFilters({ searchParams });
+  const {
+    filters,
+    handlePageChange,
+    handleLimitChange,
+    handleSortChange,
+    handleFiltersChange,
+    handleKeywordChange,
+    handleStatusChange,
+  } = useOrderTableFilters();
 
   const handleGetOrderList = async () => {
     try {
@@ -32,23 +37,26 @@ export function OrderListTable() {
   };
 
   useEffect(() => {
-    if (!isDefault) {
-      setSearchParams(convertToSearchParams(filters));
-    }
-
     handleGetOrderList();
   }, [filters, removedOrderIds, dispatch, newItem]);
 
   return (
     <DataTableLoading initialized={initializedList} className="flex flex-col gap-6 w-full">
-      <div className="grid sm:grid-cols-3 grid-cols-2 items-center gap-3">
+      <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3">
         <SearchFormField
           name="keyword"
           disabled={loading.getListOrder}
-          className="col-span-3 sm:col-span-2"
           value={filters.keyword}
           onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
+        />
+
+        <OrderFilterSidebarForm
+          onApplyFilter={handleFiltersChange}
+          values={{
+            minTotal: filters.minTotal,
+            maxTotal: filters.maxTotal,
+          }}
         />
       </div>
 
@@ -67,6 +75,9 @@ export function OrderListTable() {
         <TabsContent value={"all"} className="mt-0">
           <DataTable
             data={list}
+            onSortingChange={(sorting) => {
+              handleSortChange(sorting[0]?.id as OrderFieldsSort, sorting[0]?.desc);
+            }}
             loading={loading.getListOrder}
             placeholder="No orders found. Note: if a order was just created/deleted, it takes some time for it to be indexed."
             columns={orderColumns}

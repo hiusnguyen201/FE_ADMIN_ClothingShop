@@ -59,10 +59,12 @@ export interface CreateOrderResponse extends BaseResponse<Order> {}
 /**
  * Get List Order
  */
-type OrderFieldsSort = Extract<"name" | "email" | "createdAt", Order>;
+export type OrderFieldsSort = Extract<"code" | "orderDate" | "total", Order>;
 export interface GetListOrderPayload extends GetListParams<Order> {
   sortBy?: Optional<Nullable<OrderFieldsSort>>;
   status?: Optional<Nullable<ORDER_STATUS>>;
+  minTotal?: Optional<Nullable<number>>;
+  maxTotal?: Optional<Nullable<number>>;
 }
 export interface GetListOrderResponse extends GetListResponseData<Order> {}
 

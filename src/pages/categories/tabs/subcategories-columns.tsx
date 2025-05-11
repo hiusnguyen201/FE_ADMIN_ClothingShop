@@ -33,6 +33,7 @@ export const subcategoriesColumns: ColumnDef<Category, any>[] = [
   {
     id: "actions",
     maxSize: 64,
+    enableSorting: false,
     cell: ({ row }) => {
       const can = usePermission();
 
