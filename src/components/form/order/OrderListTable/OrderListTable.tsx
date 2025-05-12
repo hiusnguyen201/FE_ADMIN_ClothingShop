@@ -10,6 +10,7 @@ import { useOrderTableFilters } from "./useOrderTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ORDER_STATUS } from "@/types/order";
+import { ExportListOrderExcelButton } from "@/components/form/order/ExportListOrderExcelButton";
 import { orderColumns } from "./order-columns";
 import { OrderFilterSidebarForm } from "./OrderFilterSidebarForm";
 
@@ -58,6 +59,10 @@ export function OrderListTable() {
             maxTotal: filters.maxTotal,
           }}
         />
+      </div>
+
+      <div className="flex items-center justify-end">
+        <ExportListOrderExcelButton filters={filters} />
       </div>
 
       <Tabs defaultValue="all" value={filters.status ?? "all"} onValueChange={handleStatusChange}>

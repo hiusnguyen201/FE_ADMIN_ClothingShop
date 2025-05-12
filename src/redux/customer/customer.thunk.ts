@@ -5,6 +5,7 @@ import {
   getListCustomerService,
   getCustomerService,
   removeCustomerService,
+  exportListCustomerExcelService,
 } from "@/redux/customer/customer.service";
 import {
   CreateCustomerPayload,
@@ -17,8 +18,10 @@ import {
   GetCustomerResponse,
   RemoveCustomerPayload,
   RemoveCustomerResponse,
+  ExportListCustomerExcelResponse,
 } from "@/redux/customer/customer.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
+import { downloadFileBlob } from "@/utils/object";
 
 export const createCustomer = createAsyncThunk<CreateCustomerResponse, CreateCustomerPayload, ThunkApiConfig>(
   "customer/create-customer",
@@ -39,6 +42,19 @@ export const getListCustomer = createAsyncThunk<GetListCustomerResponse, GetList
     try {
       const response: GetListCustomerResponse = await getListCustomerService(filters);
       return response;
+    } catch (e: any) {
+      const message: string = e?.response?.data?.message || e.message || e.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const exportListCustomerExcel = createAsyncThunk<void, GetListCustomerPayload, ThunkApiConfig>(
+  "customer/export-list-customer-excel",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const data: ExportListCustomerExcelResponse = await exportListCustomerExcelService(filters);
+      downloadFileBlob(data, "customers-list.xlsx");
     } catch (e: any) {
       const message: string = e?.response?.data?.message || e.message || e.toString();
       return rejectWithValue(message);

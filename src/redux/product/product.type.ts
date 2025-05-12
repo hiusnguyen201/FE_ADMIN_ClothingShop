@@ -14,6 +14,7 @@ export interface ProductState {
     editProductInfo: boolean;
     editProductVariants: boolean;
     removeProduct: boolean;
+    exportListProductExcel: boolean;
   };
   newItem: Nullable<Product>;
   item: Nullable<Product>;
@@ -58,6 +59,11 @@ export interface GetListProductPayload extends GetListParams<Product> {
   maxPrice?: Optional<Nullable<number>>;
 }
 export interface GetListProductResponse extends GetListResponseData<Product> {}
+
+/**
+ * Export List Product To Excel
+ */
+export interface ExportListProductExcelResponse extends Blob {}
 
 /**
  * Get Product

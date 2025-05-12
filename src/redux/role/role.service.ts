@@ -21,6 +21,7 @@ import {
   GetListAssignedRolePermissionsResponse,
   GetListUnassignedRolePermissionsPayload,
   GetListUnassignedRolePermissionsResponse,
+  ExportListRoleExcelResponse,
 } from "@/redux/role/role.type";
 
 export const checkRoleNameExistService = async (
@@ -35,6 +36,12 @@ export const createRoleService = async (payload: CreateRolePayload): Promise<Cre
 
 export const getListRoleService = async (payload: GetListRolePayload): Promise<GetListRoleResponse> => {
   return await apiInstance.get(`/roles/get-roles?${convertToSearchParams(payload)}`);
+};
+
+export const exportListRoleExcelService = async (payload: GetListRolePayload): Promise<ExportListRoleExcelResponse> => {
+  return await apiInstance.get(`/roles/export-excel?${convertToSearchParams(payload)}`, {
+    responseType: "blob",
+  });
 };
 
 export const getRoleService = async (payload: GetRolePayload): Promise<GetRoleResponse> => {

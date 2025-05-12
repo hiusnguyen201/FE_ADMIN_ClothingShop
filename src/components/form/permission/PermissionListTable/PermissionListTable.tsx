@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import { usePermissionTableFilters } from "./usePermissionTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { permissionColumns } from "./permission-columns";
+import { ExportListPermissionExcelButton } from "../ExportListPermissionExcelButton";
 
 export function PermissionListTable() {
   const dispatch = useAppDispatch();
@@ -38,6 +39,10 @@ export function PermissionListTable() {
           onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
         />
+      </div>
+
+      <div className="flex items-center justify-end">
+        <ExportListPermissionExcelButton filters={filters} />
       </div>
 
       <DataTable

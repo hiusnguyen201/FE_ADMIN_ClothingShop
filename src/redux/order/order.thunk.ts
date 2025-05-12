@@ -4,6 +4,7 @@ import {
   confirmOrderService,
   createOrderService,
   createShipOrderService,
+  exportListOrderExcelService,
   // editOrderInfoService,
   getListOrderService,
   getOrderService,
@@ -19,6 +20,7 @@ import {
   CreateOrderResponse,
   CreateShipOrderPayload,
   CreateShipOrderResponse,
+  ExportListOrderExcelResponse,
   // EditOrderInfoPayload,
   // EditOrderInfoResponse,
   GetListOrderPayload,
@@ -31,6 +33,7 @@ import {
   RemoveOrderResponse,
 } from "@/redux/order/order.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
+import { downloadFileBlob } from "@/utils/object";
 
 export const createOrder = createAsyncThunk<CreateOrderResponse, CreateOrderPayload, ThunkApiConfig>(
   "order/create-order",
@@ -51,6 +54,19 @@ export const getListOrder = createAsyncThunk<GetListOrderResponse, GetListOrderP
     try {
       const response: GetListOrderResponse = await getListOrderService(filters);
       return response;
+    } catch (e: any) {
+      const message: string = e?.response?.data?.message || e.message || e.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const exportListOrderExcel = createAsyncThunk<void, GetListOrderPayload, ThunkApiConfig>(
+  "order/export-list-order-excel",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const data: ExportListOrderExcelResponse = await exportListOrderExcelService(filters);
+      downloadFileBlob(data, "orders-list.xlsx");
     } catch (e: any) {
       const message: string = e?.response?.data?.message || e.message || e.toString();
       return rejectWithValue(message);

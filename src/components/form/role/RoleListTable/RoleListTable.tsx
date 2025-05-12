@@ -6,8 +6,9 @@ import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
 import { RoleFieldsSort, RoleState } from "@/redux/role/role.type";
 import { toast } from "@/hooks/use-toast";
-import { useRoleTableFilters } from "./useRoleTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
+import { ExportListRoleExcelButton } from "@/components/form/role/ExportListRoleExcelButton";
+import { useRoleTableFilters } from "./useRoleTableFilters";
 import { roleColumns } from "./role-columns";
 
 export function RoleListTable() {
@@ -39,6 +40,10 @@ export function RoleListTable() {
           onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
         />
+      </div>
+
+      <div className="flex items-center justify-end">
+        <ExportListRoleExcelButton filters={filters} />
       </div>
 
       <DataTable

@@ -4,6 +4,7 @@ import {
   createProductService,
   editProductInfoService,
   editProductVariantsService,
+  exportListProductExcelService,
   getListProductService,
   getProductService,
   removeProductService,
@@ -17,6 +18,7 @@ import {
   EditProductInfoResponse,
   EditProductVariantsPayload,
   EditProductVariantsResponse,
+  ExportListProductExcelResponse,
   GetListProductPayload,
   GetListProductResponse,
   GetProductPayload,
@@ -25,6 +27,7 @@ import {
   RemoveProductResponse,
 } from "@/redux/product/product.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
+import { downloadFileBlob } from "@/utils/object";
 
 export const checkProductNameExist = createAsyncThunk<
   CheckProductNameExistResponse,
@@ -59,6 +62,19 @@ export const getListProduct = createAsyncThunk<GetListProductResponse, GetListPr
     try {
       const response: GetListProductResponse = await getListProductService(filters);
       return response;
+    } catch (e: any) {
+      const message: string = e?.response?.data?.message || e.message || e.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const exportListProductExcel = createAsyncThunk<void, GetListProductPayload, ThunkApiConfig>(
+  "product/export-list-product-excel",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const data: ExportListProductExcelResponse = await exportListProductExcelService(filters);
+      downloadFileBlob(data, "products-list.xlsx");
     } catch (e: any) {
       const message: string = e?.response?.data?.message || e.message || e.toString();
       return rejectWithValue(message);

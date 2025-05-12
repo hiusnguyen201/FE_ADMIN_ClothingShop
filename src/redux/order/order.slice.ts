@@ -21,6 +21,7 @@ import {
   cancelOrder,
   createShipOrder,
   processingOrder,
+  exportListOrderExcel,
 } from "@/redux/order/order.thunk";
 
 const initialState: OrderState = {
@@ -35,6 +36,7 @@ const initialState: OrderState = {
     shipOrder: false,
     createShipOrder: false,
     processingOrder: false,
+    exportListOrderExcel: false,
   },
   newItem: null,
   item: null,
@@ -88,6 +90,21 @@ const orderSlice = createSlice({
         state.list = [];
         state.totalCount = 0;
         state.initializedList = true;
+      });
+
+    builder
+      // Export List Order Excel
+      .addCase(exportListOrderExcel.pending, (state: Draft<OrderState>) => {
+        state.loading.exportListOrderExcel = true;
+        state.error = null;
+      })
+      .addCase(exportListOrderExcel.fulfilled, (state: Draft<OrderState>) => {
+        state.loading.exportListOrderExcel = false;
+        state.error = null;
+      })
+      .addCase(exportListOrderExcel.rejected, (state: Draft<OrderState>, action: PayloadAction<any>) => {
+        state.loading.exportListOrderExcel = false;
+        state.error = action.payload as string;
       });
 
     builder

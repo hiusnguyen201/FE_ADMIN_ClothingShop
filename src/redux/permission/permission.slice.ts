@@ -1,10 +1,11 @@
 import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@reduxjs/toolkit";
 import { GetListPermissionResponse, PermissionState } from "@/redux/permission/permission.type";
-import { getListPermission } from "@/redux/permission/permission.thunk";
+import { exportListPermissionExcel, getListPermission } from "@/redux/permission/permission.thunk";
 
 const initialState: PermissionState = {
   loading: {
     getListPermission: false,
+    exportListPermissionExcel: false,
   },
   item: null,
   list: [],
@@ -41,6 +42,21 @@ const roleSlice = createSlice({
         state.list = [];
         state.totalCount = 0;
         state.initializedList = true;
+      });
+
+    builder
+      // Export List Permission Excel
+      .addCase(exportListPermissionExcel.pending, (state: Draft<PermissionState>) => {
+        state.loading.exportListPermissionExcel = true;
+        state.error = null;
+      })
+      .addCase(exportListPermissionExcel.fulfilled, (state: Draft<PermissionState>) => {
+        state.loading.exportListPermissionExcel = false;
+        state.error = null;
+      })
+      .addCase(exportListPermissionExcel.rejected, (state: Draft<PermissionState>, action: PayloadAction<any>) => {
+        state.loading.exportListPermissionExcel = false;
+        state.error = action.payload as string;
       });
   },
 });

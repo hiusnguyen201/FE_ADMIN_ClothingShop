@@ -12,6 +12,7 @@ import {
   checkCategoryNameExist,
   createCategory,
   editCategoryInfo,
+  exportListCategoryExcel,
   getCategory,
   getListCategory,
   getListSubcategory,
@@ -27,6 +28,7 @@ const initialState: CategoryState = {
     editCategory: false,
     removeCategory: false,
     getListSubcategory: false,
+    exportListCategoryExcel: false,
   },
   newItem: null,
   item: null,
@@ -100,6 +102,21 @@ const roleSlice = createSlice({
         state.list = [];
         state.initializedList = true;
         state.totalCount = 0;
+      });
+
+    builder
+      // Export List Category Excel
+      .addCase(exportListCategoryExcel.pending, (state: Draft<CategoryState>) => {
+        state.loading.exportListCategoryExcel = true;
+        state.error = null;
+      })
+      .addCase(exportListCategoryExcel.fulfilled, (state: Draft<CategoryState>) => {
+        state.loading.exportListCategoryExcel = false;
+        state.error = null;
+      })
+      .addCase(exportListCategoryExcel.rejected, (state: Draft<CategoryState>, action: PayloadAction<any>) => {
+        state.loading.exportListCategoryExcel = false;
+        state.error = action.payload as string;
       });
 
     builder

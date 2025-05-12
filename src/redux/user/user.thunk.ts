@@ -4,6 +4,7 @@ import {
   createUserService,
   editListUserPermissionsService,
   editUserInfoService,
+  exportListUserExcelService,
   getListUserPermissionsService,
   getListUserService,
   getUserService,
@@ -19,6 +20,7 @@ import {
   EditListUserPermissionsResponse,
   EditUserInfoPayload,
   EditUserInfoResponse,
+  ExportListUserExcelResponse,
   GetListUserPayload,
   GetListUserPermissionsPayload,
   GetListUserPermissionsResponse,
@@ -31,6 +33,7 @@ import {
   ResetPasswordUserResponse,
 } from "@/redux/user/user.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
+import { downloadFileBlob } from "@/utils/object";
 
 export const createUser = createAsyncThunk<CreateUserResponse, CreateUserPayload, ThunkApiConfig>(
   "user/create-user",
@@ -51,6 +54,19 @@ export const getListUser = createAsyncThunk<GetListUserResponse, GetListUserPayl
     try {
       const response: GetListUserResponse = await getListUserService(filters);
       return response;
+    } catch (e: any) {
+      const message: string = e?.response?.data?.message || e.message || e.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const exportListUserExcel = createAsyncThunk<void, GetListUserPayload, ThunkApiConfig>(
+  "user/export-list-user-excel",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const data: ExportListUserExcelResponse = await exportListUserExcelService(filters);
+      downloadFileBlob(data, "users-list.xlsx");
     } catch (e: any) {
       const message: string = e?.response?.data?.message || e.message || e.toString();
       return rejectWithValue(message);

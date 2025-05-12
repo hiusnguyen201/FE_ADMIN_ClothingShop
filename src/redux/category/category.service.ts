@@ -15,6 +15,7 @@ import {
   RemoveCategoryResponse,
   GetListSubcategoryPayload,
   GetListSubcategoryResponse,
+  ExportListCategoryExcelResponse,
 } from "@/redux/category/category.type";
 
 export const checkCategoryNameExistService = async (
@@ -31,6 +32,14 @@ export const createCategoryService = async (payload: CreateCategoryPayload): Pro
 
 export const getListCategoryService = async (payload: GetListCategoryPayload): Promise<GetListCategoryResponse> => {
   return await apiInstance.get(`/categories/get-categories?${convertToSearchParams(payload)}`);
+};
+
+export const exportListCategoryExcelService = async (
+  payload: GetListCategoryPayload
+): Promise<ExportListCategoryExcelResponse> => {
+  return await apiInstance.get(`/categories/export-excel?${convertToSearchParams(payload)}`, {
+    responseType: "blob",
+  });
 };
 
 export const getCategoryService = async (payload: GetCategoryPayload): Promise<GetCategoryResponse> => {

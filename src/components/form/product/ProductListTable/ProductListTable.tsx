@@ -10,6 +10,7 @@ import { useProductTableFilters } from "./useProductTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { productColumns } from "./product-columns";
 import { ProductFilterSidebarForm } from "./ProductFilterSidebarForm";
+import { ExportListProductExcelButton } from "../ExportListProductExcelButton";
 
 export function ProductListTable() {
   const dispatch = useAppDispatch();
@@ -52,6 +53,10 @@ export function ProductListTable() {
             minPrice: filters.minPrice,
           }}
         />
+      </div>
+
+      <div className="flex items-center justify-end">
+        <ExportListProductExcelButton filters={filters} />
       </div>
 
       <DataTable

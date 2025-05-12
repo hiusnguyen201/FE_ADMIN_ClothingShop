@@ -10,6 +10,7 @@ import {
   getRoleService,
   removeRolePermissionService,
   removeRoleService,
+  exportListRoleExcelService,
 } from "@/redux/role/role.service";
 import {
   CheckRoleNameExistPayload,
@@ -32,8 +33,10 @@ import {
   AddRolePermissionsPayload,
   GetListUnassignedRolePermissionsResponse,
   GetListUnassignedRolePermissionsPayload,
+  ExportListRoleExcelResponse,
 } from "@/redux/role/role.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
+import { downloadFileBlob } from "@/utils/object";
 
 export const checkRoleNameExist = createAsyncThunk<
   CheckRoleNameExistResponse,
@@ -68,6 +71,19 @@ export const getListRole = createAsyncThunk<GetListRoleResponse, GetListRolePayl
     try {
       const response: GetListRoleResponse = await getListRoleService(filters);
       return response;
+    } catch (e: any) {
+      const message: string = e?.response?.data?.message || e.message || e.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const exportListRoleExcel = createAsyncThunk<void, GetListRolePayload, ThunkApiConfig>(
+  "role/export-list-role-excel",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const data: ExportListRoleExcelResponse = await exportListRoleExcelService(filters);
+      downloadFileBlob(data, "roles-list.xlsx");
     } catch (e: any) {
       const message: string = e?.response?.data?.message || e.message || e.toString();
       return rejectWithValue(message);

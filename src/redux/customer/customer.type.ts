@@ -12,6 +12,7 @@ export interface CustomerState {
     getCustomer: boolean;
     editCustomer: boolean;
     removeCustomer: boolean;
+    exportListCustomerExcel: boolean;
   };
   newItem: Nullable<Customer>;
   item: Nullable<Customer>;
@@ -46,6 +47,11 @@ export interface GetListCustomerPayload extends GetListParams<Customer> {
   gender?: Optional<Nullable<GENDER>>;
 }
 export interface GetListCustomerResponse extends GetListResponseData<Customer> {}
+
+/**
+ * Export List Customer To Excel
+ */
+export interface ExportListCustomerExcelResponse extends Blob {}
 
 /**
  * Get Customer

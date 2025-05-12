@@ -8,6 +8,7 @@ import { GetListParams, GetListResponseData } from "@/types/response";
 export interface PermissionState {
   loading: {
     getListPermission: boolean;
+    exportListPermissionExcel: boolean;
   };
   item: Nullable<Permission>;
   initializedList: boolean;
@@ -24,3 +25,8 @@ export interface GetListPermissionPayload extends GetListParams<Permission> {
   sortBy?: Optional<Nullable<PermissionFieldsSort>>;
 }
 export interface GetListPermissionResponse extends GetListResponseData<Permission> {}
+
+/**
+ * Export List Permission To Excel
+ */
+export interface ExportListPermissionExcelResponse extends Blob {}

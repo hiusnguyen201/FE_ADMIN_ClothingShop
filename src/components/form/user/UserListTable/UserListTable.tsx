@@ -6,8 +6,9 @@ import { DataTableLoading } from "@/components/data-table/DataTableLoading";
 import { DataTablePagination } from "@/components/data-table/DataTablePagination";
 import { UserFieldsSort, UserState } from "@/redux/user/user.type";
 import { toast } from "@/hooks/use-toast";
-import { useUserTableFilters } from "./useUserTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
+import { ExportListUserExcelButton } from "@/components/form/user/ExportListUserExcelButton";
+import { useUserTableFilters } from "./useUserTableFilters";
 import { userColumns } from "./user-columns";
 import { UserFilterSidebarForm } from "./UserFilterSidebarForm";
 
@@ -49,6 +50,10 @@ export function UserListTable() {
             gender: filters.gender,
           }}
         />
+      </div>
+
+      <div className="flex items-center sm:justify-end">
+        <ExportListUserExcelButton filters={filters} />
       </div>
 
       <DataTable

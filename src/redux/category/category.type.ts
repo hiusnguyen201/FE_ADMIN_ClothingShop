@@ -14,6 +14,7 @@ export interface CategoryState {
     editCategory: boolean;
     removeCategory: boolean;
     getListSubcategory: boolean;
+    exportListCategoryExcel: boolean;
   };
   newItem: Nullable<Category>;
   item: Nullable<Category>;
@@ -52,6 +53,11 @@ export interface GetListCategoryPayload extends GetListParams<Category> {
   sortBy?: Optional<Nullable<CategoryFieldsSort>>;
 }
 export interface GetListCategoryResponse extends GetListResponseData<Category> {}
+
+/**
+ * Export List Category To Excel
+ */
+export interface ExportListCategoryExcelResponse extends Blob {}
 
 /**
  * Get Category

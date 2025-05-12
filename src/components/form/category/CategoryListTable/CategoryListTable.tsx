@@ -9,6 +9,7 @@ import { useCategoryTableFilters } from "./useCategoryTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { useEffect } from "react";
 import { categoryColumns } from "./category-columns";
+import { ExportListCategoryExcelButton } from "../ExportListCategoryExcelButton";
 
 export function CategoryListTable() {
   const dispatch = useAppDispatch();
@@ -40,6 +41,10 @@ export function CategoryListTable() {
           onValueChange={handleKeywordChange}
           placeholder="Enter a keyword"
         />
+      </div>
+
+      <div className="flex items-center justify-end">
+        <ExportListCategoryExcelButton filters={filters} />
       </div>
 
       <DataTable

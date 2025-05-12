@@ -17,6 +17,7 @@ export interface UserState {
     getListUserPermissions: boolean;
     editListUserPermissions: boolean;
     resetPasswordUser: boolean;
+    exportListUserExcel: boolean;
   };
   newItem: Nullable<User>;
   item: Nullable<User>;
@@ -50,6 +51,11 @@ export interface GetListUserPayload extends GetListParams<User> {
   gender?: Optional<Nullable<GENDER>>;
 }
 export interface GetListUserResponse extends GetListResponseData<User> {}
+
+/**
+ * Export List User To Excel
+ */
+export interface ExportListUserExcelResponse extends Blob {}
 
 /**
  * Get User

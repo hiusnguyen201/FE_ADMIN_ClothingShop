@@ -15,6 +15,7 @@ import {
   CheckProductNameExistResponse,
   EditProductVariantsPayload,
   EditProductVariantsResponse,
+  ExportListProductExcelResponse,
 } from "@/redux/product/product.type";
 
 export const checkProductNameExistService = async (
@@ -31,6 +32,14 @@ export const createProductService = async (payload: CreateProductPayload): Promi
 
 export const getListProductService = async (payload: GetListProductPayload): Promise<GetListProductResponse> => {
   return await apiInstance.get(`/products/get-products?${convertToSearchParams(payload)}`);
+};
+
+export const exportListProductExcelService = async (
+  payload: GetListProductPayload
+): Promise<ExportListProductExcelResponse> => {
+  return await apiInstance.get(`/products/export-excel?${convertToSearchParams(payload)}`, {
+    responseType: "blob",
+  });
 };
 
 export const getProductService = async (payload: GetProductPayload): Promise<GetProductResponse> => {

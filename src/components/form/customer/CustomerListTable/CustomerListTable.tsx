@@ -8,6 +8,7 @@ import { CustomerFieldsSort, CustomerState } from "@/redux/customer/customer.typ
 import { toast } from "@/hooks/use-toast";
 import { useCustomerTableFilters } from "./useCustomerTableFilters";
 import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
+import { ExportListCustomerExcelButton } from "@/components/form/customer/ExportListCustomerExcelButton";
 import { CustomerFilterSidebarForm } from "./CustomerFilterSidebarForm";
 import { customerColumns } from "./customer-columns";
 
@@ -49,6 +50,10 @@ export function CustomerListTable() {
             gender: filters.gender,
           }}
         />
+      </div>
+
+      <div className="flex items-center justify-end">
+        <ExportListCustomerExcelButton filters={filters} />
       </div>
 
       <DataTable

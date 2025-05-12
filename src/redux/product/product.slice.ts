@@ -16,6 +16,7 @@ import {
   removeProduct,
   checkProductNameExist,
   editProductVariants,
+  exportListProductExcel,
 } from "@/redux/product/product.thunk";
 
 const initialState: ProductState = {
@@ -27,6 +28,7 @@ const initialState: ProductState = {
     editProductInfo: false,
     editProductVariants: false,
     removeProduct: false,
+    exportListProductExcel: false,
   },
   newItem: null,
   item: null,
@@ -98,6 +100,21 @@ const productSlice = createSlice({
         state.list = [];
         state.totalCount = 0;
         state.initializedList = true;
+      });
+
+    builder
+      // Export List Product Excel
+      .addCase(exportListProductExcel.pending, (state: Draft<ProductState>) => {
+        state.loading.exportListProductExcel = true;
+        state.error = null;
+      })
+      .addCase(exportListProductExcel.fulfilled, (state: Draft<ProductState>) => {
+        state.loading.exportListProductExcel = false;
+        state.error = null;
+      })
+      .addCase(exportListProductExcel.rejected, (state: Draft<ProductState>, action: PayloadAction<any>) => {
+        state.loading.exportListProductExcel = false;
+        state.error = action.payload as string;
       });
 
     builder

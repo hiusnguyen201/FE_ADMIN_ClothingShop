@@ -3,6 +3,7 @@ import {
   checkCategoryNameExistService,
   createCategoryService,
   editCategoryInfoService,
+  exportListCategoryExcelService,
   getCategoryService,
   getListCategoryService,
   getListSubcategoryService,
@@ -23,8 +24,10 @@ import {
   RemoveCategoryPayload,
   GetListSubcategoryResponse,
   GetListSubcategoryPayload,
+  ExportListCategoryExcelResponse,
 } from "@/redux/category/category.type";
 import { ThunkApiConfig } from "@/types/thunk-api";
+import { downloadFileBlob } from "@/utils/object";
 
 export const createCategory = createAsyncThunk<CreateCategoryResponse, CreateCategoryPayload, ThunkApiConfig>(
   "category/create-category",
@@ -59,6 +62,19 @@ export const getListCategory = createAsyncThunk<GetListCategoryResponse, GetList
     try {
       const response: GetListCategoryResponse = await getListCategoryService(filters);
       return response;
+    } catch (e: any) {
+      const message: string = e?.response?.data?.message || e.message || e.toString();
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const exportListCategoryExcel = createAsyncThunk<void, GetListCategoryPayload, ThunkApiConfig>(
+  "category/export-list-category-excel",
+  async (filters, { rejectWithValue }) => {
+    try {
+      const data: ExportListCategoryExcelResponse = await exportListCategoryExcelService(filters);
+      downloadFileBlob(data, "categories-list.xlsx");
     } catch (e: any) {
       const message: string = e?.response?.data?.message || e.message || e.toString();
       return rejectWithValue(message);

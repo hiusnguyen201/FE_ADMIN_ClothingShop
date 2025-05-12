@@ -11,6 +11,7 @@ import {
   EditCustomerInfoResponse,
   RemoveCustomerPayload,
   RemoveCustomerResponse,
+  ExportListCustomerExcelResponse,
 } from "@/redux/customer/customer.type";
 
 export const createCustomerService = async (payload: CreateCustomerPayload): Promise<CreateCustomerResponse> => {
@@ -19,6 +20,14 @@ export const createCustomerService = async (payload: CreateCustomerPayload): Pro
 
 export const getListCustomerService = async (payload: GetListCustomerPayload): Promise<GetListCustomerResponse> => {
   return await apiInstance.get(`/customers/get-customers?${convertToSearchParams(payload)}`);
+};
+
+export const exportListCustomerExcelService = async (
+  payload: GetListCustomerPayload
+): Promise<ExportListCustomerExcelResponse> => {
+  return await apiInstance.get(`/customers/export-excel?${convertToSearchParams(payload)}`, {
+    responseType: "blob",
+  });
 };
 
 export const getCustomerService = async (payload: GetCustomerPayload): Promise<GetCustomerResponse> => {

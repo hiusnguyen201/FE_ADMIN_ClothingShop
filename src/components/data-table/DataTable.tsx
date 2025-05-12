@@ -3,7 +3,7 @@ import { Table as TableContainer, TableBody, TableCell, TableHead, TableHeader, 
 import { cn } from "@/lib/utils";
 import { Fragment } from "react/jsx-runtime";
 import { Spinner } from "@/components/spinner";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ArrowDownZA, ArrowUpAZ, ArrowUpDown } from "lucide-react";
 
 export type DataTableProps<TData> = {
@@ -46,6 +46,7 @@ export function DataTable<TData>({
       newSort = [{ id: sortField, desc: true }];
     }
 
+    onSortingChange?.(newSort);
     setSorting(newSort);
   };
 
@@ -61,11 +62,7 @@ export function DataTable<TData>({
     },
     enableSorting: true,
     manualSorting: true,
-    onSortingChange: (updater) => {
-      const nextSort = typeof updater === "function" ? updater(sorting) : updater;
-      setSorting(nextSort);
-      onSortingChange?.(nextSort);
-    },
+    onSortingChange: setSorting,
     state: {
       sorting,
     },

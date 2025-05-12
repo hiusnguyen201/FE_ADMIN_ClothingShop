@@ -17,6 +17,7 @@ import {
   CancelOrderResponse,
   ProcessingOrderPayload,
   ProcessingOrderResponse,
+  ExportListOrderExcelResponse,
 } from "@/redux/order/order.type";
 
 export const createOrderService = async (payload: CreateOrderPayload): Promise<CreateOrderResponse> => {
@@ -25,6 +26,14 @@ export const createOrderService = async (payload: CreateOrderPayload): Promise<C
 
 export const getListOrderService = async (payload: GetListOrderPayload): Promise<GetListOrderResponse> => {
   return await apiInstance.get(`/orders/get-orders?${convertToSearchParams(payload)}`);
+};
+
+export const exportListOrderExcelService = async (
+  payload: GetListOrderPayload
+): Promise<ExportListOrderExcelResponse> => {
+  return await apiInstance.get(`/orders/export-excel?${convertToSearchParams(payload)}`, {
+    responseType: "blob",
+  });
 };
 
 export const getOrderService = async (payload: GetOrderPayload): Promise<GetOrderResponse> => {

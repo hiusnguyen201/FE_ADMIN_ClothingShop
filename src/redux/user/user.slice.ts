@@ -18,6 +18,7 @@ import {
   editListUserPermissions,
   checkEmailExist,
   resetPasswordUser,
+  exportListUserExcel,
 } from "@/redux/user/user.thunk";
 
 const initialState: UserState = {
@@ -31,6 +32,7 @@ const initialState: UserState = {
     getListUserPermissions: false,
     editListUserPermissions: false,
     resetPasswordUser: false,
+    exportListUserExcel: false,
   },
   newItem: null,
   item: null,
@@ -100,6 +102,21 @@ const userSlice = createSlice({
         state.list = [];
         state.totalCount = 0;
         state.initializedList = true;
+      });
+
+    builder
+      // Export List User Excel
+      .addCase(exportListUserExcel.pending, (state: Draft<UserState>) => {
+        state.loading.exportListUserExcel = true;
+        state.error = null;
+      })
+      .addCase(exportListUserExcel.fulfilled, (state: Draft<UserState>) => {
+        state.loading.exportListUserExcel = false;
+        state.error = null;
+      })
+      .addCase(exportListUserExcel.rejected, (state: Draft<UserState>, action: PayloadAction<any>) => {
+        state.loading.exportListUserExcel = false;
+        state.error = action.payload as string;
       });
 
     builder

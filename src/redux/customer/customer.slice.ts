@@ -13,6 +13,7 @@ import {
   getCustomer,
   editCustomerInfo,
   removeCustomer,
+  exportListCustomerExcel,
 } from "@/redux/customer/customer.thunk";
 
 const initialState: CustomerState = {
@@ -22,6 +23,7 @@ const initialState: CustomerState = {
     getCustomer: false,
     editCustomer: false,
     removeCustomer: false,
+    exportListCustomerExcel: false,
   },
   newItem: null,
   item: null,
@@ -78,6 +80,21 @@ const customerSlice = createSlice({
         state.list = [];
         state.totalCount = 0;
         state.initializedList = true;
+      });
+
+    builder
+      // Export List Customer Excel
+      .addCase(exportListCustomerExcel.pending, (state: Draft<CustomerState>) => {
+        state.loading.exportListCustomerExcel = true;
+        state.error = null;
+      })
+      .addCase(exportListCustomerExcel.fulfilled, (state: Draft<CustomerState>) => {
+        state.loading.exportListCustomerExcel = false;
+        state.error = null;
+      })
+      .addCase(exportListCustomerExcel.rejected, (state: Draft<CustomerState>, action: PayloadAction<any>) => {
+        state.loading.exportListCustomerExcel = false;
+        state.error = action.payload as string;
       });
 
     builder

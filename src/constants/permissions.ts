@@ -53,4 +53,11 @@ export enum PERMISSIONS {
   CANCEL_ORDER = "cancel:order",
   PROCESSING_ORDER = "processing:order",
   CREATE_SHIP_ORDER = "create-ship:order",
+
+  // Export
+  EXPORT_USERS_EXCEL = "export:users:excel",
+  EXPORT_USERS_PDF = "export:users:pdf",
+
+  EXPORT_ROLES_EXCEL = "export:roles:excel",
+  EXPORT_ROLES_PDF = "export:roles:pdf",
 }

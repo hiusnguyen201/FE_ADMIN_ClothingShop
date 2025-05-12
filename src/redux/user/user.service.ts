@@ -19,6 +19,7 @@ import {
   EditListUserPermissionsResponse,
   ResetPasswordUserPayload,
   ResetPasswordUserResponse,
+  ExportListUserExcelResponse,
 } from "@/redux/user/user.type";
 
 export const checkEmailExistService = async (payload: CheckEmailExistPayload): Promise<CheckEmailExistResponse> => {
@@ -31,6 +32,12 @@ export const createUserService = async (payload: CreateUserPayload): Promise<Cre
 
 export const getListUserService = async (payload: GetListUserPayload): Promise<GetListUserResponse> => {
   return await apiInstance.get(`/users/get-users?${convertToSearchParams(payload)}`);
+};
+
+export const exportListUserExcelService = async (payload: GetListUserPayload): Promise<ExportListUserExcelResponse> => {
+  return await apiInstance.get(`/users/export-excel?${convertToSearchParams(payload)}`, {
+    responseType: "blob",
+  });
 };
 
 export const getUserService = async (payload: GetUserPayload): Promise<GetUserResponse> => {

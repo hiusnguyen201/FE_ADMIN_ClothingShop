@@ -35,5 +35,5 @@ export const content = `
   </p>
   <pre><code class="language-javascript">// Example code block
 const greeting = "Hello, World!";
-console.log(greeting);</code></pre>
+</code></pre>
 `;

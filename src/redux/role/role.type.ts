@@ -18,6 +18,7 @@ export interface RoleState {
     getListUnassignedRolePermissions: boolean;
     addRolePermissions: boolean;
     removeRolePermission: boolean;
+    exportListRoleExcel: boolean;
   };
   newItem: Nullable<Role>;
   item: Nullable<Role>;
@@ -48,6 +49,11 @@ export interface GetListRolePayload extends GetListParams<Role> {
   sortBy?: Optional<Nullable<RoleFieldsSort>>;
 }
 export interface GetListRoleResponse extends GetListResponseData<Role> {}
+
+/**
+ * Export List Role To Excel
+ */
+export interface ExportListRoleExcelResponse extends Blob {}
 
 /**
  * Get Role

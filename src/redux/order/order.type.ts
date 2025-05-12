@@ -1,6 +1,6 @@
 import { Nullable, Optional } from "@/types/common";
 import { BaseResponse, GetListParams, GetListResponseData } from "@/types/response";
-import { Order, ORDER_STATUS, OrderStatusHistory } from "@/types/order";
+import { Order, ORDER_STATUS } from "@/types/order";
 import { ONLINE_PAYMENT_METHOD } from "@/types/payment";
 import { ProductVariant } from "@/types/product";
 
@@ -19,6 +19,7 @@ export interface OrderState {
     shipOrder: boolean;
     createShipOrder: boolean;
     processingOrder: boolean;
+    exportListOrderExcel: boolean;
   };
   newItem: Nullable<Order>;
   item: Nullable<Order>;
@@ -67,6 +68,11 @@ export interface GetListOrderPayload extends GetListParams<Order> {
   maxTotal?: Optional<Nullable<number>>;
 }
 export interface GetListOrderResponse extends GetListResponseData<Order> {}
+
+/**
+ * Export List Order To Excel
+ */
+export interface ExportListOrderExcelResponse extends Blob {}
 
 /**
  * Get Order

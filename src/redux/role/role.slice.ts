@@ -22,6 +22,7 @@ import {
   checkRoleNameExist,
   addRolePermissions,
   getListUnassignedRolePermissions,
+  exportListRoleExcel,
 } from "@/redux/role/role.thunk";
 
 const initialState: RoleState = {
@@ -36,6 +37,7 @@ const initialState: RoleState = {
     getListUnassignedRolePermissions: false,
     addRolePermissions: false,
     removeRolePermission: false,
+    exportListRoleExcel: false,
   },
   newItem: null,
   item: null,
@@ -107,6 +109,21 @@ const roleSlice = createSlice({
         state.list = [];
         state.totalCount = 0;
         state.initializedList = true;
+      });
+
+    builder
+      // Export List Role Excel
+      .addCase(exportListRoleExcel.pending, (state: Draft<RoleState>) => {
+        state.loading.exportListRoleExcel = true;
+        state.error = null;
+      })
+      .addCase(exportListRoleExcel.fulfilled, (state: Draft<RoleState>) => {
+        state.loading.exportListRoleExcel = false;
+        state.error = null;
+      })
+      .addCase(exportListRoleExcel.rejected, (state: Draft<RoleState>, action: PayloadAction<any>) => {
+        state.loading.exportListRoleExcel = false;
+        state.error = action.payload as string;
       });
 
     builder
