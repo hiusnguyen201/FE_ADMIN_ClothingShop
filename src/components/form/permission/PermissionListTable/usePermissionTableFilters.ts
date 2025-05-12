@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GetListPermissionPayload, PermissionFieldsSort } from "@/redux/permission/permission.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";

@@ -49,10 +49,6 @@ export function DataTable<TData>({
     setSorting(newSort);
   };
 
-  useEffect(() => {
-    onSortingChange?.(sorting);
-  }, [sorting]);
-
   const table: Table<TData> = useReactTable({
     data,
     columns,
@@ -65,7 +61,11 @@ export function DataTable<TData>({
     },
     enableSorting: true,
     manualSorting: true,
-    onSortingChange: setSorting,
+    onSortingChange: (updater) => {
+      const nextSort = typeof updater === "function" ? updater(sorting) : updater;
+      setSorting(nextSort);
+      onSortingChange?.(nextSort);
+    },
     state: {
       sorting,
     },
