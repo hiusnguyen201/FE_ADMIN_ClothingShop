@@ -4,16 +4,18 @@ import { ReportState } from "@/redux/report/report.type";
 import { useEffect } from "react";
 import { getOrderReport } from "@/redux/report/report.thunk";
 import { Link } from "react-router-dom";
+import { COMPARISON_VALUES } from "@/types/report";
+import { ShoppingCart } from "lucide-react";
 
-export function OrderReportCard() {
+export function OrderReportCard({ compareTo }: { compareTo: COMPARISON_VALUES }) {
   const dispatch = useAppDispatch();
   const { loading, orderReport } = useAppSelector<ReportState>((selector) => selector.report);
 
   useEffect(() => {
     (async () => {
-      await dispatch(getOrderReport()).unwrap();
+      await dispatch(getOrderReport({ compareTo })).unwrap();
     })();
-  }, []);
+  }, [compareTo]);
 
   if (!orderReport || loading.getOrderReport) {
     return <div className="rounded-xl bg-muted/50" />;
@@ -23,11 +25,13 @@ export function OrderReportCard() {
     <Link to="/orders">
       <MetricsCard
         title="Orders"
+        chart={<ShoppingCart size={14} />}
         value={String(orderReport.totalOrderOverall)}
         change={{
-          value: String(orderReport.todayTotalNewOrders),
+          value: String(orderReport.currentCountNewOrder),
           percentage: orderReport.percentage + "%",
           isPositive: orderReport.percentage >= 0,
+          unitCompare: compareTo,
         }}
       />
     </Link>

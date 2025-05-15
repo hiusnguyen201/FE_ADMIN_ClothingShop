@@ -1,15 +1,5 @@
 import { PERMISSIONS } from "@/constants/permissions";
-import {
-  Blocks,
-  Gauge,
-  KeyRound,
-  Package,
-  Settings,
-  ShoppingCart,
-  UserCog2,
-  Users2,
-  GalleryVerticalEnd,
-} from "lucide-react";
+import { Blocks, Gauge, KeyRound, Package, ShoppingCart, UserCog2, Users2 } from "lucide-react";
 
 const navMainGroupApp = [
   {
@@ -18,25 +8,25 @@ const navMainGroupApp = [
     icon: Gauge,
   },
   {
-    title: "Manage categories",
+    title: "Categories",
     url: "/categories",
     icon: Blocks,
     permission: PERMISSIONS.READ_CATEGORIES,
   },
   {
-    title: "Manage products",
+    title: "Products",
     url: "/products",
     icon: Package,
     permission: PERMISSIONS.READ_PRODUCTS,
   },
   {
-    title: "Manage customers",
+    title: "Customers",
     url: "/customers",
     icon: Users2,
     permission: PERMISSIONS.READ_CUSTOMERS,
   },
   {
-    title: "Manage orders",
+    title: "Orders",
     url: "/orders",
     icon: ShoppingCart,
     permission: PERMISSIONS.READ_ORDERS,
@@ -45,19 +35,19 @@ const navMainGroupApp = [
 
 const navMainGroupSystem = [
   {
-    title: "Manage users",
+    title: "Users",
     url: "/users",
     icon: Users2,
     permission: PERMISSIONS.READ_USERS,
   },
   {
-    title: "Manage roles",
+    title: "Roles",
     url: "/roles",
     icon: UserCog2,
     permission: PERMISSIONS.READ_ROLES,
   },
   {
-    title: "Manage permissions",
+    title: "Permissions",
     url: "/permissions",
     icon: KeyRound,
     permission: PERMISSIONS.READ_PERMISSIONS,

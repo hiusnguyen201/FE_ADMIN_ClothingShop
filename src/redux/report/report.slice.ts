@@ -2,6 +2,7 @@ import { ActionReducerMapBuilder, createSlice, Draft, PayloadAction } from "@red
 import {
   GetCustomerReportResponse,
   GetOrderReportResponse,
+  GetRecentOrdersResponse,
   GetRevenueReportResponse,
   GetSalesReportResponse,
   GetTopProductVariantsResponse,
@@ -10,6 +11,7 @@ import {
 import {
   getCustomerReport,
   getOrderReport,
+  getRecentOrders,
   getRevenueReport,
   getSalesReport,
   getTopProductVariants,
@@ -22,12 +24,14 @@ const initialState: ReportState = {
     getRevenueReport: false,
     getSalesReport: false,
     getTopProductVariants: false,
+    getRecentOrders: false,
   },
   customerReport: null,
   orderReport: null,
   revenueReport: null,
   salesReport: [],
   topProductVariants: [],
+  recentOrders: [],
   error: null,
 };
 
@@ -133,6 +137,27 @@ const userSlice = createSlice({
         state.loading.getSalesReport = false;
         state.error = action.payload as string;
         state.salesReport = [];
+      });
+
+    builder
+      // Get Recent Orders
+      .addCase(getRecentOrders.pending, (state: Draft<ReportState>) => {
+        state.loading.getRecentOrders = true;
+        state.error = null;
+      })
+      .addCase(
+        getRecentOrders.fulfilled,
+        (state: Draft<ReportState>, action: PayloadAction<GetRecentOrdersResponse>) => {
+          const { data } = action.payload;
+          state.loading.getRecentOrders = false;
+          state.error = null;
+          state.recentOrders = data;
+        }
+      )
+      .addCase(getRecentOrders.rejected, (state: Draft<ReportState>, action: PayloadAction<any>) => {
+        state.loading.getRecentOrders = false;
+        state.error = action.payload as string;
+        state.recentOrders = [];
       });
   },
 });

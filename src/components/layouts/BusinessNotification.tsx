@@ -22,6 +22,7 @@ import moment from "moment";
 import { useSocket } from "@/hooks/use-socket";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { formatDateString } from "@/utils/date";
+import { CHANNELS } from "@/constants/channel";
 
 export function BusinessNotification() {
   const dispatch = useAppDispatch();
@@ -30,7 +31,7 @@ export function BusinessNotification() {
   const { userNotifications, totalCount } = useAppSelector((selector) => selector.account);
   const [isOpen, setIsOpen] = useState(false);
 
-  const initialize = async () => {
+  const handleGetNotifications = async () => {
     await dispatch(getListNotificationInUser({ page: 1, limit: 5 })).unwrap();
   };
 
@@ -45,35 +46,15 @@ export function BusinessNotification() {
   };
 
   useEffect(() => {
-    const eventsToListen = [
-      NotificationType.NEW_CUSTOMER,
-      NotificationType.NEW_ORDER,
-      NotificationType.LOW_STOCK,
-      NotificationType.CONFIRM_ORDER,
-      NotificationType.PROCESSING_ORDER,
-      NotificationType.READY_FOR_PICKUP,
-      NotificationType.SHIPPING_ORDER,
-      NotificationType.CANCEL_ORDER,
-      NotificationType.COMPLETE_ORDER,
-    ];
-
-    const handleNotification = () => {
-      initialize();
-    };
-
-    eventsToListen.forEach((event) => {
-      socket.on(event, handleNotification);
-    });
+    socket.on(CHANNELS.NOTIFICATION_CHANEL, handleGetNotifications);
 
     return () => {
-      eventsToListen.forEach((event) => {
-        socket.off(event, handleNotification);
-      });
+      socket.off(CHANNELS.NOTIFICATION_CHANEL, handleGetNotifications);
     };
   }, []);
 
   useEffect(() => {
-    initialize();
+    handleGetNotifications();
   }, []);
 
   return (

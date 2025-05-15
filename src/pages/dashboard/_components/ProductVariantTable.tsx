@@ -1,5 +1,4 @@
 import { Image } from "@/components/Image";
-import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getTopProductVariants } from "@/redux/report/report.thunk";
@@ -7,17 +6,16 @@ import { ReportState } from "@/redux/report/report.type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { PRODUCT_STATUS } from "@/types/product";
 import { formatCurrencyVND } from "@/utils/string";
-import { MoreHorizontal } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export function ProductVariantTable() {
   const dispatch = useAppDispatch();
-  const { loading, topProductVariants } = useAppSelector<ReportState>((selector) => selector.report);
+  const { topProductVariants } = useAppSelector<ReportState>((selector) => selector.report);
 
   useEffect(() => {
     (async () => {
-      await dispatch(getTopProductVariants()).unwrap();
+      await dispatch(getTopProductVariants({ limit: 5 })).unwrap();
     })();
   }, []);
 

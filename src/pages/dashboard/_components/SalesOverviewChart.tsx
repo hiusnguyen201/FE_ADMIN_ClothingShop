@@ -1,20 +1,22 @@
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { ReportState } from "@/redux/report/report.type";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getSalesReport } from "@/redux/report/report.thunk";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { StatsChart } from "./StatsChart";
+import { SALE_VALUES } from "@/types/report";
+import { SelectFormField } from "@/components/form-fields";
 
 export function SalesOverviewChart() {
   const dispatch = useAppDispatch();
   const { loading, salesReport } = useAppSelector<ReportState>((selector) => selector.report);
+  const [type, setType] = useState<SALE_VALUES>(SALE_VALUES.LAST_24_HOURS);
 
   useEffect(() => {
     (async () => {
-      await dispatch(getSalesReport()).unwrap();
+      await dispatch(getSalesReport({ type })).unwrap();
     })();
-  }, []);
+  }, [type]);
 
   if (!salesReport || salesReport.length === 0 || loading.getSalesReport) {
     return <div className="rounded-xl bg-muted/50" />;
@@ -25,24 +27,16 @@ export function SalesOverviewChart() {
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-lg font-semibold">Sales Overview</h2>
         <div className="flex gap-2">
-          <Button size="sm" variant="ghost">
-            Today
-          </Button>
-          {/* <Button size="sm" variant="ghost">
-              Last week
-            </Button>
-            <Button size="sm" variant="ghost">
-              Last month
-            </Button>
-            <Button size="sm" variant="ghost">
-              Last 6 month
-            </Button>
-            <Button size="sm" variant="ghost">
-              Year
-            </Button> */}
+          <SelectFormField
+            className="min-w-[140px]"
+            name="type"
+            value={type}
+            onValueChange={(value) => setType(value)}
+            options={Object.values(SALE_VALUES).map((item) => ({ title: item.replace(/-/g, " "), value: item }))}
+          />
         </div>
       </div>
-      <StatsChart sales={salesReport} />
+      <StatsChart type={type} sales={salesReport} />
     </Card>
   );
 }
