@@ -97,8 +97,8 @@ export function CreateOrderForm() {
         title: "Create order successful",
         action: (
           <Link to={`/orders/${order.code}`}>
-            <Button size="sm" className="h-8 gap-1">
-              <span>View Details</span>
+            <Button size="sm" className="underline h-8 gap-1">
+              View Details
             </Button>
           </Link>
         ),

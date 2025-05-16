@@ -5,8 +5,13 @@ import { exportListUserExcel } from "@/redux/user/user.thunk";
 import { UserState } from "@/redux/user/user.type";
 import { Download } from "lucide-react";
 import { GetListUserPayload } from "@/redux/user/user.type";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export function ExportListUserExcelButton({ filters }: { filters: GetListUserPayload }) {
+  const can = usePermission();
+  if (!can(PERMISSIONS.EXPORT_USERS_EXCEL)) return null;
+
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector<UserState>((selector) => selector.user);
 

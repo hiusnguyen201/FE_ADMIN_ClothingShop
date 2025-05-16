@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
 import { GetListProductPayload, ProductFieldsSort } from "@/redux/product/product.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";
 import { PRODUCT_STATUS } from "@/types/product";
-import { convertToSearchParams } from "@/utils/object";
-import { useSearchParams } from "react-router-dom";
+import { useSearchFilters } from "@/hooks/use-search-filters";
 
 export const initialFilters: GetListProductPayload = {
   page: 1,
@@ -17,23 +15,7 @@ export const initialFilters: GetListProductPayload = {
 };
 
 export function useProductTableFilters() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState<GetListProductPayload>({
-    ...initialFilters,
-    ...Object.fromEntries(searchParams?.entries() ?? {}),
-  });
-
-  useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
-  }, [filters]);
-
-  const handlePageChange = (page: number) => {
-    setFilters((prev) => ({ ...prev, page }));
-  };
-
-  const handleLimitChange = (limit: number) => {
-    setFilters((prev) => ({ ...prev, limit, page: 1 }));
-  };
+  const { filters, handleLimitChange, handlePageChange, setFilters } = useSearchFilters({ initialFilters });
 
   const handleFiltersChange = (filters: any) => {
     setFilters((prev) => ({ ...prev, ...filters, page: 1 }));

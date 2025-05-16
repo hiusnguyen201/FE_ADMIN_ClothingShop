@@ -39,8 +39,8 @@ export function CreateRoleDialogForm({ children, open, onOpenChange }: CreateRol
         title: "Create role successful",
         action: (
           <Link to={`/roles/${data.id}/settings`}>
-            <Button size="sm" className="h-8 gap-1">
-              <span>View Details</span>
+            <Button size="sm" className="underline h-8 gap-1">
+              View Details
             </Button>
           </Link>
         ),

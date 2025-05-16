@@ -1,4 +1,4 @@
-import { useRoutes } from "react-router-dom";
+import { useLocation, useRoutes } from "react-router-dom";
 import { publicRoutes } from "./public.routes";
 import { privateRoutes } from "./private.routes";
 

@@ -87,7 +87,7 @@ export function EditProductVariantsForm({ product, canEditVariants }: { product:
 
   useEffect(() => {
     (async () => {
-      await dispatch(getListOption());
+      await dispatch(getListOption()).unwrap();
     })();
   }, []);
 

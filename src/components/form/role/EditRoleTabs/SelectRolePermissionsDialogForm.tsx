@@ -3,7 +3,7 @@ import { CreateDialogForm } from "@/components/dialog-form";
 import { AddRolePermissionsPayload, RoleState } from "@/redux/role/role.type";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { FormikHelpers, useFormik } from "formik";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { addRolePermissions, getListUnassignedRolePermissions } from "@/redux/role/role.thunk";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,10 @@ import { SearchFormField } from "@/components/form-fields/SearchFormFIeld";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Role } from "@/types/role";
 import { Spinner } from "@/components/spinner";
+import { useDebouncedCallback } from "use-debounce";
+import { Label } from "@/components/ui/label";
+import { sortObjectByKeys } from "@/utils/object";
+import { Permission } from "@/types/permission";
 
 const addRolePermissionsSchema = Yup.object().shape({
   roleId: Yup.string().required(),
@@ -37,15 +41,9 @@ export function SelectRolePermissionsDialogForm({
   const [search, setSearch] = useState<string>("");
   const [selectedPermissions, setSelectedPermissions] = useState<string[]>([]);
 
-  const filteredPermissions = useMemo(() => {
-    if (!search) return unassignedRolePermissions;
-    return unassignedRolePermissions.filter(
-      (permission) =>
-        permission.name.toLowerCase().includes(search.toLowerCase()) ||
-        permission.description.toLowerCase().includes(search.toLowerCase()) ||
-        permission.module.toLowerCase().includes(search.toLowerCase())
-    );
-  }, [unassignedRolePermissions, search]);
+  const handleKeywordChange = useDebouncedCallback((keyword: string) => {
+    setSearch(keyword);
+  }, 500);
 
   const initialValues: AddRolePermissionsPayload = {
     roleId: role.id,
@@ -65,20 +63,35 @@ export function SelectRolePermissionsDialogForm({
     }
   };
 
-  const fetchPermissions = useCallback(async () => {
+  const getAvailablePermissions = async () => {
     try {
-      await dispatch(getListUnassignedRolePermissions({ page: 1, limit: 100, roleId: role.id })).unwrap();
+      await dispatch(
+        getListUnassignedRolePermissions({ page: 1, limit: 100, roleId: role.id, keyword: search })
+      ).unwrap();
     } catch (error: any) {
       toast({ title: error, variant: "destructive" });
     }
-  }, [unassignedRolePermissions]);
+  };
 
   useEffect(() => {
-    fetchPermissions();
-  }, [dispatch]);
+    getAvailablePermissions();
+  }, [dispatch, search]);
+
+  const groupPermissions = useMemo(() => {
+    const grouped = unassignedRolePermissions.reduce<Record<string, typeof unassignedRolePermissions>>((acc, item) => {
+      const key = item.module;
+      if (!acc[key]) {
+        acc[key] = [];
+      }
+      acc[key].push(item);
+      return acc;
+    }, {});
+    return sortObjectByKeys(grouped);
+  }, [unassignedRolePermissions]);
 
   return (
     <CreateDialogForm
+      className="sm:max-w-5xl"
       title="Add Permissions"
       titleSubmit="Add Permissions"
       open={open}
@@ -124,33 +137,43 @@ export function SelectRolePermissionsDialogForm({
               >
                 None
               </Button>
-              <SearchFormField name="search" placeholder="Filter Permissions" onValueChange={setSearch} />
+              <SearchFormField
+                name="search"
+                placeholder="Filter Permissions"
+                value={search}
+                onValueChange={handleKeywordChange}
+              />
             </div>
           </div>
 
-          <div className="relative h-[200px] w-full border rounded-md overflow-scroll">
-            {filteredPermissions.length > 0 ? (
-              <ul className="m-4 flex flex-wrap gap-3">
-                {filteredPermissions.map((permission) => (
-                  <li key={permission.id}>
-                    <label className="inline-flex items-center gap-2 py-2 px-3 rounded-md border cursor-pointer hover:bg-gray-100 select-none">
-                      <Checkbox
-                        id={permission.id}
-                        checked={selectedPermissions.includes(permission.id)}
-                        onCheckedChange={(checked: boolean) => {
-                          formik.setErrors({});
-                          const updatedSelectPermissions = checked
-                            ? [...formik.values.permissionIds, permission.id]
-                            : formik.values.permissionIds.filter((id) => id !== permission.id);
-                          formik.setFieldValue("permissionIds", updatedSelectPermissions);
-                          setSelectedPermissions(updatedSelectPermissions);
-                        }}
-                      />
-                      <span>{permission.name}</span>
-                    </label>
-                  </li>
-                ))}
-              </ul>
+          <div className="relative h-96 w-full border rounded-md overflow-scroll">
+            {unassignedRolePermissions.length > 0 ? (
+              Object.entries(groupPermissions).map(([module, permissions]: [string, Permission[]]) => (
+                <div key={module} className="m-4 flex flex-col">
+                  <Label className="capitalize mb-2">{module}</Label>
+                  <ul className="flex flex-wrap gap-3">
+                    {permissions.map((permission) => (
+                      <li key={permission.id}>
+                        <label className="inline-flex items-center gap-2 py-2 px-3 rounded-md border cursor-pointer hover:bg-gray-100 select-none">
+                          <Checkbox
+                            id={permission.id}
+                            checked={selectedPermissions.includes(permission.id)}
+                            onCheckedChange={(checked: boolean) => {
+                              formik.setErrors({});
+                              const updatedSelectPermissions = checked
+                                ? [...formik.values.permissionIds, permission.id]
+                                : formik.values.permissionIds.filter((id) => id !== permission.id);
+                              formik.setFieldValue("permissionIds", updatedSelectPermissions);
+                              setSelectedPermissions(updatedSelectPermissions);
+                            }}
+                          />
+                          <span>{permission.name}</span>
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
             ) : (
               <div className="flex justify-center absolute top-[50%] w-full text-gray-500">
                 {loading.getListUnassignedRolePermissions ? <Spinner /> : <p>No Permissions found</p>}

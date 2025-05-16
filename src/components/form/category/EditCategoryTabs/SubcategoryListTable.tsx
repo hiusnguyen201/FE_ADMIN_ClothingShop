@@ -10,7 +10,9 @@ import { subcategoriesColumns } from "@/pages/categories/tabs/subcategories-colu
 
 export function SubcategoryListTable({ category }: { category: Category }) {
   const dispatch = useAppDispatch();
-  const { listSub, loading, initializedSubList } = useAppSelector<CategoryState>((state) => state.category);
+  const { listSub, loading, initializedSubList, newItem, removedCategoryIds } = useAppSelector<CategoryState>(
+    (state) => state.category
+  );
 
   const handleGetListSubcategory = async () => {
     try {
@@ -22,7 +24,7 @@ export function SubcategoryListTable({ category }: { category: Category }) {
 
   useEffect(() => {
     handleGetListSubcategory();
-  }, [dispatch]);
+  }, [dispatch, newItem, removedCategoryIds]);
 
   return (
     <DataTableLoading initialized={initializedSubList} className="flex flex-col gap-6 w-full">

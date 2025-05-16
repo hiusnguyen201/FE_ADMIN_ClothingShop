@@ -17,6 +17,7 @@ export interface AccountState {
     markAllAsReadNotificationInUser: boolean;
   };
   totalCount: {
+    totalNotifications: number;
     totalUnreadNotifications: number;
   };
   permissions: string[];
@@ -63,7 +64,7 @@ export interface ChangePasswordResponse extends BaseResponse<void> {}
  */
 export type GetListNotificationInUserPayload = {};
 export interface GetListNotificationInUserResponse
-  extends BaseResponse<{ notifications: UserNotification[]; totalUnread: number }> {}
+  extends BaseResponse<{ notifications: UserNotification[]; totalUnread: number; totalCount: number }> {}
 
 /**
  * Mark as read notification in user

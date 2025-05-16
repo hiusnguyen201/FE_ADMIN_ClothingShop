@@ -51,8 +51,8 @@ export function CreateProductForm() {
         title: "Create product successful",
         action: (
           <Link to={`/products/${data.id}/settings`}>
-            <Button size="sm" className="h-8 gap-1">
-              <span>View Details</span>
+            <Button size="sm" className="underline h-8 gap-1">
+              View Details
             </Button>
           </Link>
         ),

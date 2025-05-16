@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { GetListAssignedRolePermissionsPayload } from "@/redux/role/role.type";
-import { convertToSearchParams } from "@/utils/object";
 import { useDebouncedCallback } from "use-debounce";
-import { useSearchParams } from "react-router-dom";
 import { PermissionFieldsSort } from "@/redux/permission/permission.type";
+import { useSearchFilters } from "@/hooks/use-search-filters";
 
 export function useRolePermissionsTableFilters(roleId: string) {
   const initialFilters: GetListAssignedRolePermissionsPayload = {
@@ -15,23 +13,10 @@ export function useRolePermissionsTableFilters(roleId: string) {
     roleId: roleId,
   };
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState<GetListAssignedRolePermissionsPayload>({
-    ...initialFilters,
-    ...Object.fromEntries(searchParams?.entries() ?? {}),
+  const { filters, handleLimitChange, handlePageChange, setFilters } = useSearchFilters({
+    initialFilters,
+    onBeforeFiltersChange: (filters: GetListAssignedRolePermissionsPayload) => ({ ...filters, roleId: undefined }),
   });
-
-  useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
-  }, [filters]);
-
-  const handlePageChange = (page: number) => {
-    setFilters((prev) => ({ ...prev, page }));
-  };
-
-  const handleLimitChange = (limit: number) => {
-    setFilters((prev) => ({ ...prev, limit, page: 1 }));
-  };
 
   const handleSortChange = (field?: PermissionFieldsSort, desc?: boolean) => {
     if (!field || desc === undefined) {

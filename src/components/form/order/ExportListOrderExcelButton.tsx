@@ -4,8 +4,13 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { exportListOrderExcel } from "@/redux/order/order.thunk";
 import { GetListOrderPayload, OrderState } from "@/redux/order/order.type";
 import { Download } from "lucide-react";
+import { usePermission } from "@/hooks/use-permission";
+import { PERMISSIONS } from "@/constants/permissions";
 
 export function ExportListOrderExcelButton({ filters }: { filters: GetListOrderPayload }) {
+  const can = usePermission();
+  if (!can(PERMISSIONS.EXPORT_ORDERS_EXCEL)) return null;
+
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector<OrderState>((selector) => selector.order);
 

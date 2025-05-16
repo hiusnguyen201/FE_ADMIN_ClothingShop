@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { useCallback, useEffect } from "react";
+import { useEffect } from "react";
 import { toast } from "@/hooks/use-toast";
 import { Role } from "@/types/role";
 import { getListAssignedRolePermissions } from "@/redux/role/role.thunk";

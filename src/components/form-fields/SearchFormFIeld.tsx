@@ -52,7 +52,7 @@ export function SearchFormField({
   return (
     <div
       className={cn(
-        "relative w-full h-full flex items-center text-sm gap-2 border rounded pl-[14px] focus-within:ring-2 focus-within:ring-ring focus-within:ring-primary",
+        "relative w-full h-10 flex items-center text-sm gap-2 border rounded pl-[14px] focus-within:ring-2 focus-within:ring-ring focus-within:ring-primary",
         className
       )}
     >

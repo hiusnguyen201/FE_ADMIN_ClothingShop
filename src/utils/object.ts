@@ -27,6 +27,40 @@ export function convertToSearchParams(obj: Record<string, any>): URLSearchParams
   return new URLSearchParams(params);
 }
 
+export function sortObjectByKeys(obj: Record<string, any>) {
+  return Object.keys(obj)
+    .sort()
+    .reduce((acc: Record<string, any>, key) => {
+      acc[key] = obj[key];
+      return acc;
+    }, {});
+}
+
+export function compareObjects(obj1: Record<string, any>, obj2: Record<string, any>): boolean {
+  const sorted1 = sortObjectByKeys(obj1);
+  const sorted2 = sortObjectByKeys(obj2);
+
+  const json1 = JSON.stringify(sorted1);
+  const json2 = JSON.stringify(sorted2);
+
+  return json1 === json2;
+}
+
+function parseValue(value: string): any {
+  if (value === "true") return true;
+  if (value === "false") return false;
+  if (!isNaN(Number(value))) return Number(value);
+  return value;
+}
+
+export function getTypedParams(searchParams: URLSearchParams): Record<string, any> {
+  const obj: Record<string, any> = {};
+  for (const [key, value] of searchParams.entries()) {
+    obj[key] = parseValue(value);
+  }
+  return obj;
+}
+
 export function downloadFileBlob(data: Blob, fileName: string): void {
   const blob = new Blob([data], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

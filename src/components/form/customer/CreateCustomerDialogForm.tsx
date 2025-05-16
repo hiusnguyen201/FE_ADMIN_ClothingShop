@@ -51,8 +51,8 @@ export function CreateCustomerDialogForm({ children }: CreateCustomerDialogFormP
         title: "Create customer successful",
         action: (
           <Link to={`/customers/${response.data.id}/settings`}>
-            <Button size="sm" className="h-8 gap-1">
-              <span>View Details</span>
+            <Button size="sm" className="underline h-8 gap-1">
+              View Details
             </Button>
           </Link>
         ),

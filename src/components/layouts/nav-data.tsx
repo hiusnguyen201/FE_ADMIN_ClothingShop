@@ -4,7 +4,7 @@ import { Blocks, Gauge, KeyRound, Package, ShoppingCart, UserCog2, Users2 } from
 const navMainGroupApp = [
   {
     title: "Dashboard",
-    url: "/",
+    url: "/dashboard",
     icon: Gauge,
   },
   {
@@ -31,9 +31,6 @@ const navMainGroupApp = [
     icon: ShoppingCart,
     permission: PERMISSIONS.READ_ORDERS,
   },
-];
-
-const navMainGroupSystem = [
   {
     title: "Users",
     url: "/users",
@@ -56,7 +53,6 @@ const navMainGroupSystem = [
 
 export const navData = {
   navMainGroupApp,
-  navMainGroupSystem,
   // projects: [
   //   {
   //     name: "Design Engineering",

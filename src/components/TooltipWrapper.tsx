@@ -50,7 +50,7 @@ export function TooltipWrapper({
   }
 
   return (
-    <TooltipProvider>
+    <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild className="cursor-pointer">
           <Button variant="ghost" size="icon" className="rounded-full w-8 h-8">

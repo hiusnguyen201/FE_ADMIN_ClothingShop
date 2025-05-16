@@ -47,8 +47,8 @@ export function CreateCategoryDialogForm({ children, parent }: CreateCategoryDia
         title: "Create category successful",
         action: (
           <Link to={`/categories/${response.data.id}/settings`}>
-            <Button size="sm" className="h-8 gap-1">
-              <span>View Details</span>
+            <Button size="sm" className="underline h-8 gap-1">
+              View Details
             </Button>
           </Link>
         ),

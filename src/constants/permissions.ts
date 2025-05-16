@@ -58,6 +58,21 @@ export enum PERMISSIONS {
   EXPORT_USERS_EXCEL = "export:users:excel",
   EXPORT_USERS_PDF = "export:users:pdf",
 
+  EXPORT_CUSTOMERS_EXCEL = "export:customers:excel",
+  EXPORT_CUSTOMERS_PDF = "export:customers:pdf",
+
+  EXPORT_PERMISSIONS_EXCEL = "export:permissions:excel",
+  EXPORT_PERMISSIONS_PDF = "export:permissions:pdf",
+
+  EXPORT_PRODUCTS_EXCEL = "export:products:excel",
+  EXPORT_PRODUCTS_PDF = "export:products:pdf",
+
+  EXPORT_CATEGORIES_EXCEL = "export:categories:excel",
+  EXPORT_CATEGORIES_PDF = "export:categories:pdf",
+
   EXPORT_ROLES_EXCEL = "export:roles:excel",
   EXPORT_ROLES_PDF = "export:roles:pdf",
+
+  EXPORT_ORDERS_EXCEL = "export:orders:excel",
+  EXPORT_ORDERS_PDF = "export:orders:pdf",
 }

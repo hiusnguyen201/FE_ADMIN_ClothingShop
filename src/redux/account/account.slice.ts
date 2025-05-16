@@ -29,6 +29,7 @@ const initialState: AccountState = {
     markAllAsReadNotificationInUser: false,
   },
   totalCount: {
+    totalNotifications: 0,
     totalUnreadNotifications: 0,
   },
   user: null,
@@ -40,7 +41,11 @@ const initialState: AccountState = {
 const accountSlice = createSlice({
   name: "account",
   initialState,
-  reducers: {},
+  reducers: {
+    resetNotifications: (state) => {
+      state.userNotifications = [];
+    },
+  },
   extraReducers: (builder: ActionReducerMapBuilder<AccountState>) => {
     builder
       // Get Profile Case
@@ -124,6 +129,7 @@ const accountSlice = createSlice({
           const { data } = action.payload;
           state.loading.getListNotificationInUser = false;
           state.userNotifications = data.notifications;
+          state.totalCount.totalNotifications = data.totalCount;
           state.totalCount.totalUnreadNotifications = data.totalUnread;
           state.error = null;
         }
@@ -187,5 +193,7 @@ const accountSlice = createSlice({
       });
   },
 });
+
+export const { resetNotifications } = accountSlice.actions;
 
 export default accountSlice.reducer;

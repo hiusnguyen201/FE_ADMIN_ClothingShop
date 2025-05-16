@@ -9,19 +9,19 @@ export function AdminLayout() {
   const isMobile = useIsMobile();
   return (
     <SidebarProvider defaultOpen={!isMobile} className="relative">
-      <div className="flex flex-col w-full relative">
+      <div className="flex flex-col w-full relative h-full">
         {/* Full-width header at the top */}
         <Header />
 
         {/* Sidebar + content below the header */}
-        <div className="pt-16 group-has-[[data-collapsible=icon]]/sidebar-wrapper:pt-12">
-          <div className="flex w-full">
-            <SideBar className="w-64 h-full z-50" />
-            {/* Main content on the right */}
-            <SidebarInset className={cn(isMobile && "max-w-[calc(100%-var(--sidebar-width-icon))]")}>
+        <div className="flex w-full pt-14 h-full">
+          <SideBar className="h-full z-50" />
+          {/* Main content on the right */}
+          <SidebarInset className={cn(isMobile && "max-w-[calc(100%-var(--sidebar-width-icon))]")}>
+            <div>
               <Outlet />
-            </SidebarInset>
-          </div>
+            </div>
+          </SidebarInset>
         </div>
       </div>
     </SidebarProvider>

@@ -15,12 +15,13 @@ import {
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "react-router-dom";
 import { usePermission } from "@/hooks/use-permission";
+import { cn } from "@/lib/utils";
 
 export function NavMain({
   label,
   items,
 }: {
-  label: string;
+  label?: string;
   items: {
     title: string;
     url: string;
@@ -44,28 +45,28 @@ export function NavMain({
   const somePer = items.some((i) => !i.permission);
 
   return (
-    <SidebarGroup>
-      {(someCan || somePer) && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
+    <SidebarGroup className="p-0">
+      {(someCan || somePer) && label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarMenu>
         {items.map((item) => {
-          const active = location.pathname === item.url;
+          const active = location.pathname.includes(item.url);
           if (item.permission && !can(item.permission)) {
             return null;
           }
 
           return (
-            <Collapsible key={item.title} asChild defaultOpen={active} className="group/collapsible">
+            <Collapsible key={item.title} asChild defaultOpen={true} className="group/collapsible">
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   {!item?.items ? (
-                    <Link to={item.url}>
-                      <SidebarMenuButton tooltip={item.title}>
+                    <Link to={item.url} className={cn("flex items-center", active && "text-primary")}>
+                      <SidebarMenuButton className="h-9 [&>svg]:size-5" tooltip={item.title}>
                         {item.icon && <item.icon />}
-                        <span>{item.title}</span>
+                        <span className="font-medium">{item.title}</span>
                       </SidebarMenuButton>
                     </Link>
                   ) : (
-                    <SidebarMenuButton tooltip={item.title}>
+                    <SidebarMenuButton className="h-9 [&>svg]:size-5" tooltip={item.title} isActive={active}>
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />

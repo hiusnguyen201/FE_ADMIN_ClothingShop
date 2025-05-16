@@ -2,7 +2,7 @@ import { Sidebar, SidebarContent, SidebarFooter, useSidebar } from "@/components
 import { NavMain } from "@/components/layouts/NavMain";
 import { navData } from "./nav-data";
 import { Button } from "@/components/ui/button";
-import { PanelLeft } from "lucide-react";
+import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { forwardRef, LegacyRef } from "react";
 import { cn } from "@/lib/utils";
 
@@ -12,15 +12,20 @@ export const SideBar = forwardRef(
 
     return (
       <Sidebar ref={ref} collapsible="icon" className={cn(className)}>
-        <SidebarContent className="overflow-x-hidden bg-white pt-16 group-has-[[data-collapsible=icon]]/sidebar-wrapper:pt-12">
-          <NavMain label="Application" items={navData.navMainGroupApp} />
-          <NavMain label="System" items={navData.navMainGroupSystem} />
+        <SidebarContent className="py-6 px-4 overflow-x-hidden bg-white">
+          <NavMain items={navData.navMainGroupApp} />
           {/* <NavProjects projects={navData.projects} /> */}
         </SidebarContent>
 
-        <SidebarFooter className="p-0 bg-white">
-          <Button variant="ghost" className="border-t w-full p-4 h-auto justify-end" onClick={() => setOpen(!open)}>
-            <PanelLeft size={20} />
+        <SidebarFooter className="p-0 bg-white flex items-center justify-center">
+          <Button
+            variant="ghost"
+            className="border-t p-4 w-full h-auto justify-end [&_svg]:size-5"
+            onClick={() => setOpen(!open)}
+          >
+            <span className="w-8 h-8 flex items-center justify-center">
+              {open ? <ChevronsRight /> : <ChevronsLeft />}
+            </span>
           </Button>
         </SidebarFooter>
 

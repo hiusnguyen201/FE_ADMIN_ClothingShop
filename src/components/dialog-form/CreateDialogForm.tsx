@@ -6,6 +6,7 @@ import { X } from "lucide-react";
 import { Dialog, DialogHeader, DialogFooter, DialogDescription, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { LoadingButton } from "@/components/LoadingButton";
+import { cn } from "@/lib/utils";
 
 export type CreateDialogFormProps<T extends FormikValues> = {
   open?: boolean;
@@ -21,6 +22,7 @@ export type CreateDialogFormProps<T extends FormikValues> = {
   disableClose?: boolean;
   titleSubmit?: string;
   onClose?: () => void;
+  className?: string;
 };
 
 export function CreateDialogForm<T extends FormikValues>({
@@ -37,6 +39,7 @@ export function CreateDialogForm<T extends FormikValues>({
   titleSubmit = "Create",
   disableClose = false,
   onClose,
+  className,
 }: CreateDialogFormProps<T>) {
   const formik = useFormik<T>({
     initialValues,
@@ -88,7 +91,10 @@ export function CreateDialogForm<T extends FormikValues>({
 
         <DialogPrimitive.Content
           aria-hidden={dialogOpen ? "false" : "true"}
-          className="fixed left-[50%] top-[50%] z-50 grid w-full sm:max-w-[640px] max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg"
+          className={cn(
+            "fixed left-[50%] top-[50%] z-50 grid w-full sm:max-w-2xl max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background shadow-lg duration-200 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+            className
+          )}
         >
           <DialogHeader className="flex-row space-y-0 items-center justify-between px-10 pt-10 pb-6">
             <DialogPrimitive.DialogTitle className="text-xl font-medium">{title}</DialogPrimitive.DialogTitle>

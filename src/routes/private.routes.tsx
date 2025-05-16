@@ -23,6 +23,8 @@ import { ProfilePage } from "@/pages/account/ProfilePage";
 import { PermissionGuard } from "@/guards/PermissionGuard";
 import { PERMISSIONS } from "@/constants/permissions";
 import { ForbiddenPage } from "@/pages/errors/ForbiddenPage";
+import { CreateUserPage } from "@/pages/users/CreateUserPage";
+import { ListNotificationPage } from "@/pages/notifications/ListNotificationPage";
 
 export const privateRoutes: RouteObject[] = [
   {
@@ -32,7 +34,7 @@ export const privateRoutes: RouteObject[] = [
       </AuthGuard>
     ),
     children: [
-      { path: "/", element: <DashboardPage /> },
+      { path: "/dashboard", element: <DashboardPage /> },
       {
         path: "/products",
         element: (
@@ -114,6 +116,14 @@ export const privateRoutes: RouteObject[] = [
         ),
       },
       {
+        path: "/users/create",
+        element: (
+          <PermissionGuard permission={PERMISSIONS.CREATE_USER}>
+            <CreateUserPage />
+          </PermissionGuard>
+        ),
+      },
+      {
         path: "/users/:userId/settings",
         element: (
           <PermissionGuard permission={PERMISSIONS.READ_DETAILS_USERS}>
@@ -177,6 +187,7 @@ export const privateRoutes: RouteObject[] = [
           </PermissionGuard>
         ),
       },
+      { path: "/notifications", element: <ListNotificationPage /> },
       { path: "/profile/general", element: <ProfilePage /> },
     ],
   },

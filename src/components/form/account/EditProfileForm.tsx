@@ -10,6 +10,7 @@ import { LoadingButton } from "@/components/LoadingButton";
 import { FlexBox } from "@/components/FlexBox";
 import { REGEX_PATTERNS } from "@/types/constant";
 import { ImageFormikField } from "@/components/formik-fields/ImageFormikField";
+import { useEffect } from "react";
 
 const editProfileSchema = Yup.object().shape({
   avatar: Yup.mixed<File>().nullable(),
@@ -52,6 +53,18 @@ export function EditProfileForm({ account }: { account: User }) {
     onSubmit: handleSubmit,
     enableReinitialize: true,
   });
+
+  useEffect(() => {
+    if (user) {
+      formik.setValues({
+        id: account.id,
+        avatar: user.avatar,
+        name: user.name,
+        phone: user.phone,
+        gender: user.gender,
+      });
+    }
+  }, [user]);
 
   return (
     <FlexBox size="large" onSubmit={formik.handleSubmit} component="form">

@@ -1,9 +1,7 @@
-import { useEffect, useRef, useState } from "react";
 import { GetListPermissionPayload, PermissionFieldsSort } from "@/redux/permission/permission.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";
-import { useSearchParams } from "react-router-dom";
-import { convertToSearchParams } from "@/utils/object";
+import { useSearchFilters } from "@/hooks/use-search-filters";
 
 const initialFilters: GetListPermissionPayload = {
   page: 1,
@@ -14,23 +12,7 @@ const initialFilters: GetListPermissionPayload = {
 };
 
 export function usePermissionTableFilters() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState<GetListPermissionPayload>({
-    ...initialFilters,
-    ...Object.fromEntries(searchParams?.entries() ?? {}),
-  });
-
-  useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
-  }, [filters]);
-
-  const handlePageChange = (page: number) => {
-    setFilters((prev) => ({ ...prev, page }));
-  };
-
-  const handleLimitChange = (limit: number) => {
-    setFilters((prev) => ({ ...prev, limit, page: 1 }));
-  };
+  const { filters, handleLimitChange, handlePageChange, setFilters } = useSearchFilters({ initialFilters });
 
   const handleSortChange = (field?: PermissionFieldsSort, desc?: boolean) => {
     if (!field || desc === undefined) {

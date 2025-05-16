@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { CustomerFieldsSort, GetListCustomerPayload } from "@/redux/customer/customer.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";
-import { convertToSearchParams } from "@/utils/object";
-import { useSearchParams } from "react-router-dom";
+import { useSearchFilters } from "@/hooks/use-search-filters";
 
 const initialFilters: GetListCustomerPayload = {
   page: 1,
@@ -14,23 +12,7 @@ const initialFilters: GetListCustomerPayload = {
 };
 
 export function useCustomerTableFilters() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState<GetListCustomerPayload>({
-    ...initialFilters,
-    ...Object.fromEntries(searchParams?.entries() ?? {}),
-  });
-
-  useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
-  }, [filters]);
-
-  const handlePageChange = (page: number) => {
-    setFilters((prev) => ({ ...prev, page }));
-  };
-
-  const handleLimitChange = (limit: number) => {
-    setFilters((prev) => ({ ...prev, limit, page: 1 }));
-  };
+  const { filters, handleLimitChange, handlePageChange, setFilters } = useSearchFilters({ initialFilters });
 
   const handleSortChange = (field?: CustomerFieldsSort, desc?: boolean) => {
     if (!field || desc === undefined) {

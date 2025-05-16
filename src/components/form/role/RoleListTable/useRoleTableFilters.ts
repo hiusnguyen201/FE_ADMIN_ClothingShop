@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { GetListRolePayload, RoleFieldsSort } from "@/redux/role/role.type";
 import { LIMIT_PER_PAGE } from "@/components/data-table";
 import { useDebouncedCallback } from "use-debounce";
-import { convertToSearchParams } from "@/utils/object";
-import { useSearchParams } from "react-router-dom";
+import { useSearchFilters } from "@/hooks/use-search-filters";
 
 const initialFilters: GetListRolePayload = {
   page: 1,
@@ -14,23 +12,7 @@ const initialFilters: GetListRolePayload = {
 };
 
 export function useRoleTableFilters() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [filters, setFilters] = useState<GetListRolePayload>({
-    ...initialFilters,
-    ...Object.fromEntries(searchParams?.entries() ?? {}),
-  });
-
-  useEffect(() => {
-    setSearchParams(convertToSearchParams(filters));
-  }, [filters]);
-
-  const handlePageChange = (page: number) => {
-    setFilters((prev) => ({ ...prev, page }));
-  };
-
-  const handleLimitChange = (limit: number) => {
-    setFilters((prev) => ({ ...prev, limit, page: 1 }));
-  };
+  const { filters, handleLimitChange, handlePageChange, setFilters } = useSearchFilters({ initialFilters });
 
   const handleSortChange = (field?: RoleFieldsSort, desc?: boolean) => {
     if (!field || desc === undefined) {

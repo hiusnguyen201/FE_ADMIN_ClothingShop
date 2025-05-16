@@ -14,7 +14,7 @@ export function DashboardPage() {
   const [compareTo, setCompareTo] = useState<COMPARISON_VALUES>(COMPARISON_VALUES.YESTERDAY);
 
   return (
-    <div className="flex flex-1 flex-col gap-4 p-4">
+    <div className="flex flex-1 flex-col gap-4 p-5">
       <div className="mb-6 flex items-center justify-between">
         <div className="space-y-1">
           <h1 className="text-2xl font-bold">Overview</h1>
