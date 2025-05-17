@@ -20,7 +20,7 @@ export function RemoveCategoryDialogForm({
   children,
   open,
   onOpenChange,
-  finishNavigate = "categories",
+  finishNavigate = "/categories",
 }: RemoveCategoryDialogFormProps) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();

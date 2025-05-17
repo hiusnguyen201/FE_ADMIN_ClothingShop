@@ -59,14 +59,20 @@ export function NavMain({
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
                   {!item?.items ? (
-                    <Link to={item.url} className={cn("flex items-center", active && "text-primary")}>
+                    <Link
+                      to={item.url}
+                      className={cn("flex items-center hover:text-primary", active && "text-primary")}
+                    >
                       <SidebarMenuButton className="h-9 [&>svg]:size-5" tooltip={item.title}>
                         {item.icon && <item.icon />}
                         <span className="font-medium">{item.title}</span>
                       </SidebarMenuButton>
                     </Link>
                   ) : (
-                    <SidebarMenuButton className="h-9 [&>svg]:size-5" tooltip={item.title} isActive={active}>
+                    <SidebarMenuButton
+                      className={cn("h-9 [&>svg]:size-5 hover:text-primary", active && "text-primary")}
+                      tooltip={item.title}
+                    >
                       {item.icon && <item.icon />}
                       <span>{item.title}</span>
                       <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />

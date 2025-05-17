@@ -11,6 +11,7 @@ import {
 import {
   changePassword,
   editProfile,
+  getListNewNotificationInUser,
   getListNotificationInUser,
   getPermissionsInUser,
   getProfile,
@@ -25,6 +26,7 @@ const initialState: AccountState = {
     changePassword: false,
     getPermissionsInUser: false,
     getListNotificationInUser: false,
+    getListNewNotificationInUser: false,
     markAsReadNotificationInUser: false,
     markAllAsReadNotificationInUser: false,
   },
@@ -33,6 +35,7 @@ const initialState: AccountState = {
     totalUnreadNotifications: 0,
   },
   user: null,
+  newUserNotifications: [],
   userNotifications: [],
   permissions: [],
   error: null,
@@ -129,17 +132,40 @@ const accountSlice = createSlice({
           const { data } = action.payload;
           state.loading.getListNotificationInUser = false;
           state.userNotifications = data.notifications;
-          state.totalCount.totalNotifications = data.totalCount;
-          state.totalCount.totalUnreadNotifications = data.totalUnread;
           state.error = null;
+          state.totalCount.totalNotifications = data.totalCount;
+          state.totalCount.totalNotifications = data.totalCount;
         }
       )
       .addCase(getListNotificationInUser.rejected, (state: Draft<AccountState>, action: PayloadAction<any>) => {
         state.loading.getListNotificationInUser = false;
         state.error = action.payload as string;
-        state.userNotifications = [];
-        state.totalCount.totalUnreadNotifications = 0;
         state.user = null;
+        state.userNotifications = [];
+        state.totalCount.totalNotifications = 0;
+      });
+
+    builder
+      // Get list new user notifications
+      .addCase(getListNewNotificationInUser.pending, (state: Draft<AccountState>) => {
+        state.loading.getListNewNotificationInUser = true;
+        state.error = null;
+      })
+      .addCase(
+        getListNewNotificationInUser.fulfilled,
+        (state: Draft<AccountState>, action: PayloadAction<GetListNotificationInUserResponse>) => {
+          const { data } = action.payload;
+          state.loading.getListNewNotificationInUser = false;
+          state.error = null;
+          state.newUserNotifications = data.notifications;
+          state.totalCount.totalUnreadNotifications = data.totalUnread;
+        }
+      )
+      .addCase(getListNewNotificationInUser.rejected, (state: Draft<AccountState>, action: PayloadAction<any>) => {
+        state.loading.getListNewNotificationInUser = false;
+        state.error = action.payload as string;
+        state.newUserNotifications = [];
+        state.totalCount.totalUnreadNotifications = 0;
       });
 
     builder

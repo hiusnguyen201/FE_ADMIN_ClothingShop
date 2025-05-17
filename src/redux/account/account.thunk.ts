@@ -89,6 +89,20 @@ export const getListNotificationInUser = createAsyncThunk<
   }
 });
 
+export const getListNewNotificationInUser = createAsyncThunk<
+  GetListNotificationInUserResponse,
+  GetListNotificationInUserPayload,
+  ThunkApiConfig
+>("account/get-list-new-notification-in-user", async (payload, { rejectWithValue }) => {
+  try {
+    const response: GetListNotificationInUserResponse = await getListNotificationInUserService(payload);
+    return response;
+  } catch (error: any) {
+    const message: string = error.response?.data?.message || error.message || error.toString();
+    return rejectWithValue(message);
+  }
+});
+
 export const markAsReadNotificationInUser = createAsyncThunk<
   MarkAsReadNotificationInUserResponse,
   MarkAsReadNotificationInUserPayload,

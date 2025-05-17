@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
-import { getListNotificationInUser, markAllAsReadNotificationInUser } from "@/redux/account/account.thunk";
+import { getListNewNotificationInUser, markAllAsReadNotificationInUser } from "@/redux/account/account.thunk";
 import { Link, useLocation } from "react-router-dom";
 import { useSocket } from "@/hooks/use-socket";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -24,13 +24,13 @@ export function BusinessNotification() {
   const socket = useSocket();
   const isMobile = useIsMobile();
   const location = useLocation();
-  const { userNotifications, totalCount } = useAppSelector<AccountState>((selector) => selector.account);
+  const { newUserNotifications, totalCount } = useAppSelector<AccountState>((selector) => selector.account);
   const [isOpen, setIsOpen] = useState(false);
 
   const inNotificationPage = location.pathname === "/notifications";
 
   const handleGetNotifications = async () => {
-    await dispatch(getListNotificationInUser({ page: 1, limit: 5 })).unwrap();
+    await dispatch(getListNewNotificationInUser({ page: 1, limit: 5 })).unwrap();
   };
 
   const markAllAsRead = async () => {
@@ -89,8 +89,8 @@ export function BusinessNotification() {
           </div>
           <DropdownMenuSeparator />
           <div className="max-h-[70vh] overflow-y-auto flex flex-col gap-1">
-            {userNotifications.length > 0 ? (
-              userNotifications.map((userNotification) => (
+            {newUserNotifications.length > 0 ? (
+              newUserNotifications.map((userNotification) => (
                 <DropdownMenuItem key={userNotification.id}>
                   <NotificationCard userNotification={userNotification} />
                 </DropdownMenuItem>

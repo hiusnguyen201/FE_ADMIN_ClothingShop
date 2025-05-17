@@ -24,7 +24,7 @@ export const SideBar = forwardRef(
             onClick={() => setOpen(!open)}
           >
             <span className="w-8 h-8 flex items-center justify-center">
-              {open ? <ChevronsRight /> : <ChevronsLeft />}
+              {open ? <ChevronsLeft /> : <ChevronsRight />}
             </span>
           </Button>
         </SidebarFooter>

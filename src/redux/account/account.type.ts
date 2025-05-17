@@ -13,6 +13,7 @@ export interface AccountState {
     changePassword: boolean;
     getPermissionsInUser: boolean;
     getListNotificationInUser: boolean;
+    getListNewNotificationInUser: boolean;
     markAsReadNotificationInUser: boolean;
     markAllAsReadNotificationInUser: boolean;
   };
@@ -21,6 +22,7 @@ export interface AccountState {
     totalUnreadNotifications: number;
   };
   permissions: string[];
+  newUserNotifications: UserNotification[];
   userNotifications: UserNotification[];
   user: Nullable<User>;
   error: Nullable<string>;
